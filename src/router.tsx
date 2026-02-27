@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
@@ -11,9 +11,11 @@ import { ApplicationsPage } from '@/pages/admin/ApplicationsPage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading, memberships, activeMembership } = useAuth()
+  const location = useLocation()
   if (loading) return <div className="min-h-screen flex items-center justify-center"><span className="text-gray-400">Yükleniyor...</span></div>
   if (!session) return <Navigate to="/login" replace />
-  if (memberships.length > 1 && !activeMembership) return <Navigate to="/select-org" replace />
+  if (memberships.length > 1 && !activeMembership && location.pathname !== '/select-org')
+    return <Navigate to="/select-org" replace />
   return <>{children}</>
 }
 
