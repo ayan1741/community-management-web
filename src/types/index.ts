@@ -73,3 +73,43 @@ export interface Member {
   units: { unitNumber: string; blockName: string | null }[]
   joinedAt: string
 }
+
+export type UnitType = 'residential' | 'shop' | 'storage' | 'parking' | 'other'
+export type BlockType = 'residential' | 'commercial' | 'mixed'
+
+export interface Block {
+  id: string
+  organizationId: string
+  name: string
+  blockType: BlockType
+  isDefault: boolean
+  unitCount: number
+  createdAt: string
+}
+
+export interface Unit {
+  id: string
+  blockId: string
+  blockName: string
+  unitNumber: string
+  unitType: UnitType
+  floor: number | null
+  areaSqm: number | null
+  notes: string | null
+  isOccupied: boolean
+  createdAt: string
+}
+
+export interface UnitDropdownItem {
+  id: string
+  blockId: string
+  blockName: string
+  unitNumber: string
+  isOccupied: boolean
+}
+
+export interface BulkCreateResult {
+  created: number
+  skipped: number
+  skippedNumbers: string[]
+}

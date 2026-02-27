@@ -4,6 +4,7 @@ import { api } from '@/lib/api'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { FileText } from 'lucide-react'
 import type { Application, PagedResult } from '@/types'
 
 export function ApplicationsPage() {
@@ -42,10 +43,14 @@ export function ApplicationsPage() {
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Başvurular</h1>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-xl font-semibold text-slate-900">Başvurular</h1>
+            <p className="text-sm text-slate-500 mt-0.5">Bekleyen başvuruları incele ve yönet</p>
+          </div>
           {pending.length > 0 && (
-            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
               {pending.length} bekliyor
             </span>
           )}
@@ -58,39 +63,50 @@ export function ApplicationsPage() {
             <CardTitle>Bekleyen Başvurular</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            {loading && <p className="px-6 py-4 text-sm text-gray-500">Yükleniyor...</p>}
+            {loading && (
+              <div className="px-6 py-12 text-center">
+                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-slate-500">Yükleniyor...</p>
+              </div>
+            )}
             {!loading && pending.length === 0 && (
-              <p className="px-6 py-4 text-sm text-gray-500">Bekleyen başvuru yok.</p>
+              <div className="px-6 py-12 text-center">
+                <FileText className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+                <p className="text-sm font-medium text-slate-700">Bekleyen başvuru yok</p>
+                <p className="text-xs text-slate-400 mt-1">Tüm başvurular incelendi.</p>
+              </div>
             )}
             {pending.length > 0 && (
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-100">
+                <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">Başvuran</th>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">Daire</th>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">Tarih</th>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">İşlem</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Başvuran</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Daire</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Tarih</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">İşlem</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody>
                   {pending.map(a => (
-                    <tr key={a.applicationId} className="hover:bg-gray-50">
-                      <td className="px-6 py-4">
-                        <p className="font-medium text-gray-900">{a.applicantName}</p>
-                        <p className="text-xs text-gray-500">{a.applicantPhone ?? ''}</p>
+                    <tr key={a.applicationId} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
+                      <td className="px-4 py-3.5">
+                        <p className="font-semibold text-slate-900">{a.applicantName}</p>
+                        {a.applicantPhone && (
+                          <p className="text-xs text-slate-400 mt-0.5">{a.applicantPhone}</p>
+                        )}
                       </td>
-                      <td className="px-6 py-4 text-gray-600">
+                      <td className="px-4 py-3.5 text-slate-600">
                         {a.blockName ? `${a.blockName} · ` : ''}{a.unitNumber}
                       </td>
-                      <td className="px-6 py-4 text-gray-600">
-                        {new Date(a.submittedAt).toLocaleDateString('tr-TR')}
+                      <td className="px-4 py-3.5 text-slate-600">
+                        {new Date(a.submittedAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex gap-2">
-                          <Button size="sm" onClick={() => handleDecision(a.applicationId, 'approve')}>
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center gap-2">
+                          <Button size="sm" variant="primary" onClick={() => handleDecision(a.applicationId, 'approve')}>
                             Onayla
                           </Button>
-                          <Button size="sm" variant="danger" onClick={() => handleDecision(a.applicationId, 'reject')}>
+                          <Button size="sm" variant="ghost" className="text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => handleDecision(a.applicationId, 'reject')}>
                             Reddet
                           </Button>
                         </div>
@@ -102,7 +118,6 @@ export function ApplicationsPage() {
             )}
           </CardContent>
         </Card>
-
       </div>
     </AppLayout>
   )

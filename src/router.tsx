@@ -8,6 +8,8 @@ import { DashboardPage } from '@/pages/DashboardPage'
 import { MembersPage } from '@/pages/admin/MembersPage'
 import { InvitationsPage } from '@/pages/admin/InvitationsPage'
 import { ApplicationsPage } from '@/pages/admin/ApplicationsPage'
+import { BlocksPage } from '@/pages/admin/BlocksPage'
+import { UnitsPage } from '@/pages/admin/UnitsPage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading, memberships, activeMembership } = useAuth()
@@ -53,6 +55,8 @@ export function AppRouter() {
         <Route path="/admin/members" element={<RequireAuth><RequireAdmin><MembersPage /></RequireAdmin></RequireAuth>} />
         <Route path="/admin/invitations" element={<RequireAuth><RequireAdmin><InvitationsPage /></RequireAdmin></RequireAuth>} />
         <Route path="/admin/applications" element={<RequireAuth><RequireAdmin><ApplicationsPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/blocks" element={<RequireAuth><RequireAdmin><BlocksPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/units" element={<RequireAuth><RequireAdmin><UnitsPage /></RequireAdmin></RequireAuth>} />
 
         {/* Default */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
