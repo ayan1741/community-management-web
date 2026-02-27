@@ -3,7 +3,6 @@ import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import type { Member, PagedResult } from '@/types'
 
 const roleLabels: Record<string, string> = {
@@ -56,7 +55,6 @@ export function MembersPage() {
                     <th className="px-6 py-3 text-left font-medium text-gray-500">Daire</th>
                     <th className="px-6 py-3 text-left font-medium text-gray-500">Rol</th>
                     <th className="px-6 py-3 text-left font-medium text-gray-500">Durum</th>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">İşlem</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -81,9 +79,6 @@ export function MembersPage() {
                         }`}>
                           {statusLabels[m.status] ?? m.status}
                         </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <Button variant="ghost" size="sm">Düzenle</Button>
                       </td>
                     </tr>
                   ))}

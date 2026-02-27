@@ -31,13 +31,19 @@ export function InvitationsPage() {
     }
   }
 
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
   async function generateCode() {
     if (!unitId.trim()) return
+    if (!UUID_REGEX.test(unitId.trim())) {
+      setError('Geçersiz format. Daire ID şu şekilde olmalıdır: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
+      return
+    }
     setGenerating(true)
     setError('')
     try {
       await api.post(`/organizations/${activeMembership!.organizationId}/invitations`, {
-        unitId,
+        unitId: unitId.trim(),
         expiresInDays: 7,
       })
       setUnitId('')

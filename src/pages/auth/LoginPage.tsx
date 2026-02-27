@@ -21,6 +21,7 @@ export function LoginPage() {
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    mode: 'onBlur',
   })
 
   async function onSubmit(data: FormData) {

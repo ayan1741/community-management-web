@@ -31,6 +31,7 @@ export function RegisterPage() {
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    mode: 'onBlur',
     defaultValues: { inviteCode: searchParams.get('code') ?? '' },
   })
 
