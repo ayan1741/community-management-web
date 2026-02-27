@@ -35,31 +35,41 @@ export interface Organization {
   contactPhone: string | null
 }
 
+export interface PagedResult<T> {
+  items: T[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
 export interface InvitationCode {
-  id: string
-  code: string
-  unitId: string
-  expiresAt: string
+  invitationId: string
+  invitationCode: string
+  unitNumber: string
+  blockName: string | null
   codeStatus: 'pending' | 'used' | 'expired'
+  applicationStatus: string | null
+  expiresAt: string
   createdAt: string
 }
 
 export interface Application {
-  id: string
+  applicationId: string
   applicantName: string
-  applicantEmail: string
+  applicantPhone: string | null
   unitNumber: string
   blockName: string | null
-  applicationStatus: 'pending' | 'approved' | 'rejected'
-  createdAt: string
+  residentType: string
+  submittedAt: string
+  duplicateWarning: boolean
 }
 
 export interface Member {
   userId: string
   fullName: string
-  email: string
+  phone: string | null
   role: UserRole
   status: MemberStatus
-  unitNumber: string | null
-  blockName: string | null
+  units: { unitNumber: string; blockName: string | null }[]
+  joinedAt: string
 }

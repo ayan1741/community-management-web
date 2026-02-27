@@ -5,7 +5,7 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import type { InvitationCode } from '@/types'
+import type { InvitationCode, PagedResult } from '@/types'
 
 export function InvitationsPage() {
   const { activeMembership } = useAuth()
@@ -22,8 +22,8 @@ export function InvitationsPage() {
   async function loadInvitations() {
     if (!activeMembership) return
     try {
-      const r = await api.get<InvitationCode[]>(`/organizations/${activeMembership.organizationId}/invitations`)
-      setInvitations(r.data)
+      const r = await api.get<PagedResult<InvitationCode>>(`/organizations/${activeMembership.organizationId}/invitations`)
+      setInvitations(r.data.items)
     } catch {
       setError('Davetler yüklenemedi')
     } finally {
@@ -101,9 +101,9 @@ export function InvitationsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {invitations.map(inv => (
-                    <tr key={inv.id} className="hover:bg-gray-50">
+                    <tr key={inv.invitationId} className="hover:bg-gray-50">
                       <td className="px-6 py-4 font-mono font-bold text-gray-900 tracking-widest">
-                        {inv.code}
+                        {inv.invitationCode}
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         {new Date(inv.expiresAt).toLocaleDateString('tr-TR')}
@@ -121,7 +121,7 @@ export function InvitationsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => navigator.clipboard.writeText(inv.code)}
+                          onClick={() => navigator.clipboard.writeText(inv.invitationCode)}
                         >
                           Kopyala
                         </Button>

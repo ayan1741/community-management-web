@@ -4,7 +4,7 @@ import { api } from '@/lib/api'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import type { Member } from '@/types'
+import type { Member, PagedResult } from '@/types'
 
 const roleLabels: Record<string, string> = {
   admin: 'Yönetici',
@@ -27,8 +27,8 @@ export function MembersPage() {
 
   useEffect(() => {
     if (!activeMembership) return
-    api.get<Member[]>(`/organizations/${activeMembership.organizationId}/members`)
-      .then(r => setMembers(r.data))
+    api.get<PagedResult<Member>>(`/organizations/${activeMembership.organizationId}/members`)
+      .then(r => setMembers(r.data.items))
       .catch(() => setError('Üyeler yüklenemedi'))
       .finally(() => setLoading(false))
   }, [activeMembership])
@@ -66,7 +66,7 @@ export function MembersPage() {
                         {m.fullName}
                       </td>
                       <td className="px-6 py-4 text-gray-600">
-                        {m.blockName ? `${m.blockName} ` : ''}{m.unitNumber ?? '-'}
+                        {m.units[0]?.blockName ? `${m.units[0].blockName} ` : ''}{m.units[0]?.unitNumber ?? '-'}
                       </td>
                       <td className="px-6 py-4">
                         <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs font-medium">

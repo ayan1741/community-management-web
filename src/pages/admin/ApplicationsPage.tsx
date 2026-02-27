@@ -4,7 +4,7 @@ import { api } from '@/lib/api'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import type { Application } from '@/types'
+import type { Application, PagedResult } from '@/types'
 
 export function ApplicationsPage() {
   const { activeMembership } = useAuth()
@@ -19,8 +19,8 @@ export function ApplicationsPage() {
   async function loadApplications() {
     if (!activeMembership) return
     try {
-      const r = await api.get<Application[]>(`/organizations/${activeMembership.organizationId}/applications`)
-      setApplications(r.data)
+      const r = await api.get<PagedResult<Application>>(`/organizations/${activeMembership.organizationId}/applications`)
+      setApplications(r.data.items)
     } catch {
       setError('Başvurular yüklenemedi')
     } finally {
@@ -31,18 +31,13 @@ export function ApplicationsPage() {
   async function handleDecision(id: string, action: 'approve' | 'reject') {
     try {
       await api.post(`/organizations/${activeMembership!.organizationId}/applications/${id}/${action}`)
-      setApplications(prev => prev.map(a =>
-        a.id === id
-          ? { ...a, applicationStatus: action === 'approve' ? 'approved' : 'rejected' }
-          : a
-      ))
+      setApplications(prev => prev.filter(a => a.applicationId !== id))
     } catch {
       setError('İşlem başarısız')
     }
   }
 
-  const pending = applications.filter(a => a.applicationStatus === 'pending')
-  const processed = applications.filter(a => a.applicationStatus !== 'pending')
+  const pending = applications
 
   return (
     <AppLayout>
@@ -79,23 +74,23 @@ export function ApplicationsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {pending.map(a => (
-                    <tr key={a.id} className="hover:bg-gray-50">
+                    <tr key={a.applicationId} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
                         <p className="font-medium text-gray-900">{a.applicantName}</p>
-                        <p className="text-xs text-gray-500">{a.applicantEmail}</p>
+                        <p className="text-xs text-gray-500">{a.applicantPhone ?? ''}</p>
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         {a.blockName ? `${a.blockName} · ` : ''}{a.unitNumber}
                       </td>
                       <td className="px-6 py-4 text-gray-600">
-                        {new Date(a.createdAt).toLocaleDateString('tr-TR')}
+                        {new Date(a.submittedAt).toLocaleDateString('tr-TR')}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
-                          <Button size="sm" onClick={() => handleDecision(a.id, 'approve')}>
+                          <Button size="sm" onClick={() => handleDecision(a.applicationId, 'approve')}>
                             Onayla
                           </Button>
-                          <Button size="sm" variant="danger" onClick={() => handleDecision(a.id, 'reject')}>
+                          <Button size="sm" variant="danger" onClick={() => handleDecision(a.applicationId, 'reject')}>
                             Reddet
                           </Button>
                         </div>
@@ -108,41 +103,6 @@ export function ApplicationsPage() {
           </CardContent>
         </Card>
 
-        {processed.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Geçmiş Başvurular</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-100">
-                  <tr>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">Başvuran</th>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">Daire</th>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">Sonuç</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {processed.map(a => (
-                    <tr key={a.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 font-medium text-gray-900">{a.applicantName}</td>
-                      <td className="px-6 py-4 text-gray-600">{a.unitNumber}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-md text-xs font-medium ${
-                          a.applicationStatus === 'approved'
-                            ? 'bg-green-50 text-green-700'
-                            : 'bg-red-50 text-red-700'
-                        }`}>
-                          {a.applicationStatus === 'approved' ? 'Onaylandı' : 'Reddedildi'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </AppLayout>
   )
