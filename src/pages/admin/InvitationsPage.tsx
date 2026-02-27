@@ -4,19 +4,23 @@ import { api } from '@/lib/api'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import type { InvitationCode, PagedResult } from '@/types'
+import { UnitSelector } from '@/components/units/UnitSelector'
+import { Mail } from 'lucide-react'
+import type { InvitationCode, UnitDropdownItem, PagedResult } from '@/types'
 
 export function InvitationsPage() {
   const { activeMembership } = useAuth()
   const [invitations, setInvitations] = useState<InvitationCode[]>([])
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
-  const [unitId, setUnitId] = useState('')
+  const [unitId, setUnitId] = useState<string | null>(null)
+  const [units, setUnits] = useState<UnitDropdownItem[]>([])
   const [error, setError] = useState('')
 
   useEffect(() => {
+    if (!activeMembership) return
     loadInvitations()
+    loadUnits()
   }, [activeMembership])
 
   async function loadInvitations() {
@@ -31,22 +35,24 @@ export function InvitationsPage() {
     }
   }
 
-  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  async function loadUnits() {
+    if (!activeMembership) return
+    try {
+      const r = await api.get<UnitDropdownItem[]>(`/organizations/${activeMembership.organizationId}/units/dropdown`)
+      setUnits(r.data)
+    } catch {}
+  }
 
   async function generateCode() {
-    if (!unitId.trim()) return
-    if (!UUID_REGEX.test(unitId.trim())) {
-      setError('Geçersiz format. Daire ID şu şekilde olmalıdır: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
-      return
-    }
+    if (!unitId) return
     setGenerating(true)
     setError('')
     try {
       await api.post(`/organizations/${activeMembership!.organizationId}/invitations`, {
-        unitId: unitId.trim(),
+        unitId,
         expiresInDays: 7,
       })
-      setUnitId('')
+      setUnitId(null)
       await loadInvitations()
     } catch {
       setError('Davet kodu oluşturulamadı')
@@ -56,7 +62,7 @@ export function InvitationsPage() {
   }
 
   const statusLabel: Record<string, string> = {
-    pending: 'Aktif',
+    active: 'Aktif',
     used: 'Kullanıldı',
     expired: 'Süresi Doldu',
   }
@@ -64,25 +70,32 @@ export function InvitationsPage() {
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold text-gray-900">Davet Kodları</h1>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-xl font-semibold text-slate-900">Davet Kodları</h1>
+            <p className="text-sm text-slate-500 mt-0.5">Davet kodu oluştur ve yönet</p>
+          </div>
+        </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Yeni Davet Kodu Oluştur</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-3">
-              <Input
-                placeholder="Daire ID (UUID)"
-                value={unitId}
-                onChange={e => setUnitId(e.target.value)}
-                className="max-w-xs"
-              />
-              <Button onClick={generateCode} loading={generating} disabled={!unitId.trim()}>
+            <div className="flex flex-wrap gap-3 items-end">
+              <div className="flex-1 min-w-[200px] max-w-sm">
+                <UnitSelector
+                  units={units}
+                  value={unitId}
+                  onChange={setUnitId}
+                  placeholder="Daire seçin..."
+                />
+              </div>
+              <Button onClick={generateCode} loading={generating} disabled={!unitId}>
                 Oluştur
               </Button>
             </div>
-            {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+            {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
           </CardContent>
         </Card>
 
@@ -91,39 +104,55 @@ export function InvitationsPage() {
             <CardTitle>Mevcut Davetler</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            {loading && <p className="px-6 py-4 text-sm text-gray-500">Yükleniyor...</p>}
+            {loading && (
+              <div className="px-6 py-12 text-center">
+                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-slate-500">Yükleniyor...</p>
+              </div>
+            )}
             {!loading && invitations.length === 0 && (
-              <p className="px-6 py-4 text-sm text-gray-500">Henüz davet kodu yok.</p>
+              <div className="px-6 py-12 text-center">
+                <Mail className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+                <p className="text-sm font-medium text-slate-700">Henüz davet kodu yok</p>
+                <p className="text-xs text-slate-400 mt-1">Yukarıdan yeni bir davet kodu oluşturabilirsiniz.</p>
+              </div>
             )}
             {invitations.length > 0 && (
               <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-100">
+                <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">Kod</th>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">Son Geçerlilik</th>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">Durum</th>
-                    <th className="px-6 py-3 text-left font-medium text-gray-500">İşlem</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Kod</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Son Geçerlilik</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Durum</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">İşlem</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody>
                   {invitations.map(inv => (
-                    <tr key={inv.invitationId} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 font-mono font-bold text-gray-900 tracking-widest">
-                        {inv.invitationCode}
+                    <tr key={inv.invitationId} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
+                      <td className="px-4 py-3.5">
+                        <span className="font-mono text-sm font-semibold text-slate-900 bg-slate-50 px-2 py-1 rounded tracking-widest border border-slate-200">
+                          {inv.invitationCode}
+                        </span>
                       </td>
-                      <td className="px-6 py-4 text-gray-600">
-                        {new Date(inv.expiresAt).toLocaleDateString('tr-TR')}
+                      <td className="px-4 py-3.5 text-slate-600">
+                        {new Date(inv.expiresAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-md text-xs font-medium ${
-                          inv.codeStatus === 'pending' ? 'bg-green-50 text-green-700' :
-                          inv.codeStatus === 'used' ? 'bg-gray-100 text-gray-600' :
+                      <td className="px-4 py-3.5">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                          inv.codeStatus === 'active' ? 'bg-green-50 text-green-700' :
+                          inv.codeStatus === 'used' ? 'bg-slate-100 text-slate-600' :
                           'bg-red-50 text-red-700'
                         }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${
+                            inv.codeStatus === 'active' ? 'bg-green-500' :
+                            inv.codeStatus === 'used' ? 'bg-slate-400' :
+                            'bg-red-500'
+                          }`} />
                           {statusLabel[inv.codeStatus] ?? inv.codeStatus}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3.5">
                         <Button
                           variant="ghost"
                           size="sm"
