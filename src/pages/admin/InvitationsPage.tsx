@@ -56,7 +56,7 @@ export function InvitationsPage() {
   }
 
   const statusLabel: Record<string, string> = {
-    pending: 'Aktif',
+    active: 'Aktif',
     used: 'Kullanıldı',
     expired: 'Süresi Doldu',
   }
@@ -116,7 +116,7 @@ export function InvitationsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded-md text-xs font-medium ${
-                          inv.codeStatus === 'pending' ? 'bg-green-50 text-green-700' :
+                          inv.codeStatus === 'active' ? 'bg-green-50 text-green-700' :
                           inv.codeStatus === 'used' ? 'bg-gray-100 text-gray-600' :
                           'bg-red-50 text-red-700'
                         }`}>

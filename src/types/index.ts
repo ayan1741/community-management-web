@@ -47,7 +47,7 @@ export interface InvitationCode {
   invitationCode: string
   unitNumber: string
   blockName: string | null
-  codeStatus: 'pending' | 'used' | 'expired'
+  codeStatus: 'active' | 'used' | 'expired'
   applicationStatus: string | null
   expiresAt: string
   createdAt: string
