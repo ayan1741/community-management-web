@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* Class-based dark mode — .dark sınıfı üst elementte olduğunda dark: prefix'leri aktif olur */
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
   * { box-sizing: border-box; }
   body {
