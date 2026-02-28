@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
+import { LandingPage } from '@/pages/LandingPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
@@ -10,6 +11,11 @@ import { InvitationsPage } from '@/pages/admin/InvitationsPage'
 import { ApplicationsPage } from '@/pages/admin/ApplicationsPage'
 import { BlocksPage } from '@/pages/admin/BlocksPage'
 import { UnitsPage } from '@/pages/admin/UnitsPage'
+import { DuesHomePage } from '@/pages/admin/DuesHomePage'
+import { DueTypesPage } from '@/pages/admin/DueTypesPage'
+import { DuesPeriodsPage } from '@/pages/admin/DuesPeriodsPage'
+import { DuesPeriodDetailPage } from '@/pages/admin/DuesPeriodDetailPage'
+import { MyDuesPage } from '@/pages/MyDuesPage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading, memberships, activeMembership } = useAuth()
@@ -28,10 +34,26 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+function RequireAdminOnly({ children }: { children: React.ReactNode }) {
+  const { activeMembership } = useAuth()
+  if (activeMembership?.role !== 'admin') return <Navigate to="/admin/dues" replace />
+  return <>{children}</>
+}
+
+function PublicHome() {
+  const { session, loading } = useAuth()
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-zinc-950"><span className="text-zinc-600 text-sm">Yükleniyor…</span></div>
+  if (session) return <Navigate to="/dashboard" replace />
+  return <LandingPage />
+}
+
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Landing */}
+        <Route path="/" element={<PublicHome />} />
+
         {/* Public */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -48,18 +70,27 @@ export function AppRouter() {
         {/* Organization seçimi */}
         <Route path="/select-org" element={<RequireAuth><SelectOrganizationPage /></RequireAuth>} />
 
-        {/* Korumalı */}
+        {/* Korumalı — tüm kullanıcılar */}
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
+        <Route path="/dues" element={<RequireAuth><MyDuesPage /></RequireAuth>} />
 
-        {/* Admin */}
+        {/* Admin & Board Member */}
         <Route path="/admin/members" element={<RequireAuth><RequireAdmin><MembersPage /></RequireAdmin></RequireAuth>} />
         <Route path="/admin/invitations" element={<RequireAuth><RequireAdmin><InvitationsPage /></RequireAdmin></RequireAuth>} />
         <Route path="/admin/applications" element={<RequireAuth><RequireAdmin><ApplicationsPage /></RequireAdmin></RequireAuth>} />
         <Route path="/admin/blocks" element={<RequireAuth><RequireAdmin><BlocksPage /></RequireAdmin></RequireAuth>} />
         <Route path="/admin/units" element={<RequireAuth><RequireAdmin><UnitsPage /></RequireAdmin></RequireAuth>} />
 
+        {/* Aidat — admin & board_member */}
+        <Route path="/admin/dues" element={<RequireAuth><RequireAdmin><DuesHomePage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/dues/periods" element={<RequireAuth><RequireAdmin><DuesPeriodsPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/dues/periods/:periodId" element={<RequireAuth><RequireAdmin><DuesPeriodDetailPage /></RequireAdmin></RequireAuth>} />
+
+        {/* Aidat Tipleri — sadece admin */}
+        <Route path="/admin/dues/types" element={<RequireAuth><RequireAdmin><RequireAdminOnly><DueTypesPage /></RequireAdminOnly></RequireAdmin></RequireAuth>} />
+
         {/* Default */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )
