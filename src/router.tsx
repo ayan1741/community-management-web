@@ -3,8 +3,10 @@ import { useAuth } from '@/contexts/AuthContext'
 import { LandingPage } from '@/pages/LandingPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
+import { AdminRegisterPage } from '@/pages/auth/AdminRegisterPage'
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
 import { SelectOrganizationPage } from '@/pages/SelectOrganizationPage'
+import { SetupWizardPage } from '@/pages/setup/SetupWizardPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { MembersPage } from '@/pages/admin/MembersPage'
 import { InvitationsPage } from '@/pages/admin/InvitationsPage'
@@ -22,6 +24,8 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   const location = useLocation()
   if (loading) return <div className="min-h-screen flex items-center justify-center"><span className="text-gray-400">Yükleniyor...</span></div>
   if (!session) return <Navigate to="/login" replace />
+  if (memberships.length === 0 && location.pathname !== '/setup')
+    return <Navigate to="/setup" replace />
   if (memberships.length > 1 && !activeMembership && location.pathname !== '/select-org')
     return <Navigate to="/select-org" replace />
   return <>{children}</>
@@ -57,6 +61,7 @@ export function AppRouter() {
         {/* Public */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/admin-register" element={<AdminRegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/apply-success" element={
           <div className="min-h-screen flex items-center justify-center">
@@ -66,6 +71,9 @@ export function AppRouter() {
             </div>
           </div>
         } />
+
+        {/* Kurulum sihirbazı — session gerekli, membership gerekmez */}
+        <Route path="/setup" element={<RequireAuth><SetupWizardPage /></RequireAuth>} />
 
         {/* Organization seçimi */}
         <Route path="/select-org" element={<RequireAuth><SelectOrganizationPage /></RequireAuth>} />

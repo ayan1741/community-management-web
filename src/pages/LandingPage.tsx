@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTheme } from '@/hooks/useTheme'
 import {
   Building2,
   CreditCard,
@@ -18,6 +18,7 @@ import {
   Lock,
   Sun,
   Moon,
+  TrendingUp,
 } from 'lucide-react'
 
 // ─── Navbar ──────────────────────────────────────────────────────────────────
@@ -29,11 +30,11 @@ interface NavbarProps {
 
 function Navbar({ isDark, onToggle }: NavbarProps) {
   return (
-    <header className="fixed top-0 inset-x-0 z-50 border-b border-slate-200 dark:border-zinc-800/60 bg-white/90 dark:bg-zinc-950/80 backdrop-blur-md transition-colors duration-300">
+    <header className="fixed top-0 inset-x-0 z-50 border-b border-slate-200/60 dark:border-white/[0.06] bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-6 flex h-16 items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 shadow-md shadow-blue-500/30">
             <Building2 className="h-4 w-4 text-white" />
           </div>
           <span className="text-sm font-semibold text-slate-900 dark:text-zinc-100 tracking-tight transition-colors duration-300">
@@ -51,7 +52,7 @@ function Navbar({ isDark, onToggle }: NavbarProps) {
             <a
               key={item.href}
               href={item.href}
-              className="text-sm text-slate-600 dark:text-zinc-400 transition-colors hover:text-slate-900 dark:hover:text-zinc-100"
+              className="text-sm text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 transition-colors"
             >
               {item.label}
             </a>
@@ -60,24 +61,23 @@ function Navbar({ isDark, onToggle }: NavbarProps) {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
-          {/* Theme toggle */}
           <button
             onClick={onToggle}
             aria-label={isDark ? 'Aydınlık moda geç' : 'Karanlık moda geç'}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50 text-slate-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-all duration-200"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-400 dark:text-zinc-500 hover:bg-slate-50 dark:hover:bg-white/10 transition-all duration-200"
           >
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
 
           <Link
             to="/login"
-            className="text-sm text-slate-600 dark:text-zinc-400 transition-colors hover:text-slate-900 dark:hover:text-zinc-100"
+            className="text-sm text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 transition-colors"
           >
             Giriş Yap
           </Link>
           <Link
-            to="/register"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-500"
+            to="/admin-register"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-500 shadow-md shadow-blue-600/30"
           >
             Ücretsiz Başla
           </Link>
@@ -96,32 +96,53 @@ interface HeroProps {
 function Hero({ isDark }: HeroProps) {
   const gridStyle = {
     backgroundImage: isDark
-      ? 'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)'
+      ? 'linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)'
       : 'linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px)',
     backgroundSize: '60px 60px',
   }
 
   return (
     <section className="relative min-h-screen flex items-center bg-slate-50 dark:bg-zinc-950 overflow-hidden pt-16 transition-colors duration-300">
-      {/* Background glows */}
+      {/* Background effects */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 -translate-x-1/2 h-[600px] w-[900px] rounded-full bg-blue-600/6 dark:bg-blue-600/8 blur-[160px]" />
-        <div className="absolute left-1/4 bottom-0 h-[400px] w-[600px] rounded-full bg-indigo-600/4 dark:bg-indigo-600/6 blur-[130px]" />
+        {/* Radial gradient – top center */}
+        <div
+          className="absolute left-1/2 -translate-x-1/2 top-0 h-[700px] w-[1100px]"
+          style={{
+            background: isDark
+              ? 'radial-gradient(ellipse at top, rgba(59,130,246,0.22) 0%, transparent 65%)'
+              : 'radial-gradient(ellipse at top, rgba(59,130,246,0.10) 0%, transparent 65%)',
+          }}
+        />
+        {/* Secondary glow */}
+        <div
+          className="absolute left-1/4 bottom-0 h-[500px] w-[700px]"
+          style={{
+            background: isDark
+              ? 'radial-gradient(ellipse at bottom, rgba(99,102,241,0.14) 0%, transparent 65%)'
+              : 'radial-gradient(ellipse at bottom, rgba(99,102,241,0.06) 0%, transparent 65%)',
+          }}
+        />
+        {/* Grid */}
         <div className="absolute inset-0" style={gridStyle} />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 py-32">
         <div className="max-w-3xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-1.5 mb-8">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
-            <span className="text-xs font-medium text-blue-600 dark:text-blue-300">
-              Türkiye'nin Akıllı Site Yönetim Platformu
-            </span>
+          {/* Badge with gradient border */}
+          <div className="inline-block mb-8">
+            <div className="p-px rounded-full bg-gradient-to-r from-blue-500/40 via-indigo-500/30 to-blue-500/40">
+              <div className="rounded-full bg-slate-50 dark:bg-zinc-950 px-4 py-1.5 flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
+                  Türkiye'nin Akıllı Site Yönetim Platformu
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-zinc-50 leading-[1.1] tracking-tight mb-6 transition-colors duration-300">
+          <h1 className="text-5xl md:text-[64px] font-bold text-slate-900 dark:text-zinc-50 leading-[1.05] tracking-tight mb-6 transition-colors duration-300">
             Sitenizi Yönetmek{' '}
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
               Hiç Bu Kadar
@@ -139,29 +160,29 @@ function Hero({ isDark }: HeroProps) {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Link
-              to="/register"
-              className="group flex items-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-600/20"
+              to="/admin-register"
+              className="group flex items-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-500 hover:-translate-y-px shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50"
             >
               Ücretsiz Başla
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <a
               href="#features"
-              className="flex items-center gap-2 rounded-xl border border-slate-300 dark:border-zinc-700 px-7 py-3.5 text-sm font-medium text-slate-700 dark:text-zinc-300 transition-all hover:border-slate-400 dark:hover:border-zinc-500 hover:text-slate-900 dark:hover:text-zinc-100 bg-white dark:bg-transparent"
+              className="flex items-center gap-2 rounded-xl border border-slate-300 dark:border-zinc-700 px-7 py-3.5 text-sm font-medium text-slate-700 dark:text-zinc-300 transition-all hover:border-slate-400 dark:hover:border-zinc-600 hover:text-slate-900 dark:hover:text-zinc-100 bg-white dark:bg-white/5 hover:-translate-y-px"
             >
               Özellikleri İncele
             </a>
           </div>
 
           {/* Trust signals */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-xs text-slate-500 dark:text-zinc-500 transition-colors duration-300">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-xs text-slate-500 dark:text-zinc-600 transition-colors duration-300">
             {[
               { icon: Lock, label: 'SSL Şifrelemeli' },
               { icon: Shield, label: 'KVKK Uyumlu' },
               { icon: Clock, label: '7/24 Erişim' },
             ].map(({ icon: Icon, label }) => (
               <span key={label} className="flex items-center gap-1.5">
-                <Icon className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-600" />
+                <Icon className="h-3.5 w-3.5 text-slate-400 dark:text-zinc-700" />
                 {label}
               </span>
             ))}
@@ -170,12 +191,34 @@ function Hero({ isDark }: HeroProps) {
 
         {/* Dashboard mockup */}
         <div className="mt-20 relative mx-auto max-w-5xl">
-          <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 shadow-2xl shadow-slate-300/30 dark:shadow-black/50 overflow-hidden transition-colors duration-300">
+          {/* Floating metric cards */}
+          <div className="absolute -left-4 xl:-left-32 top-12 hidden xl:flex items-center gap-2.5 rounded-xl border border-slate-200 dark:border-zinc-700/60 bg-white dark:bg-zinc-900 px-3 py-2.5 shadow-xl shadow-slate-200/80 dark:shadow-black/60 z-10">
+            <div className="h-8 w-8 rounded-lg bg-green-50 dark:bg-green-500/10 border border-green-100 dark:border-green-500/20 flex items-center justify-center shrink-0">
+              <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
+            </div>
+            <div>
+              <p className="text-[10px] text-slate-500 dark:text-zinc-500">Tahsilat Oranı</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-zinc-100">98.2%</p>
+            </div>
+          </div>
+
+          <div className="absolute -right-4 xl:-right-32 bottom-24 hidden xl:flex items-center gap-2.5 rounded-xl border border-slate-200 dark:border-zinc-700/60 bg-white dark:bg-zinc-900 px-3 py-2.5 shadow-xl shadow-slate-200/80 dark:shadow-black/60 z-10">
+            <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 flex items-center justify-center shrink-0">
+              <Bell className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <p className="text-[10px] text-slate-500 dark:text-zinc-500">Yeni Ödeme</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-zinc-100">₺2.400 alındı</p>
+            </div>
+          </div>
+
+          {/* Mockup */}
+          <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 shadow-2xl shadow-slate-300/40 dark:shadow-black/60 overflow-hidden transition-colors duration-300">
             {/* Window chrome */}
             <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-zinc-800 bg-slate-100 dark:bg-zinc-900 transition-colors duration-300">
-              <span className="h-3 w-3 rounded-full bg-slate-300 dark:bg-zinc-700" />
-              <span className="h-3 w-3 rounded-full bg-slate-300 dark:bg-zinc-700" />
-              <span className="h-3 w-3 rounded-full bg-slate-300 dark:bg-zinc-700" />
+              <span className="h-3 w-3 rounded-full bg-red-400/70 dark:bg-red-500/50" />
+              <span className="h-3 w-3 rounded-full bg-amber-400/70 dark:bg-amber-500/50" />
+              <span className="h-3 w-3 rounded-full bg-green-400/70 dark:bg-green-500/50" />
               <div className="flex-1 mx-4">
                 <div className="rounded-md bg-slate-200 dark:bg-zinc-800 px-3 py-1 text-center transition-colors duration-300">
                   <span className="text-[11px] text-slate-500 dark:text-zinc-500">app.komsunet.com/dashboard</span>
@@ -188,7 +231,7 @@ function Hero({ isDark }: HeroProps) {
               {/* Sidebar mock */}
               <div className="hidden sm:flex w-52 flex-col border-r border-slate-200 dark:border-zinc-800 bg-slate-50/80 dark:bg-zinc-950/50 p-4 gap-1 transition-colors duration-300">
                 <div className="flex items-center gap-2.5 mb-4 px-2">
-                  <div className="h-7 w-7 rounded-lg bg-blue-600 flex items-center justify-center">
+                  <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-sm">
                     <Building2 className="h-3.5 w-3.5 text-white" />
                   </div>
                   <div>
@@ -211,7 +254,9 @@ function Hero({ isDark }: HeroProps) {
                       />
                       <span
                         className={`text-[11px] ${
-                          i === 0 ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-zinc-600'
+                          i === 0
+                            ? 'text-blue-600 dark:text-blue-400 font-medium'
+                            : 'text-slate-400 dark:text-zinc-600'
                         }`}
                       >
                         {item}
@@ -277,7 +322,7 @@ function Hero({ isDark }: HeroProps) {
           </div>
 
           {/* Glow under mockup */}
-          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 h-16 w-3/4 bg-blue-600/8 dark:bg-blue-600/10 blur-2xl rounded-full" />
+          <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 h-20 w-3/4 bg-blue-600/10 dark:bg-blue-600/15 blur-3xl rounded-full" />
         </div>
       </div>
     </section>
@@ -295,12 +340,17 @@ function Stats() {
   ]
 
   return (
-    <section className="border-y border-slate-200 dark:border-zinc-800 bg-slate-100/60 dark:bg-zinc-900/40 transition-colors duration-300">
-      <div className="mx-auto max-w-7xl px-6 py-10">
+    <section className="border-y border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors duration-300">
+      <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map(({ value, label }) => (
-            <div key={label} className="text-center">
-              <p className="text-3xl font-bold text-slate-900 dark:text-zinc-50 mb-1 transition-colors duration-300">{value}</p>
+          {stats.map(({ value, label }, i) => (
+            <div
+              key={label}
+              className={`text-center ${i < 3 ? 'md:border-r border-slate-100 dark:border-zinc-800/80' : ''}`}
+            >
+              <p className="text-3xl font-bold mb-1 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                {value}
+              </p>
               <p className="text-sm text-slate-500 dark:text-zinc-500 transition-colors duration-300">{label}</p>
             </div>
           ))}
@@ -368,7 +418,7 @@ const iconColorMap: Record<string, string> = {
 
 function Features() {
   return (
-    <section id="features" className="py-28 bg-white dark:bg-zinc-950 transition-colors duration-300">
+    <section id="features" className="py-28 bg-slate-50 dark:bg-zinc-950 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-6">
         {/* Section header */}
         <div className="text-center mb-16">
@@ -389,15 +439,17 @@ function Features() {
           {features.map(({ icon: Icon, color, title, description }) => (
             <div
               key={title}
-              className="group rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-6 transition-all hover:border-slate-300 dark:hover:border-zinc-700 hover:shadow-sm dark:hover:bg-zinc-900"
+              className="group relative rounded-2xl border border-slate-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/40 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 dark:hover:border-zinc-700 hover:shadow-xl hover:shadow-slate-200/60 dark:hover:shadow-black/40"
             >
+              {/* Gradient shimmer on hover */}
+              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-blue-500/[0.03] via-transparent to-indigo-500/[0.03]" />
               <div
-                className={`inline-flex items-center justify-center rounded-xl border p-2.5 mb-4 ${iconColorMap[color]}`}
+                className={`relative inline-flex items-center justify-center rounded-xl border p-2.5 mb-4 ${iconColorMap[color]}`}
               >
                 <Icon className="h-5 w-5" />
               </div>
-              <h3 className="text-base font-semibold text-slate-900 dark:text-zinc-100 mb-2 transition-colors duration-300">{title}</h3>
-              <p className="text-sm text-slate-500 dark:text-zinc-500 leading-relaxed transition-colors duration-300">{description}</p>
+              <h3 className="relative text-base font-semibold text-slate-900 dark:text-zinc-100 mb-2 transition-colors duration-300">{title}</h3>
+              <p className="relative text-sm text-slate-500 dark:text-zinc-500 leading-relaxed transition-colors duration-300">{description}</p>
             </div>
           ))}
         </div>
@@ -434,7 +486,7 @@ function HowItWorks() {
   ]
 
   return (
-    <section id="how-it-works" className="py-28 bg-slate-50 dark:bg-zinc-900/30 border-y border-slate-200 dark:border-zinc-800 transition-colors duration-300">
+    <section id="how-it-works" className="py-28 bg-white dark:bg-zinc-900/20 border-y border-slate-200 dark:border-zinc-800 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
           <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3">
@@ -448,15 +500,25 @@ function HowItWorks() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Connector line between steps – desktop */}
+          <div
+            className="hidden md:block absolute h-px"
+            style={{
+              top: '24px',
+              left: '22%',
+              right: '22%',
+              background: 'linear-gradient(to right, transparent, rgba(147,197,253,0.6), rgba(147,197,253,0.6), transparent)',
+            }}
+          />
+
           {steps.map(({ step, title, description, items }) => (
             <div key={step} className="relative">
               {/* Step number */}
               <div className="flex items-center gap-3 mb-6">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-200 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold text-sm transition-colors duration-300">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold text-sm shadow-lg shadow-blue-500/25 shrink-0">
                   {step}
                 </div>
-                <div className="flex-1 h-px bg-slate-200 dark:bg-zinc-800 md:hidden transition-colors duration-300" />
               </div>
 
               <h3 className="text-lg font-semibold text-slate-900 dark:text-zinc-100 mb-3 transition-colors duration-300">{title}</h3>
@@ -503,7 +565,7 @@ function WhyUs() {
   ]
 
   return (
-    <section className="py-28 bg-white dark:bg-zinc-950 transition-colors duration-300">
+    <section className="py-28 bg-slate-50 dark:bg-zinc-950 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left text */}
@@ -525,7 +587,7 @@ function WhyUs() {
             </p>
             <Link
               to="/register"
-              className="group inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-blue-500"
+              className="group inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-blue-500 shadow-md shadow-blue-600/25 hover:-translate-y-px"
             >
               Hemen Başla
               <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -537,7 +599,7 @@ function WhyUs() {
             {items.map(({ icon: Icon, title, description }) => (
               <div
                 key={title}
-                className="flex items-start gap-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-5 transition-all hover:border-slate-300 dark:hover:border-zinc-700 hover:shadow-sm"
+                className="flex items-start gap-4 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 dark:hover:border-zinc-700 hover:shadow-lg hover:shadow-slate-200/60 dark:hover:shadow-black/30"
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-blue-100 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 transition-colors duration-300">
                   <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -586,7 +648,7 @@ function Testimonials() {
   ]
 
   return (
-    <section className="py-28 bg-slate-50 dark:bg-zinc-900/30 border-y border-slate-200 dark:border-zinc-800 transition-colors duration-300">
+    <section className="py-28 bg-white dark:bg-zinc-900/20 border-y border-slate-200 dark:border-zinc-800 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
           <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3">
@@ -601,8 +663,13 @@ function Testimonials() {
           {testimonials.map(({ name, role, location, units, rating, text }) => (
             <div
               key={name}
-              className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-6 flex flex-col shadow-sm dark:shadow-none transition-colors duration-300"
+              className="relative rounded-2xl border border-slate-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/40 p-6 flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/60 dark:hover:shadow-black/40 hover:border-slate-300 dark:hover:border-zinc-700"
             >
+              {/* Decorative large quote mark */}
+              <div className="absolute top-4 right-5 text-5xl leading-none font-serif text-slate-100 dark:text-zinc-800 select-none pointer-events-none">
+                "
+              </div>
+
               {/* Stars */}
               <div className="flex gap-0.5 mb-4">
                 {Array.from({ length: rating }).map((_, i) => (
@@ -611,13 +678,13 @@ function Testimonials() {
               </div>
 
               {/* Quote */}
-              <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed mb-6 flex-1 transition-colors duration-300">
+              <p className="relative text-sm text-slate-600 dark:text-zinc-400 leading-relaxed mb-6 flex-1 transition-colors duration-300">
                 "{text}"
               </p>
 
               {/* Author */}
               <div className="flex items-center gap-3 pt-4 border-t border-slate-100 dark:border-zinc-800 transition-colors duration-300">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-500/30 dark:to-indigo-500/30 border border-blue-200 dark:border-blue-500/20 text-sm font-semibold text-blue-700 dark:text-blue-300 transition-colors duration-300">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-sm font-bold text-white shadow-sm shrink-0">
                   {name[0]}
                 </div>
                 <div>
@@ -640,7 +707,7 @@ function Testimonials() {
 
 function Pricing() {
   return (
-    <section id="pricing" className="py-28 bg-white dark:bg-zinc-950 transition-colors duration-300">
+    <section id="pricing" className="py-28 bg-slate-50 dark:bg-zinc-950 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center mb-16">
           <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-3">
@@ -654,7 +721,7 @@ function Pricing() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-center">
           {/* Starter */}
           <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-7 transition-colors duration-300">
             <p className="text-sm font-semibold text-slate-500 dark:text-zinc-400 mb-1">Başlangıç</p>
@@ -674,25 +741,25 @@ function Pricing() {
             </ul>
             <Link
               to="/register"
-              className="block w-full rounded-xl border border-slate-300 dark:border-zinc-700 py-2.5 text-center text-sm font-medium text-slate-700 dark:text-zinc-300 transition-colors hover:border-slate-400 dark:hover:border-zinc-500 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-transparent"
+              className="block w-full rounded-xl border border-slate-300 dark:border-zinc-700 py-2.5 text-center text-sm font-medium text-slate-700 dark:text-zinc-300 transition-colors hover:border-slate-400 dark:hover:border-zinc-500 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-white/5"
             >
               Ücretsiz Başla
             </Link>
           </div>
 
-          {/* Pro */}
-          <div className="rounded-2xl border border-blue-500/40 bg-gradient-to-b from-blue-50 to-white dark:from-blue-500/10 dark:to-zinc-900/50 p-7 relative shadow-lg shadow-blue-100 dark:shadow-none transition-colors duration-300">
+          {/* Pro – Popular */}
+          <div className="relative rounded-2xl bg-gradient-to-b from-blue-600 to-indigo-700 p-7 shadow-2xl shadow-blue-600/30">
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-              <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+              <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-700 shadow-md">
                 En Popüler
               </span>
             </div>
-            <p className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-1">Profesyonel</p>
+            <p className="text-sm font-semibold text-blue-200 mb-1">Profesyonel</p>
             <div className="flex items-end gap-1 mb-1">
-              <span className="text-4xl font-bold text-slate-900 dark:text-zinc-50">₺299</span>
-              <span className="text-sm text-slate-500 dark:text-zinc-500 mb-1">/ay</span>
+              <span className="text-4xl font-bold text-white">₺299</span>
+              <span className="text-sm text-blue-200 mb-1">/ay</span>
             </div>
-            <p className="text-xs text-slate-400 dark:text-zinc-600 mb-6">200 daireye kadar</p>
+            <p className="text-xs text-blue-200/70 mb-6">200 daireye kadar</p>
             <ul className="space-y-2.5 mb-7">
               {[
                 'Başlangıç özellikleri',
@@ -702,15 +769,15 @@ function Pricing() {
                 'Gelir-Gider Raporu',
                 'Öncelikli Destek',
               ].map((f) => (
-                <li key={f} className="flex items-center gap-2 text-sm text-slate-700 dark:text-zinc-300 transition-colors duration-300">
-                  <CheckCircle2 className="h-4 w-4 text-blue-500 dark:text-blue-400 shrink-0" />
+                <li key={f} className="flex items-center gap-2 text-sm text-white/90">
+                  <CheckCircle2 className="h-4 w-4 text-blue-200 shrink-0" />
                   {f}
                 </li>
               ))}
             </ul>
             <Link
               to="/register"
-              className="block w-full rounded-xl bg-blue-600 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-500"
+              className="block w-full rounded-xl bg-white py-2.5 text-center text-sm font-semibold text-blue-700 transition-all hover:bg-white/90 shadow-sm"
             >
               30 Gün Ücretsiz Dene
             </Link>
@@ -739,7 +806,7 @@ function Pricing() {
             </ul>
             <a
               href="mailto:info@komsunet.com"
-              className="block w-full rounded-xl border border-slate-300 dark:border-zinc-700 py-2.5 text-center text-sm font-medium text-slate-700 dark:text-zinc-300 transition-colors hover:border-slate-400 dark:hover:border-zinc-500 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-transparent"
+              className="block w-full rounded-xl border border-slate-300 dark:border-zinc-700 py-2.5 text-center text-sm font-medium text-slate-700 dark:text-zinc-300 transition-colors hover:border-slate-400 dark:hover:border-zinc-500 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-white/5"
             >
               Teklif Alın
             </a>
@@ -754,24 +821,41 @@ function Pricing() {
 
 function FinalCTA() {
   return (
-    <section className="py-28 bg-slate-50 dark:bg-zinc-900/30 border-t border-slate-200 dark:border-zinc-800 transition-colors duration-300">
-      <div className="mx-auto max-w-3xl px-6 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 px-4 py-1.5 mb-8 transition-colors duration-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
-          <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
+    <section className="relative py-28 overflow-hidden">
+      {/* Gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800" />
+      {/* Top radial highlight */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse at top, rgba(255,255,255,0.10) 0%, transparent 60%)',
+        }}
+      />
+      {/* Grid overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.07]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }}
+      />
+
+      <div className="relative mx-auto max-w-3xl px-6 text-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 backdrop-blur-sm px-4 py-1.5 mb-8">
+          <span className="h-1.5 w-1.5 rounded-full bg-white/80 animate-pulse" />
+          <span className="text-xs font-medium text-white/90">
             30 gün ücretsiz, kredi kartı gerektirmez
           </span>
         </div>
 
-        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-zinc-50 mb-5 tracking-tight leading-tight transition-colors duration-300">
+        <h2 className="text-4xl md:text-5xl font-bold text-white mb-5 tracking-tight leading-tight">
           Sitenizi Bugün
           <br />
-          <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-            Dijitalleştirin
-          </span>
+          <span className="text-white/80">Dijitalleştirin</span>
         </h2>
 
-        <p className="text-base text-slate-600 dark:text-zinc-400 leading-relaxed mb-10 max-w-xl mx-auto transition-colors duration-300">
+        <p className="text-base text-white/70 leading-relaxed mb-10 max-w-xl mx-auto">
           Yüzlerce sitenin tercih ettiği platforma katılın.
           Kurulum 15 dakika, fark anında hissedilir.
         </p>
@@ -779,14 +863,14 @@ function FinalCTA() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             to="/register"
-            className="group flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-600/20"
+            className="group flex items-center gap-2 rounded-xl bg-white px-8 py-3.5 text-sm font-semibold text-blue-700 transition-all hover:bg-white/90 hover:-translate-y-px shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/25"
           >
             Ücretsiz Başla
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
             to="/login"
-            className="rounded-xl border border-slate-300 dark:border-zinc-700 px-8 py-3.5 text-sm font-medium text-slate-700 dark:text-zinc-300 transition-all hover:border-slate-400 dark:hover:border-zinc-500 hover:text-slate-900 dark:hover:text-zinc-100 bg-white dark:bg-transparent"
+            className="rounded-xl border border-white/25 px-8 py-3.5 text-sm font-medium text-white/90 transition-all hover:bg-white/10 hover:border-white/40 hover:-translate-y-px"
           >
             Zaten hesabım var
           </Link>
@@ -804,7 +888,7 @@ function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-700">
               <Building2 className="h-3.5 w-3.5 text-white" />
             </div>
             <span className="text-sm font-semibold text-slate-600 dark:text-zinc-400 transition-colors duration-300">KomşuNet</span>
@@ -832,31 +916,20 @@ function Footer() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function LandingPage() {
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    const saved = localStorage.getItem('komsunet-theme')
-    return saved !== 'light'
-  })
-
-  const toggleTheme = () => {
-    const next = !isDark
-    setIsDark(next)
-    localStorage.setItem('komsunet-theme', next ? 'dark' : 'light')
-  }
+  const { isDark, toggleTheme } = useTheme()
 
   return (
-    <div className={isDark ? 'dark' : ''}>
-      <div className="bg-white dark:bg-zinc-950 transition-colors duration-300">
-        <Navbar isDark={isDark} onToggle={toggleTheme} />
-        <Hero isDark={isDark} />
-        <Stats />
-        <Features />
-        <HowItWorks />
-        <WhyUs />
-        <Testimonials />
-        <Pricing />
-        <FinalCTA />
-        <Footer />
-      </div>
+    <div className="bg-white dark:bg-zinc-950 transition-colors duration-300">
+      <Navbar isDark={isDark} onToggle={toggleTheme} />
+      <Hero isDark={isDark} />
+      <Stats />
+      <Features />
+      <HowItWorks />
+      <WhyUs />
+      <Testimonials />
+      <Pricing />
+      <FinalCTA />
+      <Footer />
     </div>
   )
 }
