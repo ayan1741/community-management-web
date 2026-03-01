@@ -1,5 +1,6 @@
 import { useAuth } from '@/contexts/AuthContext'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { SetupBanner } from '@/components/setup/SetupBanner'
 import { Users, Mail, FileText, Building2 } from 'lucide-react'
 
 export function DashboardPage() {
@@ -9,6 +10,7 @@ export function DashboardPage() {
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto">
+        <SetupBanner />
         <div className="mb-8">
           <h1 className="text-xl font-semibold text-slate-900">
             Merhaba, {profile?.fullName?.split(' ')[0]}

@@ -36,8 +36,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
       setUser(session?.user ?? null)
-      if (session) loadUserData()
-      else {
+      if (session) {
+        setLoading(true)
+        loadUserData()
+      } else {
         setProfile(null)
         setMemberships([])
         setActiveMembership(null)
@@ -65,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signOut() {
     await supabase.auth.signOut()
+    window.location.href = '/'
   }
 
   return (
