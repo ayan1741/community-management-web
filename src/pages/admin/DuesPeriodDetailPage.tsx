@@ -27,19 +27,8 @@ const periodStatusLabels: Record<string, { label: string; class: string }> = {
   closed:     { label: 'Kapalı',    class: 'bg-slate-100 text-slate-500' },
 }
 
-const paymentMethodLabels: Record<string, string> = {
-  cash: 'Nakit', bank_transfer: 'Havale', other: 'Diğer',
-}
-
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString('tr-TR', { day: '2-digit', month: 'short', year: 'numeric' })
-}
-
-function formatDateTime(d: string) {
-  return new Date(d).toLocaleString('tr-TR', {
-    day: '2-digit', month: 'short', year: 'numeric',
-    hour: '2-digit', minute: '2-digit',
-  })
 }
 
 export function DuesPeriodDetailPage() {
