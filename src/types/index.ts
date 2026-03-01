@@ -113,3 +113,149 @@ export interface BulkCreateResult {
   skipped: number
   skippedNumbers: string[]
 }
+
+// ─── Aidat (Dues) Tipleri ────────────────────────────────────────────────────
+
+export interface DueType {
+  id: string
+  organizationId: string
+  name: string
+  description: string | null
+  defaultAmount: number
+  categoryAmounts: string | null  // JSON string: {"small":500,"large":600}
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface DuesPeriodListItem {
+  id: string
+  name: string
+  startDate: string   // "2026-03-01"
+  dueDate: string
+  status: 'draft' | 'processing' | 'active' | 'failed' | 'closed'
+  totalDues: number
+  paidCount: number
+  pendingCount: number
+  totalAmount: number
+  collectedAmount: number
+  createdAt: string
+}
+
+export interface DuesPeriod {
+  id: string
+  organizationId: string
+  name: string
+  startDate: string
+  dueDate: string
+  status: 'draft' | 'processing' | 'active' | 'failed' | 'closed'
+  createdBy: string
+  closedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type UnitDueStatus = 'pending' | 'partial' | 'paid' | 'cancelled'
+
+export interface UnitDueListItem {
+  id: string
+  unitId: string
+  unitNumber: string
+  blockName: string
+  residentName: string | null
+  unitCategory: string | null
+  dueTypeId: string
+  dueTypeName: string
+  amount: number
+  paidAmount: number
+  remainingAmount: number
+  status: UnitDueStatus
+  isOverdue: boolean
+  createdAt: string
+}
+
+export interface DuesPeriodDetailResult {
+  period: DuesPeriod
+  items: UnitDueListItem[]
+  totalCount: number
+}
+
+export interface AccrualCategoryLine {
+  category: string | null
+  amount: number
+  unitCount: number
+  subtotal: number
+}
+
+export interface AccrualPreviewLine {
+  dueTypeId: string
+  dueTypeName: string
+  categoryLines: AccrualCategoryLine[]
+  unitsWithoutCategory: number
+  subtotal: number
+}
+
+export interface AccrualPreview {
+  totalUnits: number
+  occupiedUnits: number
+  emptyUnits: number
+  includedUnits: number
+  dueTypeBreakdowns: AccrualPreviewLine[]
+  unitsWithoutCategory: number
+  totalAmount: number
+}
+
+export interface PaymentListItem {
+  id: string
+  receiptNumber: string
+  amount: number
+  paidAt: string
+  paymentMethod: string
+  collectedByName: string | null
+  isOverpayment: boolean
+  overpaymentAmount: number | null
+  note: string | null
+  createdAt: string
+}
+
+export interface PaymentHistoryItem {
+  id: string
+  receiptNumber: string
+  amount: number
+  paidAt: string
+  paymentMethod: string
+  collectedByName: string | null
+  periodName: string
+  dueTypeName: string
+  unitNumber: string
+  blockName: string
+  createdAt: string
+}
+
+export interface DuesSummary {
+  activePeriods: number
+  totalPendingDues: number
+  totalPendingAmount: number
+  totalCollectedAmount: number
+  overdueDues: number
+}
+
+export interface OrganizationDueSettings {
+  organizationId: string
+  lateFeeRate: number
+  lateFeeGraceDays: number
+  reminderDaysBefore: number
+}
+
+export interface UnitDueResidentItem {
+  id: string
+  periodName: string
+  dueDate: string
+  dueTypeName: string
+  amount: number
+  paidAmount: number
+  status: UnitDueStatus
+  isOverdue: boolean
+  calculatedLateFee: number | null
+  createdAt: string
+}

@@ -2,16 +2,30 @@ import { type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
-import { Home, Users, Mail, FileText, LogOut, Building2, ChevronDown, Layers, DoorOpen } from 'lucide-react'
+import {
+  Home, Users, Mail, FileText, LogOut, Building2, ChevronDown,
+  Layers, DoorOpen, CircleDollarSign, CalendarDays, Wallet,
+} from 'lucide-react'
 import { useState } from 'react'
 
-const navItems = [
-  { to: '/dashboard', label: 'Ana Sayfa', icon: Home },
-  { to: '/admin/blocks', label: 'Bloklar', icon: Layers, adminOnly: true },
-  { to: '/admin/units', label: 'Daireler', icon: DoorOpen, adminOnly: true },
-  { to: '/admin/members', label: 'Üyeler', icon: Users, adminOnly: true },
-  { to: '/admin/invitations', label: 'Davetler', icon: Mail, adminOnly: true },
-  { to: '/admin/applications', label: 'Başvurular', icon: FileText, adminOnly: true },
+interface NavItem {
+  to: string
+  label: string
+  icon: React.ElementType
+  adminOnly?: boolean
+  indent?: boolean
+}
+
+const navItems: NavItem[] = [
+  { to: '/dashboard',            label: 'Ana Sayfa',   icon: Home },
+  { to: '/admin/blocks',         label: 'Bloklar',     icon: Layers,           adminOnly: true },
+  { to: '/admin/units',          label: 'Daireler',    icon: DoorOpen,         adminOnly: true },
+  { to: '/admin/members',        label: 'Üyeler',      icon: Users,            adminOnly: true },
+  { to: '/admin/invitations',    label: 'Davetler',    icon: Mail,             adminOnly: true },
+  { to: '/admin/applications',   label: 'Başvurular',  icon: FileText,         adminOnly: true },
+  { to: '/admin/dues',           label: 'Aidat',       icon: CircleDollarSign, adminOnly: true },
+  { to: '/admin/dues/periods',   label: 'Dönemler',    icon: CalendarDays,     adminOnly: true, indent: true },
+  { to: '/dues',                 label: 'Borcum',      icon: Wallet },
 ]
 
 export function AppLayout({ children }: { children: ReactNode }) {
@@ -25,6 +39,12 @@ export function AppLayout({ children }: { children: ReactNode }) {
   async function handleSignOut() {
     await signOut()
     navigate('/login')
+  }
+
+  // Aktif link: tam eşleşme veya prefix (alt sayfalar için)
+  function isActive(to: string) {
+    if (to === '/dashboard' || to === '/dues') return location.pathname === to
+    return location.pathname === to || location.pathname.startsWith(to + '/')
   }
 
   return (
@@ -70,16 +90,17 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {navItems.map(({ to, label, icon: Icon, adminOnly }) => {
+        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+          {navItems.map(({ to, label, icon: Icon, adminOnly, indent }) => {
             if (adminOnly && !isAdmin) return null
-            const active = location.pathname === to
+            const active = isActive(to)
             return (
               <Link
                 key={to}
                 to={to}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                  'flex items-center gap-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                  indent ? 'px-3 pl-7' : 'px-3',
                   active
                     ? 'bg-slate-800 text-white border-l-2 border-blue-500 pl-[10px]'
                     : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
