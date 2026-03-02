@@ -1,50 +1,106 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from '@/hooks/useTheme'
 import { FadeIn } from '@/hooks/useInView'
 import {
   Building2, CreditCard, Megaphone, Wrench, Users, ClipboardList,
   CheckCircle2, ChevronRight, Shield, Clock, Star, ArrowRight,
-  Bell, Lock, Sun, Moon, TrendingUp, Zap, Eye,
+  Bell, Lock, Sun, Moon, TrendingUp, Zap, Eye, Menu, X,
 } from 'lucide-react'
 
+const NAV_LINKS = [
+  { label: 'Özellikler', href: '#features' },
+  { label: 'Nasıl Çalışır', href: '#how-it-works' },
+  { label: 'Fiyatlar', href: '#pricing' },
+] as const
+
 /* ═══════════════════════════════════════════════════════════════════════════
-   NAVBAR
+   NAVBAR — floating pill nav, glassmorphism, mobile drawer
    ═══════════════════════════════════════════════════════════════════════════ */
 
 function Navbar({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) {
-  return (
-    <header className="fixed top-0 inset-x-0 z-50 border-b border-slate-200/60 dark:border-white/[0.06] bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl transition-colors duration-300">
-      <div className="mx-auto max-w-7xl px-6 flex h-16 items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 shadow-md shadow-blue-500/30">
-            <Building2 className="h-4 w-4 text-white" />
-          </div>
-          <span className="text-sm font-semibold text-slate-900 dark:text-zinc-100 tracking-tight">KomşuNet</span>
-        </div>
+  const [mobileOpen, setMobileOpen] = useState(false)
 
-        <nav className="hidden md:flex items-center gap-7">
-          {['Özellikler', 'Nasıl Çalışır', 'Fiyatlar'].map((label) => (
-            <a key={label} href={`#${label === 'Özellikler' ? 'features' : label === 'Nasıl Çalışır' ? 'how-it-works' : 'pricing'}`}
-              className="text-sm text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 transition-colors">
-              {label}
-            </a>
-          ))}
+  return (
+    <header className="fixed top-0 inset-x-0 z-50 transition-colors duration-300">
+      {/* Backdrop blur bar */}
+      <div className="absolute inset-0 bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl border-b border-slate-200/50 dark:border-white/[0.06]" />
+
+      <div className="relative mx-auto max-w-7xl px-6 flex h-16 items-center justify-between">
+        {/* ── Logo ── */}
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-shadow duration-300">
+            <Building2 className="h-[18px] w-[18px] text-white" />
+          </div>
+          <span className="text-[15px] font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
+            KomşuNet
+          </span>
+        </Link>
+
+        {/* ── Center pill nav (desktop) ── */}
+        <nav className="hidden md:flex items-center">
+          <div className="flex items-center gap-1 rounded-full border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] p-1 shadow-sm">
+            {NAV_LINKS.map(({ label, href }) => (
+              <a key={label} href={href}
+                className="relative px-4 py-1.5 text-[13px] font-medium text-slate-500 dark:text-zinc-400 rounded-full hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100/80 dark:hover:bg-white/[0.08] transition-all duration-200">
+                {label}
+              </a>
+            ))}
+          </div>
         </nav>
 
-        <div className="flex items-center gap-3">
+        {/* ── Right side actions ── */}
+        <div className="flex items-center gap-2">
+          {/* Theme toggle */}
           <button onClick={onToggle} aria-label="Tema değiştir"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-400 dark:text-zinc-500 hover:bg-slate-50 dark:hover:bg-white/10 transition-all duration-200">
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] text-slate-400 dark:text-zinc-500 hover:text-slate-700 dark:hover:text-zinc-300 hover:bg-slate-100 dark:hover:bg-white/[0.08] transition-all duration-200">
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
-          <Link to="/login" className="text-sm text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 transition-colors">
+
+          {/* Login — ghost button */}
+          <Link to="/login"
+            className="hidden sm:flex h-9 items-center px-4 rounded-full text-[13px] font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100/80 dark:hover:bg-white/[0.08] transition-all duration-200">
             Giriş Yap
           </Link>
+
+          {/* CTA */}
           <Link to="/admin-register"
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-500 shadow-md shadow-blue-600/30">
+            className="hidden sm:flex h-9 items-center gap-1.5 px-4 rounded-full bg-blue-600 text-[13px] font-semibold text-white shadow-lg shadow-blue-600/25 hover:bg-blue-500 hover:shadow-blue-500/30 transition-all duration-200">
             Ücretsiz Başla
+            <ArrowRight className="h-3.5 w-3.5" />
           </Link>
+
+          {/* Mobile hamburger */}
+          <button onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menü"
+            className="flex md:hidden h-9 w-9 items-center justify-center rounded-full border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] text-slate-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-white/[0.08] transition-all duration-200">
+            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
         </div>
       </div>
+
+      {/* ── Mobile dropdown ── */}
+      {mobileOpen && (
+        <div className="relative md:hidden border-t border-slate-200/50 dark:border-white/[0.06] bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl">
+          <div className="mx-auto max-w-7xl px-6 py-4 flex flex-col gap-1">
+            {NAV_LINKS.map(({ label, href }) => (
+              <a key={label} href={href} onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition-colors">
+                {label}
+              </a>
+            ))}
+            <div className="mt-3 pt-3 border-t border-slate-200/60 dark:border-white/[0.06] flex flex-col gap-2">
+              <Link to="/login" onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100/80 dark:hover:bg-white/[0.06] text-center transition-colors">
+                Giriş Yap
+              </Link>
+              <Link to="/admin-register" onClick={() => setMobileOpen(false)}
+                className="px-4 py-2.5 rounded-xl bg-blue-600 text-sm font-semibold text-white text-center shadow-lg shadow-blue-600/25 hover:bg-blue-500 transition-all">
+                Ücretsiz Başla
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   )
 }
