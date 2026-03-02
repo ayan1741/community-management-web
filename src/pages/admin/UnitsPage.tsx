@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AppLayout } from '@/components/layout/AppLayout'
-import { Card, CardContent } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { BulkUnitWizard } from '@/components/units/BulkUnitWizard'
-import { DoorOpen } from 'lucide-react'
+import { DoorOpen, StickyNote } from 'lucide-react'
 import type { Block, Unit, PagedResult } from '@/types'
 
 const unitTypeLabels: Record<string, string> = {
@@ -261,7 +261,14 @@ export function UnitsPage() {
                     {units.map(u => (
                       <tr key={u.id} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
                         <td className="px-4 py-3.5 text-slate-600">{u.blockName}</td>
-                        <td className="px-4 py-3.5 font-medium text-slate-900">{u.unitNumber}</td>
+                        <td className="px-4 py-3.5 font-medium text-slate-900">
+                          {u.unitNumber}
+                          {u.notes && (
+                            <span title={u.notes.slice(0, 100)} className="ml-1 cursor-help text-slate-400">
+                              <StickyNote className="inline h-3.5 w-3.5" />
+                            </span>
+                          )}
+                        </td>
                         <td className="px-4 py-3.5 text-slate-600">{unitTypeLabels[u.unitType] ?? u.unitType}</td>
                         <td className="px-4 py-3.5 text-slate-600">{u.floor ?? '-'}</td>
                         <td className="px-4 py-3.5">

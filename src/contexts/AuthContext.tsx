@@ -10,7 +10,8 @@ interface AuthContextValue {
   profile: UserProfile | null
   memberships: Membership[]
   activeMembership: Membership | null
-  setActiveMembership: (m: Membership) => void
+  setActiveMembership: (m: Membership | null) => void
+  refreshProfile: () => Promise<void>
   loading: boolean
   signOut: () => Promise<void>
 }
@@ -23,6 +24,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [memberships, setMemberships] = useState<Membership[]>([])
   const [activeMembership, setActiveMembership] = useState<Membership | null>(null)
+
+  async function refreshProfile() {
+    setLoading(true)
+    await loadUserData()
+  }
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -55,9 +61,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data } = await api.get<{ profile: UserProfile; memberships: Membership[] }>('/me')
       setProfile(data.profile)
       setMemberships(data.memberships)
-      if (data.memberships.length === 1) {
-        setActiveMembership(data.memberships[0])
-      }
     } catch {
       // profil yüklenemedi — oturum geçersiz olabilir
     } finally {
@@ -74,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider value={{
       session, user, profile, memberships,
       activeMembership, setActiveMembership,
-      loading, signOut,
+      refreshProfile, loading, signOut,
     }}>
       {children}
     </AuthContext.Provider>

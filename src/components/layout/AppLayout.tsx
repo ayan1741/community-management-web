@@ -14,18 +14,19 @@ interface NavItem {
   icon: React.ElementType
   adminOnly?: boolean
   indent?: boolean
+  siteOnly?: boolean
 }
 
 const navItems: NavItem[] = [
-  { to: '/dashboard',            label: 'Ana Sayfa',   icon: Home },
-  { to: '/admin/blocks',         label: 'Bloklar',     icon: Layers,           adminOnly: true },
-  { to: '/admin/units',          label: 'Daireler',    icon: DoorOpen,         adminOnly: true },
-  { to: '/admin/members',        label: 'Üyeler',      icon: Users,            adminOnly: true },
-  { to: '/admin/invitations',    label: 'Davetler',    icon: Mail,             adminOnly: true },
-  { to: '/admin/applications',   label: 'Başvurular',  icon: FileText,         adminOnly: true },
-  { to: '/admin/dues',           label: 'Aidat',       icon: CircleDollarSign, adminOnly: true },
-  { to: '/admin/dues/periods',   label: 'Dönemler',    icon: CalendarDays,     adminOnly: true, indent: true },
-  { to: '/dues',                 label: 'Borcum',      icon: Wallet },
+  { to: '/dashboard',            label: 'Dashboard',        icon: Home },
+  { to: '/admin/blocks',         label: 'Bloklar',          icon: Layers,           adminOnly: true, siteOnly: true },
+  { to: '/admin/units',          label: 'Daireler',         icon: DoorOpen,         adminOnly: true },
+  { to: '/admin/members',        label: 'Üyeler',           icon: Users,            adminOnly: true },
+  { to: '/admin/invitations',    label: 'Davetler',         icon: Mail,             adminOnly: true },
+  { to: '/admin/applications',   label: 'Onay Bekleyenler', icon: FileText,         adminOnly: true },
+  { to: '/admin/dues',           label: 'Aidat',            icon: CircleDollarSign, adminOnly: true },
+  { to: '/admin/dues/periods',   label: 'Dönemler',         icon: CalendarDays,     adminOnly: true, indent: true },
+  { to: '/dues',                 label: 'Borcum',           icon: Wallet },
 ]
 
 export function AppLayout({ children }: { children: ReactNode }) {
@@ -35,6 +36,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const [orgMenuOpen, setOrgMenuOpen] = useState(false)
 
   const isAdmin = activeMembership?.role === 'admin' || activeMembership?.role === 'board_member'
+  const orgType = activeMembership?.orgType ?? 'site'
 
   async function handleSignOut() {
     await signOut()
@@ -53,12 +55,16 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <aside className="w-60 bg-slate-950 flex flex-col shrink-0">
         {/* Logo + Organization */}
         <div className="px-4 pt-5 pb-4 border-b border-slate-800">
-          <div className="flex items-center gap-2.5 mb-4">
+          <Link
+            to="/home"
+            onClick={() => setActiveMembership(null)}
+            className="flex items-center gap-2.5 mb-4"
+          >
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
               <Building2 className="w-4 h-4 text-white" />
             </div>
             <span className="font-semibold text-white text-sm tracking-tight">yönetim</span>
-          </div>
+          </Link>
 
           {/* Organization switcher */}
           {memberships.length > 0 && (
@@ -91,8 +97,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-          {navItems.map(({ to, label, icon: Icon, adminOnly, indent }) => {
+          {navItems.map(({ to, label, icon: Icon, adminOnly, indent, siteOnly }) => {
             if (adminOnly && !isAdmin) return null
+            if (siteOnly && orgType === 'apartment') return null
             const active = isActive(to)
             return (
               <Link

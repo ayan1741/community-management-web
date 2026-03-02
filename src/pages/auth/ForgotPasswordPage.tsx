@@ -5,8 +5,8 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { supabase } from '@/lib/supabase'
 import { AuthLayout } from '@/components/layout/AuthLayout'
-import { Input } from '@/components/ui/Input'
-import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 const schema = z.object({
   email: z.string().email('Geçerli bir e-posta girin'),

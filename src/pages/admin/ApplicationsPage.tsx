@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AppLayout } from '@/components/layout/AppLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { FileText } from 'lucide-react'
 import type { Application, PagedResult } from '@/types'
 
@@ -45,7 +45,7 @@ export function ApplicationsPage() {
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Başvurular</h1>
+            <h1 className="text-xl font-semibold text-slate-900">Onay Bekleyenler</h1>
             <p className="text-sm text-slate-500 mt-0.5">Bekleyen başvuruları incele ve yönet</p>
           </div>
           {pending.length > 0 && (
@@ -103,7 +103,7 @@ export function ApplicationsPage() {
                       </td>
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-2">
-                          <Button size="sm" variant="primary" onClick={() => handleDecision(a.applicationId, 'approve')}>
+                          <Button size="sm" variant="default" onClick={() => handleDecision(a.applicationId, 'approve')}>
                             Onayla
                           </Button>
                           <Button size="sm" variant="ghost" className="text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => handleDecision(a.applicationId, 'reject')}>

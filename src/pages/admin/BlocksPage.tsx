@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AppLayout } from '@/components/layout/AppLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { Layers } from 'lucide-react'
 import type { Block } from '@/types'
@@ -17,7 +18,9 @@ const blockTypeLabels: Record<string, string> = {
 
 export function BlocksPage() {
   const { activeMembership } = useAuth()
+  const navigate = useNavigate()
   const orgId = activeMembership?.organizationId
+  const orgType = activeMembership?.orgType ?? 'site'
   const [blocks, setBlocks] = useState<Block[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -32,9 +35,10 @@ export function BlocksPage() {
   const [deleteLoading, setDeleteLoading] = useState(false)
 
   useEffect(() => {
+    if (orgType === 'apartment') { navigate('/admin/units', { replace: true }); return }
     if (!orgId) return
     loadBlocks()
-  }, [orgId])
+  }, [orgId, orgType])
 
   async function loadBlocks() {
     if (!orgId) return
