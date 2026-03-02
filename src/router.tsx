@@ -18,6 +18,7 @@ import { DueTypesPage } from '@/pages/admin/DueTypesPage'
 import { DuesPeriodsPage } from '@/pages/admin/DuesPeriodsPage'
 import { DuesPeriodDetailPage } from '@/pages/admin/DuesPeriodDetailPage'
 import { MyDuesPage } from '@/pages/MyDuesPage'
+import { DesignDemoPage } from '@/pages/DesignDemoPage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading, activeMembership } = useAuth()
@@ -95,6 +96,9 @@ export function AppRouter() {
 
         {/* Aidat Tipleri — sadece admin */}
         <Route path="/admin/dues/types" element={<RequireAuth><RequireAdmin><RequireAdminOnly><DueTypesPage /></RequireAdminOnly></RequireAdmin></RequireAuth>} />
+
+        {/* Design Demo — geçici, tasarım onayından sonra kaldırılacak */}
+        <Route path="/design-demo" element={<DesignDemoPage />} />
 
         {/* Default */}
         <Route path="*" element={<Navigate to="/" replace />} />
