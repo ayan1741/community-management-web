@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,7 +21,6 @@ const inputCls = 'h-10 w-full rounded-lg border border-slate-200 dark:border-zin
 const labelCls = 'block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1.5'
 
 export function RegisterPage() {
-  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [error, setError] = useState('')
 

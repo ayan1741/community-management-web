@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AppLayout } from '@/components/layout/AppLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { Users, MoreVertical, Home } from 'lucide-react'
 import type { Member, PagedResult, UserRole, UnitDropdownItem } from '@/types'
@@ -317,7 +317,7 @@ export function MembersPage() {
         }
         message={confirmAction ? confirmMessages[confirmAction.type](confirmAction.member.fullName) : ''}
         confirmLabel={confirmAction ? confirmLabels[confirmAction.type] : ''}
-        confirmVariant={confirmAction?.type === 'remove' ? 'danger' : 'primary'}
+        confirmVariant={confirmAction?.type === 'remove' ? 'destructive' : 'default'}
         loading={actionLoading}
         onConfirm={handleAction}
         onCancel={() => setConfirmAction(null)}

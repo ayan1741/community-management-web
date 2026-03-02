@@ -1,11 +1,11 @@
-import { Button } from './Button'
+import { Button } from './button'
 
 interface ConfirmModalProps {
   open: boolean
   title: string
   message: string
   confirmLabel?: string
-  confirmVariant?: 'danger' | 'primary'
+  confirmVariant?: 'destructive' | 'default'
   loading?: boolean
   onConfirm: () => void
   onCancel: () => void
@@ -16,7 +16,7 @@ export function ConfirmModal({
   title,
   message,
   confirmLabel = 'Onayla',
-  confirmVariant = 'danger',
+  confirmVariant = 'destructive',
   loading,
   onConfirm,
   onCancel,

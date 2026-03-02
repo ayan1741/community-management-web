@@ -20,7 +20,7 @@ import { DuesPeriodDetailPage } from '@/pages/admin/DuesPeriodDetailPage'
 import { MyDuesPage } from '@/pages/MyDuesPage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
-  const { session, loading, memberships, activeMembership } = useAuth()
+  const { session, loading, activeMembership } = useAuth()
   const location = useLocation()
   if (loading) return <div className="min-h-screen flex items-center justify-center"><span className="text-gray-400">Yükleniyor...</span></div>
   if (!session) return <Navigate to="/login" replace />

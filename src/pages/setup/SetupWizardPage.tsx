@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '@/lib/api'
 import { Building2, ChevronRight, Plus, Check, Copy, Sun, Moon, ArrowLeft } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 import { useTheme } from '@/hooks/useTheme'
 
 // ─── LocalStorage ─────────────────────────────────────────────────────────────

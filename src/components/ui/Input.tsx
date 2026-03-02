@@ -1,33 +1,47 @@
-import { forwardRef, type InputHTMLAttributes } from 'react'
-import { cn } from '@/lib/utils'
+import * as React from "react"
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+import { cn } from "@/lib/utils"
+
+function Input({
+  className,
+  type,
+  label,
+  error,
+  ...props
+}: React.ComponentProps<"input"> & {
   label?: string
   error?: string
-}
+}) {
+  const input = (
+    <input
+      type={type}
+      data-slot="input"
+      aria-invalid={!!error}
+      className={cn(
+        "h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30",
+        "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
+        "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
+        className
+      )}
+      {...props}
+    />
+  )
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, id, ...props }, ref) => (
-    <div className="flex flex-col gap-1">
+  if (!label && !error) return input
+
+  return (
+    <div className="space-y-1.5">
       {label && (
-        <label htmlFor={id} className="text-sm font-medium text-slate-700">
+        <label className="text-sm font-medium text-foreground">
           {label}
         </label>
       )}
-      <input
-        ref={ref}
-        id={id}
-        className={cn(
-          'h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 transition-colors',
-          'focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/10',
-          'disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400',
-          error && 'border-red-400 focus:border-red-400 focus:ring-red-500/10',
-          className,
-        )}
-        {...props}
-      />
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {input}
+      {error && (
+        <p className="text-xs text-destructive">{error}</p>
+      )}
     </div>
   )
-)
-Input.displayName = 'Input'
+}
+
+export { Input }
