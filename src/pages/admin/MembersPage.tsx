@@ -5,8 +5,9 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
-import { Users, MoreVertical } from 'lucide-react'
-import type { Member, PagedResult, UserRole } from '@/types'
+import { Users, MoreVertical, Home } from 'lucide-react'
+import type { Member, PagedResult, UserRole, UnitDropdownItem } from '@/types'
+import { formatUnitLabel } from '@/utils/formatUnitLabel'
 
 const roleLabels: Record<string, string> = {
   admin: 'Yönetici',
@@ -49,6 +50,16 @@ export function MembersPage() {
   const [newRole, setNewRole] = useState<UserRole>('resident')
   const [roleChanging, setRoleChanging] = useState(false)
   const [roleError, setRoleError] = useState('')
+
+  // Daireye Ata modal state
+  const [assignTarget, setAssignTarget] = useState<Member | null>(null)
+  const [assignUnits, setAssignUnits] = useState<UnitDropdownItem[]>([])
+  const [assignUnitId, setAssignUnitId] = useState('')
+  const [assignResidentType, setAssignResidentType] = useState('owner')
+  const [assignLoading, setAssignLoading] = useState(false)
+  const [assignError, setAssignError] = useState('')
+
+  const orgType = activeMembership?.orgType ?? 'site'
 
   const adminCount = members.filter(m => m.role === 'admin' && m.status === 'active').length
 
@@ -116,6 +127,37 @@ export function MembersPage() {
     setOpenMenuId(null)
   }
 
+  async function openAssign(m: Member) {
+    setAssignTarget(m)
+    setAssignUnitId('')
+    setAssignResidentType('owner')
+    setAssignError('')
+    setOpenMenuId(null)
+    if (!activeMembership) return
+    try {
+      const r = await api.get<UnitDropdownItem[]>(`/organizations/${activeMembership.organizationId}/units/dropdown`)
+      setAssignUnits(r.data)
+    } catch { setAssignUnits([]) }
+  }
+
+  async function handleAssign() {
+    if (!assignTarget || !activeMembership || !assignUnitId) return
+    setAssignLoading(true)
+    setAssignError('')
+    try {
+      await api.post(`/organizations/${activeMembership.organizationId}/units/${assignUnitId}/residents`, {
+        userId: assignTarget.userId,
+        residentType: assignResidentType,
+      })
+      setAssignTarget(null)
+      await loadMembers()
+    } catch (err: any) {
+      setAssignError(err.response?.data?.error ?? 'Atama başarısız')
+    } finally {
+      setAssignLoading(false)
+    }
+  }
+
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto">
@@ -177,7 +219,10 @@ export function MembersPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3.5 text-slate-600">
-                          {m.units[0]?.blockName ? `${m.units[0].blockName} ` : ''}{m.units[0]?.unitNumber ?? '-'}
+                          {m.units.length > 0
+                            ? m.units.map(u => formatUnitLabel(u.blockName, u.unitNumber, orgType)).join(', ')
+                            : <span className="text-slate-400">—</span>
+                          }
                         </td>
                         <td className="px-4 py-3.5">
                           <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
@@ -212,9 +257,15 @@ export function MembersPage() {
                                 <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
                                 <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-slate-200 rounded-lg shadow-lg z-20">
                                   <button
+                                    onClick={() => openAssign(m)}
+                                    className="w-full px-3 py-2 text-sm text-left text-slate-700 hover:bg-slate-50 transition-colors rounded-t-lg"
+                                  >
+                                    <Home className="inline w-3.5 h-3.5 mr-1.5" />Daireye Ata
+                                  </button>
+                                  <button
                                     disabled={isCurrentUser || isLastAdmin}
                                     onClick={() => openRoleChange(m)}
-                                    className="w-full px-3 py-2 text-sm text-left text-slate-700 hover:bg-slate-50 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors rounded-t-lg"
+                                    className="w-full px-3 py-2 text-sm text-left text-slate-700 hover:bg-slate-50 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors"
                                   >
                                     Rol Değiştir
                                     {isLastAdmin && <span className="block text-xs text-slate-400">Son yönetici</span>}
@@ -306,6 +357,63 @@ export function MembersPage() {
               >
                 Kaydet
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {assignTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
+            <h2 className="text-base font-semibold text-slate-900 mb-1">Daireye Ata</h2>
+            <p className="text-sm text-slate-500 mb-4">{assignTarget.fullName}</p>
+            <div className="space-y-3">
+              <div>
+                <label className="text-sm font-medium text-slate-700 mb-1 block">Daire</label>
+                <select
+                  value={assignUnitId}
+                  onChange={e => setAssignUnitId(e.target.value)}
+                  className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 focus:border-blue-400 focus:outline-none"
+                >
+                  <option value="">Seçiniz</option>
+                  {assignUnits.map(u => (
+                    <option key={u.id} value={u.id}>
+                      {formatUnitLabel(u.blockName, u.unitNumber, orgType)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-700 mb-1 block">Sakin Tipi</label>
+                <div className="space-y-2">
+                  {[
+                    { value: 'owner', label: 'Malik (Ev Sahibi)' },
+                    { value: 'tenant', label: 'Kiracı' },
+                    { value: 'resident', label: 'Diğer Sakin' },
+                  ].map(opt => (
+                    <label
+                      key={opt.value}
+                      className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                        assignResidentType === opt.value ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="residentType"
+                        checked={assignResidentType === opt.value}
+                        onChange={() => setAssignResidentType(opt.value)}
+                        className="text-blue-600"
+                      />
+                      <span className="text-sm text-slate-900">{opt.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {assignError && <p className="text-sm text-red-600">{assignError}</p>}
+            </div>
+            <div className="flex gap-3 justify-end mt-5">
+              <Button variant="secondary" onClick={() => setAssignTarget(null)} disabled={assignLoading}>İptal</Button>
+              <Button onClick={handleAssign} loading={assignLoading} disabled={!assignUnitId}>Ata</Button>
             </div>
           </div>
         </div>

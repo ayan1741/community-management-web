@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
-import { CircleDollarSign } from 'lucide-react'
+import { CircleDollarSign, Info } from 'lucide-react'
 import type { DueType } from '@/types'
 
 const categoryLabels: Record<string, string> = {
@@ -155,6 +155,13 @@ export function DueTypesPage() {
             <p className="text-sm text-slate-500 mt-0.5">Aylık aidat, asansör bakım, yakıt gibi kalemleri tanımla</p>
           </div>
           <Button onClick={openAdd}>Tip Ekle</Button>
+        </div>
+
+        <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+          <Info className="inline h-4 w-4 mr-1.5 -mt-0.5" />
+          Aidat tipleri, sakinlere kesilecek fatura kalemlerini temsil eder. Örneğin "Aylık Aidat"
+          tüm ortak giderleri (temizlik, güvenlik, asansör bakım vb.) içerir. Özel durumlar için
+          (çatı tamiri, boya) ayrı aidat tipi oluşturabilirsiniz.
         </div>
 
         {error && (

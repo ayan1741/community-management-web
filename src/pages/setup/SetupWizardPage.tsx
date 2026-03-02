@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '@/lib/api'
-import { Building2, ChevronRight, Plus, Check, Copy, Sun, Moon } from 'lucide-react'
+import { Building2, ChevronRight, Plus, Check, Copy, Sun, Moon, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useTheme } from '@/hooks/useTheme'
 
@@ -414,7 +415,7 @@ function Step4Invite({ orgId }: { orgId: string }) {
 
   function finish() {
     clearSetup()
-    window.location.href = '/dashboard'
+    window.location.href = '/home'
   }
 
   return (
@@ -464,7 +465,7 @@ function Step4Invite({ orgId }: { orgId: string }) {
               onClick={finish}
               className="flex-1 h-10 rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50 text-sm font-medium text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-700 transition-colors"
             >
-              Atla, Dashboard'a Geç
+              Atla, Ana Sayfaya Geç
             </button>
             <button
               type="button"
@@ -506,7 +507,7 @@ function Step4Invite({ orgId }: { orgId: string }) {
             onClick={finish}
             className="h-10 w-full rounded-lg bg-blue-600 text-sm font-medium text-white hover:bg-blue-500 transition-colors"
           >
-            Kurulum Tamamlandı — Dashboard'a Geç
+            Kurulum Tamamlandı — Ana Sayfaya Geç
           </button>
         </div>
       )}
@@ -551,6 +552,9 @@ export function SetupWizardPage() {
           <span className="text-sm font-semibold text-slate-900 dark:text-zinc-100">KomşuNet</span>
         </div>
         <div className="flex items-center gap-3">
+          <Link to="/home" className="text-xs text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-300 transition-colors flex items-center gap-1">
+            <ArrowLeft className="w-3 h-3" /> Geri Dön
+          </Link>
           <span className="text-xs text-slate-400 dark:text-zinc-600">Adım {state.step} / 4</span>
           <button
             onClick={toggleTheme}

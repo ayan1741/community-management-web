@@ -5,7 +5,7 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { AdminRegisterPage } from '@/pages/auth/AdminRegisterPage'
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
-import { SelectOrganizationPage } from '@/pages/SelectOrganizationPage'
+import { HomePage } from '@/pages/HomePage'
 import { SetupWizardPage } from '@/pages/setup/SetupWizardPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { MembersPage } from '@/pages/admin/MembersPage'
@@ -24,17 +24,15 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   const location = useLocation()
   if (loading) return <div className="min-h-screen flex items-center justify-center"><span className="text-gray-400">Yükleniyor...</span></div>
   if (!session) return <Navigate to="/login" replace />
-  if (memberships.length === 0 && location.pathname !== '/setup')
-    return <Navigate to="/setup" replace />
-  if (memberships.length > 1 && !activeMembership && location.pathname !== '/select-org')
-    return <Navigate to="/select-org" replace />
+  if (!activeMembership && !['/home', '/setup'].includes(location.pathname))
+    return <Navigate to="/home" replace />
   return <>{children}</>
 }
 
 function RequireAdmin({ children }: { children: React.ReactNode }) {
   const { activeMembership } = useAuth()
   const isAdmin = activeMembership?.role === 'admin' || activeMembership?.role === 'board_member'
-  if (!isAdmin) return <Navigate to="/dashboard" replace />
+  if (!isAdmin) return <Navigate to="/home" replace />
   return <>{children}</>
 }
 
@@ -47,7 +45,7 @@ function RequireAdminOnly({ children }: { children: React.ReactNode }) {
 function PublicHome() {
   const { session, loading } = useAuth()
   if (loading) return <div className="min-h-screen flex items-center justify-center bg-zinc-950"><span className="text-zinc-600 text-sm">Yükleniyor…</span></div>
-  if (session) return <Navigate to="/dashboard" replace />
+  if (session) return <Navigate to="/home" replace />
   return <LandingPage />
 }
 
@@ -75,8 +73,9 @@ export function AppRouter() {
         {/* Kurulum sihirbazı — session gerekli, membership gerekmez */}
         <Route path="/setup" element={<RequireAuth><SetupWizardPage /></RequireAuth>} />
 
-        {/* Organization seçimi */}
-        <Route path="/select-org" element={<RequireAuth><SelectOrganizationPage /></RequireAuth>} />
+        {/* Hub sayfası */}
+        <Route path="/home" element={<RequireAuth><HomePage /></RequireAuth>} />
+        <Route path="/select-org" element={<Navigate to="/home" replace />} />
 
         {/* Korumalı — tüm kullanıcılar */}
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />

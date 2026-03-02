@@ -8,6 +8,7 @@ export interface UserProfile {
   fullName: string
   phone: string | null
   avatarUrl: string | null
+  kvkkConsentAt: string | null
 }
 
 export interface MembershipUnit {
@@ -20,6 +21,7 @@ export interface MembershipUnit {
 export interface Membership {
   organizationId: string
   organizationName: string
+  orgType: OrgType
   role: UserRole
   status: MemberStatus
   units: MembershipUnit[]

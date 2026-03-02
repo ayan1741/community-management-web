@@ -14,7 +14,6 @@ const schema = z.object({
   password: z.string().min(8, 'Şifre en az 8 karakter olmalı'),
   kvkk: z.literal(true, { error: 'KVKK onayı zorunludur' }),
   inviteCode: z.string().optional(),
-  unitInfo: z.string().optional(),
 })
 type FormData = z.infer<typeof schema>
 
@@ -25,9 +24,6 @@ export function RegisterPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [error, setError] = useState('')
-  const [mode, setMode] = useState<'invite' | 'apply'>(
-    searchParams.get('code') ? 'invite' : 'invite'
-  )
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -52,18 +48,12 @@ export function RegisterPage() {
     try {
       await api.post('/profile/kvkk-consent')
 
-      if (mode === 'invite' && data.inviteCode) {
+      if (data.inviteCode) {
         await api.post('/applications', {
           invitationCode: data.inviteCode,
           residentType: 'Unspecified',
         })
         window.location.href = '/'
-      } else {
-        await api.post('/applications', {
-          unitInfo: data.unitInfo,
-          residentType: 'Unspecified',
-        })
-        navigate('/apply-success')
       }
     } catch {
       setError('Kayıt tamamlanamadı. Lütfen tekrar deneyin.')
@@ -77,42 +67,6 @@ export function RegisterPage() {
         <h1 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">Sisteme Katılın</h1>
         <p className="mt-0.5 text-sm text-slate-500 dark:text-zinc-500">Hesabınızı oluşturun</p>
       </div>
-
-      {/* Mode toggle */}
-      <div className="flex rounded-lg border border-slate-200 dark:border-zinc-700 bg-slate-100 dark:bg-zinc-800/50 p-1 mb-5">
-        <button
-          type="button"
-          onClick={() => setMode('invite')}
-          className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
-            mode === 'invite'
-              ? 'bg-white dark:bg-zinc-700 text-slate-900 dark:text-zinc-100 shadow-sm'
-              : 'text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-200'
-          }`}
-        >
-          Davet Kodum Var
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode('apply')}
-          className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
-            mode === 'apply'
-              ? 'bg-white dark:bg-zinc-700 text-slate-900 dark:text-zinc-100 shadow-sm'
-              : 'text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-200'
-          }`}
-        >
-          Başvuru Yap
-        </button>
-      </div>
-
-      {/* Apply mode info banner */}
-      {mode === 'apply' && (
-        <div className="mb-4 rounded-lg border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 px-3 py-2.5">
-          <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
-            Yöneticinizden davet kodu almadıysanız başvuru yapabilirsiniz.
-            Yöneticiniz başvurunuzu onayladığında sisteme katılabilirsiniz.
-          </p>
-        </div>
-      )}
 
       {/* Card */}
       <div className="rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-6 backdrop-blur-sm shadow-sm">
@@ -145,26 +99,18 @@ export function RegisterPage() {
             {errors.password && <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.password.message}</p>}
           </div>
 
-          {/* Mode-specific field */}
-          {mode === 'invite' ? (
-            <div>
-              <label className={labelCls}>Davet Kodu</label>
-              <input
-                type="text"
-                autoComplete="off"
-                placeholder="KM8X2PQR"
-                className={inputCls + ' font-mono tracking-widest uppercase'}
-                {...register('inviteCode')}
-              />
-              {errors.inviteCode && <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.inviteCode.message}</p>}
-            </div>
-          ) : (
-            <div>
-              <label className={labelCls}>Daire Bilgisi</label>
-              <input type="text" autoComplete="off" placeholder="A Blok, Daire 12" className={inputCls} {...register('unitInfo')} />
-              <p className="mt-1 text-xs text-slate-400 dark:text-zinc-600">Yöneticinizin sizi tanıması için daire numaranızı yazın</p>
-            </div>
-          )}
+          {/* Davet Kodu */}
+          <div>
+            <label className={labelCls}>Davet Kodu</label>
+            <input
+              type="text"
+              autoComplete="off"
+              placeholder="KM8X2PQR"
+              className={inputCls + ' font-mono tracking-widest uppercase'}
+              {...register('inviteCode')}
+            />
+            {errors.inviteCode && <p className="mt-1 text-xs text-red-500 dark:text-red-400">{errors.inviteCode.message}</p>}
+          </div>
 
           {/* KVKK */}
           <label className="flex items-start gap-2.5 cursor-pointer pt-0.5">
@@ -201,7 +147,7 @@ export function RegisterPage() {
                 </svg>
                 İşleniyor…
               </>
-            ) : mode === 'invite' ? 'Kayıt Ol' : 'Başvuru Gönder'}
+            ) : 'Kayıt Ol'}
           </button>
         </form>
       </div>
