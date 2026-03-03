@@ -12,6 +12,20 @@
 }
 .animate-float-slow { animation: float-slow 4s ease-in-out infinite; }
 
+/* Subtle grid overlay — shared across landing + admin */
+.bg-grid {
+  background-image:
+    linear-gradient(oklch(0.3 0.01 260 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.3 0.01 260 / 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+.dark .bg-grid {
+  background-image:
+    linear-gradient(oklch(0.95 0 0 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.95 0 0 / 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -67,6 +81,12 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
 }
 
 /* ── KomşuNet Light Theme ──
@@ -107,6 +127,14 @@
   --chart-3: oklch(0.769 0.188 70.08);        /* amber-500 */
   --chart-4: oklch(0.606 0.25 292.717);       /* violet-500 */
   --chart-5: oklch(0.645 0.246 16.439);       /* rose-500 */
+
+  /* Semantic status colors */
+  --success: oklch(0.723 0.191 149.579);       /* green-500 */
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.769 0.188 70.08);         /* amber-500 */
+  --warning-foreground: oklch(0.129 0.042 264.695);
+  --info: oklch(0.623 0.214 259.815);          /* blue-500 */
+  --info-foreground: oklch(1 0 0);
 
   /* Sidebar — always dark (slate-950 base) */
   --sidebar: oklch(0.129 0.042 264.695);      /* slate-950 */
@@ -154,6 +182,14 @@
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
+
+  /* Semantic status colors — dark */
+  --success: oklch(0.696 0.17 162.48);
+  --success-foreground: oklch(0.15 0.03 160);
+  --warning: oklch(0.769 0.188 70.08);
+  --warning-foreground: oklch(0.15 0.03 70);
+  --info: oklch(0.707 0.165 254.624);
+  --info-foreground: oklch(0.15 0.03 255);
 
   /* Sidebar — stays dark (same as light mode) */
   --sidebar: oklch(0.141 0.005 285.823);      /* zinc-950 */

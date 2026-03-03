@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { UnitSelector } from '@/components/units/UnitSelector'
@@ -135,12 +135,12 @@ export function InvitationsPage() {
   }
 
   return (
-    <AppLayout>
+    <AdminLayout>
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Davet Kodları</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Davet kodu oluştur ve yönet</p>
+            <h1 className="text-xl font-semibold text-foreground">Davet Kodları</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Davet kodu oluştur ve yönet</p>
           </div>
         </div>
 
@@ -165,7 +165,7 @@ export function InvitationsPage() {
                 Toplu Kod Oluştur
               </Button>
             </div>
-            {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+            {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
           </CardContent>
         </Card>
 
@@ -176,52 +176,52 @@ export function InvitationsPage() {
           <CardContent className="p-0">
             {loading && (
               <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-slate-500">Yükleniyor...</p>
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
               </div>
             )}
             {!loading && invitations.length === 0 && (
               <div className="px-6 py-12 text-center">
-                <Mail className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm font-medium text-slate-700">Henüz davet kodu yok</p>
-                <p className="text-xs text-slate-400 mt-1">Yukarıdan yeni bir davet kodu oluşturabilirsiniz.</p>
+                <Mail className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm font-medium text-foreground">Henüz davet kodu yok</p>
+                <p className="text-xs text-muted-foreground mt-1">Yukarıdan yeni bir davet kodu oluşturabilirsiniz.</p>
               </div>
             )}
             {invitations.length > 0 && (
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-muted border-b border-border">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Kod</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Daire</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Son Geçerlilik</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Durum</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">İşlem</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Kod</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Daire</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Son Geçerlilik</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Durum</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">İşlem</th>
                   </tr>
                 </thead>
                 <tbody>
                   {invitations.map(inv => (
-                    <tr key={inv.invitationId} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
+                    <tr key={inv.invitationId} className="border-b border-border hover:bg-muted/70 transition-colors">
                       <td className="px-4 py-3.5">
-                        <span className="font-mono text-sm font-semibold text-slate-900 bg-slate-50 px-2 py-1 rounded tracking-widest border border-slate-200">
+                        <span className="font-mono text-sm font-semibold text-foreground bg-muted px-2 py-1 rounded tracking-widest border border-border">
                           {inv.invitationCode}
                         </span>
                       </td>
-                      <td className="px-4 py-3.5 text-slate-600">
+                      <td className="px-4 py-3.5 text-muted-foreground">
                         {formatUnitLabel(inv.blockName, inv.unitNumber, orgType)}
                       </td>
-                      <td className="px-4 py-3.5 text-slate-600">
+                      <td className="px-4 py-3.5 text-muted-foreground">
                         {new Date(inv.expiresAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </td>
                       <td className="px-4 py-3.5">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                          inv.codeStatus === 'active' ? 'bg-green-50 text-green-700' :
-                          inv.codeStatus === 'used' ? 'bg-slate-100 text-slate-600' :
-                          'bg-red-50 text-red-700'
+                          inv.codeStatus === 'active' ? 'bg-success/10 text-success' :
+                          inv.codeStatus === 'used' ? 'bg-muted text-muted-foreground' :
+                          'bg-destructive/10 text-destructive'
                         }`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${
-                            inv.codeStatus === 'active' ? 'bg-green-500' :
-                            inv.codeStatus === 'used' ? 'bg-slate-400' :
-                            'bg-red-500'
+                            inv.codeStatus === 'active' ? 'bg-success' :
+                            inv.codeStatus === 'used' ? 'bg-muted-foreground' :
+                            'bg-destructive'
                           }`} />
                           {statusLabel[inv.codeStatus] ?? inv.codeStatus}
                         </span>
@@ -246,35 +246,35 @@ export function InvitationsPage() {
 
       {showBulk && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full mx-4 p-6 max-h-[80vh] flex flex-col">
+          <div className="bg-card rounded-xl shadow-xl max-w-lg w-full mx-4 p-6 max-h-[80vh] flex flex-col">
             {bulkStep === 1 ? (
               <>
-                <h2 className="text-base font-semibold text-slate-900 mb-1">Toplu Davet Kodu Oluştur</h2>
-                <p className="text-sm text-slate-500 mb-4">Birden fazla daire için aynı anda davet kodu oluşturun.</p>
-                <label className="flex items-center gap-2 mb-3 text-sm text-slate-700">
+                <h2 className="text-base font-semibold text-foreground mb-1">Toplu Davet Kodu Oluştur</h2>
+                <p className="text-sm text-muted-foreground mb-4">Birden fazla daire için aynı anda davet kodu oluşturun.</p>
+                <label className="flex items-center gap-2 mb-3 text-sm text-foreground">
                   <input type="checkbox" checked={bulkOnlyEmpty} onChange={e => { setBulkOnlyEmpty(e.target.checked); setBulkSelectedUnits(new Set()) }} />
                   Sadece boş daireler
                 </label>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-slate-500">{bulkSelectedUnits.size} daire seçili</span>
-                  <button onClick={toggleAllBulk} className="text-xs text-blue-600 hover:underline">
+                  <span className="text-xs text-muted-foreground">{bulkSelectedUnits.size} daire seçili</span>
+                  <button onClick={toggleAllBulk} className="text-xs text-primary hover:underline">
                     {bulkSelectedUnits.size === filteredBulkUnits.length ? 'Tümünü Kaldır' : 'Tümünü Seç'}
                   </button>
                 </div>
-                <div className="flex-1 overflow-y-auto border border-slate-200 rounded-lg divide-y divide-slate-100 min-h-0">
+                <div className="flex-1 overflow-y-auto border border-border rounded-lg divide-y divide-border min-h-0">
                   {filteredBulkUnits.map(u => (
-                    <label key={u.id} className="flex items-center gap-3 px-3 py-2 hover:bg-slate-50 cursor-pointer">
+                    <label key={u.id} className="flex items-center gap-3 px-3 py-2 hover:bg-muted cursor-pointer">
                       <input
                         type="checkbox"
                         checked={bulkSelectedUnits.has(u.id)}
                         onChange={() => toggleBulkUnit(u.id)}
                       />
-                      <span className="text-sm text-slate-900">{formatUnitLabel(u.blockName, u.unitNumber, orgType)}</span>
-                      {u.isOccupied && <span className="text-xs text-green-600">Dolu</span>}
+                      <span className="text-sm text-foreground">{formatUnitLabel(u.blockName, u.unitNumber, orgType)}</span>
+                      {u.isOccupied && <span className="text-xs text-success">Dolu</span>}
                     </label>
                   ))}
                   {filteredBulkUnits.length === 0 && (
-                    <div className="px-4 py-6 text-center text-sm text-slate-400">Uygun daire bulunamadı</div>
+                    <div className="px-4 py-6 text-center text-sm text-muted-foreground">Uygun daire bulunamadı</div>
                   )}
                 </div>
                 <div className="flex gap-3 justify-end mt-4">
@@ -286,27 +286,27 @@ export function InvitationsPage() {
               </>
             ) : (
               <>
-                <h2 className="text-base font-semibold text-slate-900 mb-1">Kodlar Oluşturuldu</h2>
-                <p className="text-sm text-slate-500 mb-4">{bulkResults.length} davet kodu başarıyla oluşturuldu.</p>
-                <div className="flex-1 overflow-y-auto border border-slate-200 rounded-lg min-h-0">
+                <h2 className="text-base font-semibold text-foreground mb-1">Kodlar Oluşturuldu</h2>
+                <p className="text-sm text-muted-foreground mb-4">{bulkResults.length} davet kodu başarıyla oluşturuldu.</p>
+                <div className="flex-1 overflow-y-auto border border-border rounded-lg min-h-0">
                   <table className="w-full text-sm">
-                    <thead className="bg-slate-50 border-b border-slate-200 sticky top-0">
+                    <thead className="bg-muted border-b border-border sticky top-0">
                       <tr>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-slate-500">Daire</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-slate-500">Kod</th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-slate-500">Eski Kod?</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">Daire</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">Kod</th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground">Eski Kod?</th>
                       </tr>
                     </thead>
                     <tbody>
                       {bulkResults.map((item, i) => (
-                        <tr key={i} className="border-b border-slate-100">
-                          <td className="px-3 py-2 text-slate-600">{formatUnitLabel(item.blockName, item.unitNumber, orgType)}</td>
+                        <tr key={i} className="border-b border-border">
+                          <td className="px-3 py-2 text-muted-foreground">{formatUnitLabel(item.blockName, item.unitNumber, orgType)}</td>
                           <td className="px-3 py-2">
-                            <span className="font-mono text-xs font-semibold bg-slate-50 px-2 py-0.5 rounded border border-slate-200 tracking-widest">
+                            <span className="font-mono text-xs font-semibold bg-muted px-2 py-0.5 rounded border border-border tracking-widest">
                               {item.invitationCode}
                             </span>
                           </td>
-                          <td className="px-3 py-2 text-xs">{item.hadExistingCode ? <span className="text-amber-600">Evet</span> : '—'}</td>
+                          <td className="px-3 py-2 text-xs">{item.hadExistingCode ? <span className="text-warning">Evet</span> : '—'}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -323,6 +323,6 @@ export function InvitationsPage() {
           </div>
         </div>
       )}
-    </AppLayout>
+    </AdminLayout>
   )
 }

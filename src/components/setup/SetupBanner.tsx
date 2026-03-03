@@ -22,12 +22,12 @@ export function SetupBanner() {
   }
 
   return (
-    <div className="mb-6 flex items-center justify-between gap-4 rounded-xl bg-blue-50 border border-blue-200 px-5 py-4">
+    <div className="mb-6 flex items-center justify-between gap-4 rounded-xl bg-primary/10 border border-primary/30 px-5 py-4">
       <div className="flex items-center gap-3">
-        <Building2 className="h-5 w-5 text-blue-600 shrink-0" />
+        <Building2 className="h-5 w-5 text-primary shrink-0" />
         <div>
-          <p className="text-sm font-semibold text-blue-900">Site kurulumunuzu tamamlayın</p>
-          <p className="text-xs text-blue-700 mt-0.5">
+          <p className="text-sm font-semibold text-foreground">Site kurulumunuzu tamamlayın</p>
+          <p className="text-xs text-primary mt-0.5">
             Blok, daire ve sakin davetlerini ekleyerek sistemi kullanmaya başlayın.
           </p>
         </div>
@@ -35,13 +35,13 @@ export function SetupBanner() {
       <div className="flex items-center gap-2 shrink-0">
         <Link
           to="/setup"
-          className="text-sm font-medium text-blue-700 hover:text-blue-800 bg-white border border-blue-200 rounded-lg px-3 py-1.5 transition-colors"
+          className="text-sm font-medium text-primary hover:text-primary bg-card border border-primary/30 rounded-lg px-3 py-1.5 transition-colors"
         >
           Kurulumu Tamamla
         </Link>
         <button
           onClick={dismiss}
-          className="p-1 text-blue-400 hover:text-blue-600 transition-colors"
+          className="p-1 text-primary/50 hover:text-primary transition-colors"
           aria-label="Kapat"
         >
           <X className="h-4 w-4" />

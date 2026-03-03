@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { api } from '@/lib/api'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,11 +11,11 @@ import { CalendarDays } from 'lucide-react'
 import type { DuesPeriodListItem } from '@/types'
 
 const statusLabels: Record<string, { label: string; class: string }> = {
-  draft:      { label: 'Taslak',    class: 'bg-slate-100 text-slate-600' },
-  processing: { label: 'İşleniyor', class: 'bg-blue-50 text-blue-700' },
-  active:     { label: 'Aktif',     class: 'bg-green-50 text-green-700' },
-  failed:     { label: 'Başarısız', class: 'bg-red-50 text-red-700' },
-  closed:     { label: 'Kapalı',    class: 'bg-slate-100 text-slate-500' },
+  draft:      { label: 'Taslak',    class: 'bg-muted text-muted-foreground' },
+  processing: { label: 'İşleniyor', class: 'bg-primary/10 text-primary' },
+  active:     { label: 'Aktif',     class: 'bg-success/10 text-success' },
+  failed:     { label: 'Başarısız', class: 'bg-destructive/10 text-destructive' },
+  closed:     { label: 'Kapalı',    class: 'bg-muted text-muted-foreground' },
 }
 
 function formatDate(d: string) {
@@ -112,18 +112,18 @@ export function DuesPeriodsPage() {
   }
 
   return (
-    <AppLayout>
+    <AdminLayout>
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Aidat Dönemleri</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Aylık tahakkuk dönemlerini yönet</p>
+            <h1 className="text-xl font-semibold text-foreground">Aidat Dönemleri</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Aylık tahakkuk dönemlerini yönet</p>
           </div>
           <Button onClick={openAdd}>Yeni Dönem</Button>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>
+          <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
         )}
 
         <Card>
@@ -133,37 +133,37 @@ export function DuesPeriodsPage() {
           <CardContent className="p-0">
             {loading ? (
               <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-slate-500">Yükleniyor...</p>
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
               </div>
             ) : periods.length === 0 ? (
               <div className="px-6 py-12 text-center">
-                <CalendarDays className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm font-medium text-slate-700">Henüz dönem yok</p>
-                <p className="text-xs text-slate-400 mt-1">İlk dönemi oluşturun.</p>
+                <CalendarDays className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm font-medium text-foreground">Henüz dönem yok</p>
+                <p className="text-xs text-muted-foreground mt-1">İlk dönemi oluşturun.</p>
               </div>
             ) : (
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-muted border-b border-border">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Dönem</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Son Ödeme</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Durum</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Tahsilat</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">İşlemler</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Dönem</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Son Ödeme</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Durum</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Tahsilat</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">İşlemler</th>
                   </tr>
                 </thead>
                 <tbody>
                   {periods.map(p => {
-                    const s = statusLabels[p.status] ?? { label: p.status, class: 'bg-slate-100 text-slate-600' }
+                    const s = statusLabels[p.status] ?? { label: p.status, class: 'bg-muted text-muted-foreground' }
                     const rate = paymentRate(p)
                     return (
-                      <tr key={p.id} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
+                      <tr key={p.id} className="border-b border-border hover:bg-muted/70 transition-colors">
                         <td className="px-4 py-3.5">
-                          <p className="font-medium text-slate-900">{p.name}</p>
-                          <p className="text-xs text-slate-400 mt-0.5">{formatDate(p.startDate)}</p>
+                          <p className="font-medium text-foreground">{p.name}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{formatDate(p.startDate)}</p>
                         </td>
-                        <td className="px-4 py-3.5 text-slate-600">{formatDate(p.dueDate)}</td>
+                        <td className="px-4 py-3.5 text-muted-foreground">{formatDate(p.dueDate)}</td>
                         <td className="px-4 py-3.5">
                           <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${s.class}`}>
                             {s.label}
@@ -173,17 +173,17 @@ export function DuesPeriodsPage() {
                           {p.totalDues > 0 ? (
                             <div>
                               <div className="flex items-center gap-2 mb-1">
-                                <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden w-24">
-                                  <div className="h-full bg-green-500 rounded-full" style={{ width: `${rate}%` }} />
+                                <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden w-24">
+                                  <div className="h-full bg-success rounded-full" style={{ width: `${rate}%` }} />
                                 </div>
-                                <span className="text-xs font-medium text-slate-700">%{rate}</span>
+                                <span className="text-xs font-medium text-foreground">%{rate}</span>
                               </div>
-                              <p className="text-xs text-slate-500">
+                              <p className="text-xs text-muted-foreground">
                                 {p.collectedAmount.toLocaleString('tr-TR')} / {p.totalAmount.toLocaleString('tr-TR')} ₺
                               </p>
                             </div>
                           ) : (
-                            <span className="text-xs text-slate-400">Tahakkuk yok</span>
+                            <span className="text-xs text-muted-foreground">Tahakkuk yok</span>
                           )}
                         </td>
                         <td className="px-4 py-3.5">
@@ -195,7 +195,7 @@ export function DuesPeriodsPage() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                 onClick={() => { setError(''); setDeletingPeriod(p) }}
                               >
                                 Sil
@@ -215,8 +215,8 @@ export function DuesPeriodsPage() {
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
-            <h2 className="text-base font-semibold text-slate-900 mb-5">Yeni Aidat Dönemi</h2>
+          <div className="bg-card rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
+            <h2 className="text-base font-semibold text-foreground mb-5">Yeni Aidat Dönemi</h2>
             <div className="space-y-4">
               <Input label="Dönem Adı *" placeholder="örn. Mart 2026" value={formName}
                 onChange={e => setFormName(e.target.value)} autoFocus />
@@ -224,7 +224,7 @@ export function DuesPeriodsPage() {
                 onChange={e => setFormStartDate(e.target.value)} />
               <Input label="Son Ödeme Tarihi *" type="date" value={formDueDate}
                 onChange={e => setFormDueDate(e.target.value)} />
-              {formError && <p className="text-sm text-red-600">{formError}</p>}
+              {formError && <p className="text-sm text-destructive">{formError}</p>}
             </div>
             <div className="flex gap-3 justify-end mt-6">
               <Button variant="secondary" onClick={() => setShowForm(false)} disabled={saving}>İptal</Button>
@@ -243,6 +243,6 @@ export function DuesPeriodsPage() {
         onConfirm={deletePeriod}
         onCancel={() => setDeletingPeriod(null)}
       />
-    </AppLayout>
+    </AdminLayout>
   )
 }

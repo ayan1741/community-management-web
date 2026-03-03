@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,18 +13,18 @@ import type {
 } from '@/types'
 
 const statusConfig: Record<string, { label: string; icon: React.ReactNode; class: string }> = {
-  pending:   { label: 'Ödenmedi', icon: <Clock className="w-3.5 h-3.5" />,        class: 'bg-amber-50 text-amber-700' },
-  partial:   { label: 'Kısmi',    icon: <AlertCircle className="w-3.5 h-3.5" />,  class: 'bg-blue-50 text-blue-700' },
-  paid:      { label: 'Ödendi',   icon: <CheckCircle className="w-3.5 h-3.5" />,  class: 'bg-green-50 text-green-700' },
-  cancelled: { label: 'İptal',    icon: <XCircle className="w-3.5 h-3.5" />,      class: 'bg-slate-100 text-slate-500' },
+  pending:   { label: 'Ödenmedi', icon: <Clock className="w-3.5 h-3.5" />,        class: 'bg-warning/10 text-warning' },
+  partial:   { label: 'Kısmi',    icon: <AlertCircle className="w-3.5 h-3.5" />,  class: 'bg-primary/10 text-primary' },
+  paid:      { label: 'Ödendi',   icon: <CheckCircle className="w-3.5 h-3.5" />,  class: 'bg-success/10 text-success' },
+  cancelled: { label: 'İptal',    icon: <XCircle className="w-3.5 h-3.5" />,      class: 'bg-muted text-muted-foreground' },
 }
 
 const periodStatusLabels: Record<string, { label: string; class: string }> = {
-  draft:      { label: 'Taslak',    class: 'bg-slate-100 text-slate-600' },
-  processing: { label: 'İşleniyor', class: 'bg-blue-50 text-blue-700 animate-pulse' },
-  active:     { label: 'Aktif',     class: 'bg-green-50 text-green-700' },
-  failed:     { label: 'Başarısız', class: 'bg-red-50 text-red-700' },
-  closed:     { label: 'Kapalı',    class: 'bg-slate-100 text-slate-500' },
+  draft:      { label: 'Taslak',    class: 'bg-muted text-muted-foreground' },
+  processing: { label: 'İşleniyor', class: 'bg-primary/10 text-primary animate-pulse' },
+  active:     { label: 'Aktif',     class: 'bg-success/10 text-success' },
+  failed:     { label: 'Başarısız', class: 'bg-destructive/10 text-destructive' },
+  closed:     { label: 'Kapalı',    class: 'bg-muted text-muted-foreground' },
 }
 
 function formatDate(d: string) {
@@ -245,27 +245,27 @@ export function DuesPeriodDetailPage() {
   const totalCount = detail?.totalCount ?? 0
   const totalPages = Math.ceil(totalCount / pageSize)
 
-  const pstatus = period ? (periodStatusLabels[period.status] ?? { label: period.status, class: 'bg-slate-100 text-slate-600' }) : null
+  const pstatus = period ? (periodStatusLabels[period.status] ?? { label: period.status, class: 'bg-muted text-muted-foreground' }) : null
 
   return (
-    <AppLayout>
+    <AdminLayout>
       <div className="max-w-6xl mx-auto">
         {/* Geri */}
         <button
           onClick={() => navigate('/admin/dues/periods')}
-          className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-5 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-5 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Dönemlere Dön
         </button>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>
+          <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
         )}
 
         {loading && !detail ? (
           <div className="py-12 text-center">
-            <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-sm text-slate-500">Yükleniyor...</p>
+            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <p className="text-sm text-muted-foreground">Yükleniyor...</p>
           </div>
         ) : period ? (
           <>
@@ -273,14 +273,14 @@ export function DuesPeriodDetailPage() {
             <div className="flex items-start justify-between mb-6">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h1 className="text-xl font-semibold text-slate-900">{period.name}</h1>
+                  <h1 className="text-xl font-semibold text-foreground">{period.name}</h1>
                   {pstatus && (
                     <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${pstatus.class}`}>
                       {pstatus.label}
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-muted-foreground">
                   Başlangıç: {formatDate(period.startDate)} · Son Ödeme: {formatDate(period.dueDate)}
                 </p>
               </div>
@@ -296,7 +296,7 @@ export function DuesPeriodDetailPage() {
 
             {/* Processing uyarısı */}
             {period.status === 'processing' && (
-              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+              <div className="mb-4 p-3 bg-primary/10 border border-primary/30 rounded-lg text-sm text-primary">
                 Tahakkuklar oluşturuluyor, lütfen bekleyin... Sayfa otomatik yenilenecek.
               </div>
             )}
@@ -304,12 +304,12 @@ export function DuesPeriodDetailPage() {
             {/* Tahakkuk Tablosu */}
             <Card>
               <CardHeader className="flex-row items-center justify-between">
-                <CardTitle>Tahakkuk Listesi {totalCount > 0 && <span className="ml-1 text-slate-400 font-normal text-sm">({totalCount} kayıt)</span>}</CardTitle>
+                <CardTitle>Tahakkuk Listesi {totalCount > 0 && <span className="ml-1 text-muted-foreground font-normal text-sm">({totalCount} kayıt)</span>}</CardTitle>
                 <div className="flex items-center gap-2">
                   <select
                     value={statusFilter}
                     onChange={e => { setStatusFilter(e.target.value); setPage(1) }}
-                    className="text-xs border border-slate-200 rounded-lg px-2 py-1.5 text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="text-xs border border-border rounded-lg px-2 py-1.5 text-foreground bg-card focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Tümü</option>
                     <option value="pending">Ödenmedi</option>
@@ -321,7 +321,7 @@ export function DuesPeriodDetailPage() {
               <CardContent className="p-0">
                 {items.length === 0 ? (
                   <div className="px-6 py-12 text-center">
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-muted-foreground">
                       {period.status === 'draft' ? 'Henüz tahakkuk oluşturulmadı.' : 'Kayıt bulunamadı.'}
                     </p>
                   </div>
@@ -329,16 +329,16 @@ export function DuesPeriodDetailPage() {
                   <>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
-                        <thead className="bg-slate-50 border-b border-slate-200">
+                        <thead className="bg-muted border-b border-border">
                           <tr>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Daire</th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Sakin</th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Aidat Tipi</th>
-                            <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wide">Tutar</th>
-                            <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wide">Ödenen</th>
-                            <th className="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wide">Kalan</th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Durum</th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">İşlem</th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Daire</th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Sakin</th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Aidat Tipi</th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wide">Tutar</th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wide">Ödenen</th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wide">Kalan</th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Durum</th>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">İşlem</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -347,24 +347,24 @@ export function DuesPeriodDetailPage() {
                             const canPay = isAdminOrBoard && (item.status === 'pending' || item.status === 'partial')
                             const canCancel = isAdmin && item.status !== 'paid' && item.status !== 'cancelled'
                             return (
-                              <tr key={item.id} className={`border-b border-slate-100 hover:bg-slate-50/70 transition-colors ${item.isOverdue ? 'bg-red-50/20' : ''}`}>
+                              <tr key={item.id} className={`border-b border-border hover:bg-muted/70 transition-colors ${item.isOverdue ? 'bg-destructive/10/20' : ''}`}>
                                 <td className="px-4 py-3">
-                                  <span className="font-medium text-slate-900">
+                                  <span className="font-medium text-foreground">
                                     {item.blockName !== 'Varsayılan' ? `${item.blockName} / ` : ''}{item.unitNumber}
                                   </span>
                                 </td>
-                                <td className="px-4 py-3 text-slate-600">
-                                  {item.residentName ?? <span className="text-slate-400 italic">Boş Daire</span>}
+                                <td className="px-4 py-3 text-muted-foreground">
+                                  {item.residentName ?? <span className="text-muted-foreground italic">Boş Daire</span>}
                                 </td>
-                                <td className="px-4 py-3 text-slate-600">{item.dueTypeName}</td>
-                                <td className="px-4 py-3 text-right font-medium text-slate-900">
+                                <td className="px-4 py-3 text-muted-foreground">{item.dueTypeName}</td>
+                                <td className="px-4 py-3 text-right font-medium text-foreground">
                                   {item.amount.toLocaleString('tr-TR')} ₺
                                 </td>
-                                <td className="px-4 py-3 text-right text-green-700">
+                                <td className="px-4 py-3 text-right text-success">
                                   {item.paidAmount > 0 ? `${item.paidAmount.toLocaleString('tr-TR')} ₺` : '—'}
                                 </td>
                                 <td className="px-4 py-3 text-right">
-                                  <span className={item.isOverdue ? 'text-red-700 font-medium' : 'text-slate-700'}>
+                                  <span className={item.isOverdue ? 'text-destructive font-medium' : 'text-foreground'}>
                                     {item.remainingAmount > 0 ? `${item.remainingAmount.toLocaleString('tr-TR')} ₺` : '—'}
                                   </span>
                                 </td>
@@ -373,7 +373,7 @@ export function DuesPeriodDetailPage() {
                                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${sc.class}`}>
                                       {sc.icon}{sc.label}
                                       {item.isOverdue && item.status !== 'paid' && item.status !== 'cancelled' && (
-                                        <span className="ml-1 text-red-600">·gecikmiş</span>
+                                        <span className="ml-1 text-destructive">·gecikmiş</span>
                                       )}
                                     </span>
                                   )}
@@ -388,7 +388,7 @@ export function DuesPeriodDetailPage() {
                                     {canCancel && (
                                       <Button
                                         variant="ghost" size="sm"
-                                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                         onClick={() => { setError(''); setCancelConfirm(false); setCancellingDue(item) }}
                                       >
                                         İptal
@@ -405,8 +405,8 @@ export function DuesPeriodDetailPage() {
 
                     {/* Sayfalama */}
                     {totalPages > 1 && (
-                      <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100">
-                        <p className="text-xs text-slate-500">{totalCount} kayıt · Sayfa {page}/{totalPages}</p>
+                      <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+                        <p className="text-xs text-muted-foreground">{totalCount} kayıt · Sayfa {page}/{totalPages}</p>
                         <div className="flex gap-1">
                           <Button variant="ghost" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
                             Önceki
@@ -428,45 +428,45 @@ export function DuesPeriodDetailPage() {
       {/* ── Toplu Tahakkuk Modal ─────────────────────────────────────────────── */}
       {showAccrualModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
+          <div className="bg-card rounded-xl shadow-xl max-w-lg w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
             {accrualStep === 'select' && (
               <>
-                <h2 className="text-base font-semibold text-slate-900 mb-1">Toplu Tahakkuk Oluştur</h2>
-                <p className="text-sm text-slate-500 mb-5">Hangi aidat tiplerini dahil etmek istiyorsunuz?</p>
+                <h2 className="text-base font-semibold text-foreground mb-1">Toplu Tahakkuk Oluştur</h2>
+                <p className="text-sm text-muted-foreground mb-5">Hangi aidat tiplerini dahil etmek istiyorsunuz?</p>
 
                 <div className="space-y-2 mb-5">
                   {dueTypes.map(dt => (
-                    <label key={dt.id} className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
+                    <label key={dt.id} className="flex items-center gap-3 p-3 border border-border rounded-lg cursor-pointer hover:bg-muted transition-colors">
                       <input
                         type="checkbox"
                         checked={selectedDueTypeIds.includes(dt.id)}
                         onChange={e => setSelectedDueTypeIds(prev =>
                           e.target.checked ? [...prev, dt.id] : prev.filter(id => id !== dt.id)
                         )}
-                        className="w-4 h-4 rounded text-blue-600"
+                        className="w-4 h-4 rounded text-primary"
                       />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-slate-900">{dt.name}</p>
-                        <p className="text-xs text-slate-500">{dt.defaultAmount.toLocaleString('tr-TR')} ₺ varsayılan</p>
+                        <p className="text-sm font-medium text-foreground">{dt.name}</p>
+                        <p className="text-xs text-muted-foreground">{dt.defaultAmount.toLocaleString('tr-TR')} ₺ varsayılan</p>
                       </div>
                     </label>
                   ))}
                 </div>
 
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg cursor-pointer mb-5">
+                <label className="flex items-center gap-3 p-3 bg-muted border border-border rounded-lg cursor-pointer mb-5">
                   <input
                     type="checkbox"
                     checked={includeEmpty}
                     onChange={e => setIncludeEmpty(e.target.checked)}
-                    className="w-4 h-4 rounded text-blue-600"
+                    className="w-4 h-4 rounded text-primary"
                   />
                   <div>
-                    <p className="text-sm font-medium text-slate-700">Boş dairelere de tahakkuk oluştur</p>
-                    <p className="text-xs text-slate-500">Aktif sakini olmayan daireler dahil edilir</p>
+                    <p className="text-sm font-medium text-foreground">Boş dairelere de tahakkuk oluştur</p>
+                    <p className="text-xs text-muted-foreground">Aktif sakini olmayan daireler dahil edilir</p>
                   </div>
                 </label>
 
-                {accrualError && <p className="text-sm text-red-600 mb-3">{accrualError}</p>}
+                {accrualError && <p className="text-sm text-destructive mb-3">{accrualError}</p>}
 
                 <div className="flex gap-3 justify-end">
                   <Button variant="secondary" onClick={() => setShowAccrualModal(false)}>İptal</Button>
@@ -477,35 +477,35 @@ export function DuesPeriodDetailPage() {
 
             {accrualStep === 'preview' && accrualPreview && (
               <>
-                <h2 className="text-base font-semibold text-slate-900 mb-1">Tahakkuk Önizlemesi</h2>
-                <p className="text-sm text-slate-500 mb-5">Aşağıdaki tahakkuklar oluşturulacak. Onaylıyor musunuz?</p>
+                <h2 className="text-base font-semibold text-foreground mb-1">Tahakkuk Önizlemesi</h2>
+                <p className="text-sm text-muted-foreground mb-5">Aşağıdaki tahakkuklar oluşturulacak. Onaylıyor musunuz?</p>
 
-                <div className="bg-slate-50 rounded-lg p-4 mb-4 space-y-2">
+                <div className="bg-muted rounded-lg p-4 mb-4 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Toplam Daire</span>
+                    <span className="text-muted-foreground">Toplam Daire</span>
                     <span className="font-medium">{accrualPreview.totalUnits}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-600">Dahil Edilecek</span>
-                    <span className="font-medium text-blue-700">{accrualPreview.includedUnits} daire</span>
+                    <span className="text-muted-foreground">Dahil Edilecek</span>
+                    <span className="font-medium text-primary">{accrualPreview.includedUnits} daire</span>
                   </div>
                   {accrualPreview.unitsWithoutCategory > 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-amber-600">⚠️ Kategorisiz daire</span>
-                      <span className="font-medium text-amber-700">{accrualPreview.unitsWithoutCategory} (varsayılan tutar)</span>
+                      <span className="text-warning">⚠️ Kategorisiz daire</span>
+                      <span className="font-medium text-warning">{accrualPreview.unitsWithoutCategory} (varsayılan tutar)</span>
                     </div>
                   )}
                 </div>
 
                 <div className="space-y-3 mb-4">
                   {accrualPreview.dueTypeBreakdowns.map(line => (
-                    <div key={line.dueTypeId} className="border border-slate-200 rounded-lg p-3">
+                    <div key={line.dueTypeId} className="border border-border rounded-lg p-3">
                       <div className="flex justify-between mb-2">
-                        <span className="text-sm font-medium text-slate-900">{line.dueTypeName}</span>
-                        <span className="text-sm font-semibold text-slate-900">{line.subtotal.toLocaleString('tr-TR')} ₺</span>
+                        <span className="text-sm font-medium text-foreground">{line.dueTypeName}</span>
+                        <span className="text-sm font-semibold text-foreground">{line.subtotal.toLocaleString('tr-TR')} ₺</span>
                       </div>
                       {line.categoryLines.map((cl, i) => (
-                        <div key={i} className="flex justify-between text-xs text-slate-500 pl-2">
+                        <div key={i} className="flex justify-between text-xs text-muted-foreground pl-2">
                           <span>{cl.category ? (cl.category) : 'Kategorisiz'}: {cl.unitCount} daire × {cl.amount.toLocaleString('tr-TR')} ₺</span>
                           <span>{cl.subtotal.toLocaleString('tr-TR')} ₺</span>
                         </div>
@@ -514,12 +514,12 @@ export function DuesPeriodDetailPage() {
                   ))}
                 </div>
 
-                <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg mb-5">
-                  <span className="text-sm font-semibold text-blue-900">Toplam Tahakkuk</span>
-                  <span className="text-lg font-bold text-blue-900">{accrualPreview.totalAmount.toLocaleString('tr-TR')} ₺</span>
+                <div className="flex justify-between items-center p-3 bg-primary/10 rounded-lg mb-5">
+                  <span className="text-sm font-semibold text-primary">Toplam Tahakkuk</span>
+                  <span className="text-lg font-bold text-primary">{accrualPreview.totalAmount.toLocaleString('tr-TR')} ₺</span>
                 </div>
 
-                {accrualError && <p className="text-sm text-red-600 mb-3">{accrualError}</p>}
+                {accrualError && <p className="text-sm text-destructive mb-3">{accrualError}</p>}
 
                 <div className="flex gap-3 justify-end">
                   <Button variant="secondary" onClick={() => setAccrualStep('select')}>Geri</Button>
@@ -534,14 +534,14 @@ export function DuesPeriodDetailPage() {
       {/* ── Ödeme Kaydet Modal ───────────────────────────────────────────────── */}
       {payingDue && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
-            <h2 className="text-base font-semibold text-slate-900 mb-1">Ödeme Kaydet</h2>
-            <p className="text-sm text-slate-500 mb-4">
+          <div className="bg-card rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
+            <h2 className="text-base font-semibold text-foreground mb-1">Ödeme Kaydet</h2>
+            <p className="text-sm text-muted-foreground mb-4">
               {payingDue.blockName !== 'Varsayılan' ? `${payingDue.blockName} / ` : ''}{payingDue.unitNumber}
               {payingDue.residentName ? ` · ${payingDue.residentName}` : ''} — {payingDue.dueTypeName}
             </p>
-            <p className="text-xs text-slate-400 mb-4">
-              Kalan borç: <span className="font-semibold text-slate-700">{payingDue.remainingAmount.toLocaleString('tr-TR')} ₺</span>
+            <p className="text-xs text-muted-foreground mb-4">
+              Kalan borç: <span className="font-semibold text-foreground">{payingDue.remainingAmount.toLocaleString('tr-TR')} ₺</span>
             </p>
 
             <div className="space-y-4">
@@ -552,11 +552,11 @@ export function DuesPeriodDetailPage() {
                 onChange={e => setPayDate(e.target.value)} />
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Ödeme Yöntemi</label>
+                <label className="block text-sm font-medium text-foreground mb-1">Ödeme Yöntemi</label>
                 <select
                   value={payMethod}
                   onChange={e => setPayMethod(e.target.value)}
-                  className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="cash">Nakit</option>
                   <option value="bank_transfer">Banka Havalesi</option>
@@ -568,11 +568,11 @@ export function DuesPeriodDetailPage() {
                 onChange={e => setPayNote(e.target.value)} />
 
               {payWarning && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
+                <div className="p-3 bg-warning/10 border border-warning/30 rounded-lg text-sm text-warning">
                   {payWarning} Onaylamak için tekrar "Kaydet"e tıklayın.
                 </div>
               )}
-              {payError && <p className="text-sm text-red-600">{payError}</p>}
+              {payError && <p className="text-sm text-destructive">{payError}</p>}
             </div>
 
             <div className="flex gap-3 justify-end mt-6">
@@ -610,6 +610,6 @@ export function DuesPeriodDetailPage() {
         onConfirm={closePeriod}
         onCancel={() => setClosingPeriod(false)}
       />
-    </AppLayout>
+    </AdminLayout>
   )
 }

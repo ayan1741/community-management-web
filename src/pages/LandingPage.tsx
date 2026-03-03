@@ -24,25 +24,25 @@ function Navbar({ isDark, onToggle }: { isDark: boolean; onToggle: () => void })
   return (
     <header className="fixed top-0 inset-x-0 z-50 transition-colors duration-300">
       {/* Backdrop blur bar */}
-      <div className="absolute inset-0 bg-white/70 dark:bg-zinc-950/70 backdrop-blur-2xl border-b border-slate-200/50 dark:border-white/[0.06]" />
+      <div className="absolute inset-0 bg-background/70 backdrop-blur-2xl border-b border-border/50" />
 
       <div className="relative mx-auto max-w-7xl px-6 flex h-16 items-center justify-between">
         {/* ── Logo ── */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-shadow duration-300">
-            <Building2 className="h-[18px] w-[18px] text-white" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow duration-300">
+            <Building2 className="h-[18px] w-[18px] text-primary-foreground" />
           </div>
-          <span className="text-[15px] font-bold text-slate-900 dark:text-zinc-100 tracking-tight">
+          <span className="text-[15px] font-bold text-foreground tracking-tight">
             KomşuNet
           </span>
         </Link>
 
         {/* ── Center pill nav (desktop) ── */}
         <nav className="hidden md:flex items-center">
-          <div className="flex items-center gap-1 rounded-full border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] p-1 shadow-sm">
+          <div className="flex items-center gap-1 rounded-full border border-border bg-card/60 p-1 shadow-sm">
             {NAV_LINKS.map(({ label, href }) => (
               <a key={label} href={href}
-                className="relative px-4 py-1.5 text-[13px] font-medium text-slate-500 dark:text-zinc-400 rounded-full hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100/80 dark:hover:bg-white/[0.08] transition-all duration-200">
+                className="relative px-4 py-1.5 text-[13px] font-medium text-muted-foreground rounded-full hover:text-foreground hover:bg-muted transition-all duration-200">
                 {label}
               </a>
             ))}
@@ -53,26 +53,26 @@ function Navbar({ isDark, onToggle }: { isDark: boolean; onToggle: () => void })
         <div className="flex items-center gap-2">
           {/* Theme toggle */}
           <button onClick={onToggle} aria-label="Tema değiştir"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] text-slate-400 dark:text-zinc-500 hover:text-slate-700 dark:hover:text-zinc-300 hover:bg-slate-100 dark:hover:bg-white/[0.08] transition-all duration-200">
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200">
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
 
           {/* Login — ghost button */}
           <Link to="/login"
-            className="hidden sm:flex h-9 items-center px-4 rounded-full text-[13px] font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100/80 dark:hover:bg-white/[0.08] transition-all duration-200">
+            className="hidden sm:flex h-9 items-center px-4 rounded-full text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200">
             Giriş Yap
           </Link>
 
           {/* CTA */}
           <Link to="/admin-register"
-            className="hidden sm:flex h-9 items-center gap-1.5 px-4 rounded-full bg-blue-600 text-[13px] font-semibold text-white shadow-lg shadow-blue-600/25 hover:bg-blue-500 hover:shadow-blue-500/30 transition-all duration-200">
+            className="hidden sm:flex h-9 items-center gap-1.5 px-4 rounded-full bg-primary text-[13px] font-semibold text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 hover:shadow-primary/30 transition-all duration-200">
             Ücretsiz Başla
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
 
           {/* Mobile hamburger */}
           <button onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menü"
-            className="flex md:hidden h-9 w-9 items-center justify-center rounded-full border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] text-slate-500 dark:text-zinc-400 hover:bg-slate-100 dark:hover:bg-white/[0.08] transition-all duration-200">
+            className="flex md:hidden h-9 w-9 items-center justify-center rounded-full border border-border bg-card/60 text-muted-foreground hover:bg-muted transition-all duration-200">
             {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
@@ -80,21 +80,21 @@ function Navbar({ isDark, onToggle }: { isDark: boolean; onToggle: () => void })
 
       {/* ── Mobile dropdown ── */}
       {mobileOpen && (
-        <div className="relative md:hidden border-t border-slate-200/50 dark:border-white/[0.06] bg-white/90 dark:bg-zinc-950/90 backdrop-blur-2xl">
+        <div className="relative md:hidden border-t border-border/50 bg-background/90 backdrop-blur-2xl">
           <div className="mx-auto max-w-7xl px-6 py-4 flex flex-col gap-1">
             {NAV_LINKS.map(({ label, href }) => (
               <a key={label} href={href} onClick={() => setMobileOpen(false)}
-                className="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition-colors">
+                className="px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
                 {label}
               </a>
             ))}
-            <div className="mt-3 pt-3 border-t border-slate-200/60 dark:border-white/[0.06] flex flex-col gap-2">
+            <div className="mt-3 pt-3 border-t border-border flex flex-col gap-2">
               <Link to="/login" onClick={() => setMobileOpen(false)}
-                className="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-100/80 dark:hover:bg-white/[0.06] text-center transition-colors">
+                className="px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted text-center transition-colors">
                 Giriş Yap
               </Link>
               <Link to="/admin-register" onClick={() => setMobileOpen(false)}
-                className="px-4 py-2.5 rounded-xl bg-blue-600 text-sm font-semibold text-white text-center shadow-lg shadow-blue-600/25 hover:bg-blue-500 transition-all">
+                className="px-4 py-2.5 rounded-xl bg-primary text-sm font-semibold text-primary-foreground text-center shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all">
                 Ücretsiz Başla
               </Link>
             </div>
@@ -110,21 +110,13 @@ function Navbar({ isDark, onToggle }: { isDark: boolean; onToggle: () => void })
    ═══════════════════════════════════════════════════════════════════════════ */
 
 function Hero({ isDark }: { isDark: boolean }) {
-  const gridStyle = {
-    backgroundImage: isDark
-      ? 'linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)'
-      : 'linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px)',
-    backgroundSize: '60px 60px',
-  }
-
   return (
-    <section className="relative min-h-screen flex items-center bg-slate-50 dark:bg-zinc-950 overflow-hidden pt-16 transition-colors duration-300">
+    <section className="relative min-h-screen flex items-center bg-muted/50 overflow-hidden pt-16 transition-colors duration-300">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 -translate-x-1/2 top-0 h-[700px] w-[1100px]"
           style={{ background: isDark ? 'radial-gradient(ellipse at top, rgba(59,130,246,0.22) 0%, transparent 65%)' : 'radial-gradient(ellipse at top, rgba(59,130,246,0.10) 0%, transparent 65%)' }} />
         <div className="absolute left-1/4 bottom-0 h-[500px] w-[700px]"
           style={{ background: isDark ? 'radial-gradient(ellipse at bottom, rgba(99,102,241,0.14) 0%, transparent 65%)' : 'radial-gradient(ellipse at bottom, rgba(99,102,241,0.06) 0%, transparent 65%)' }} />
-        <div className="absolute inset-0" style={gridStyle} />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 py-32">
@@ -670,9 +662,8 @@ function Pricing() {
 function FinalCTA() {
   return (
     <section className="relative py-28 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-indigo-700" />
       <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at top, rgba(255,255,255,0.10) 0%, transparent 60%)' }} />
-      <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
       <FadeIn>
         <div className="relative mx-auto max-w-3xl px-6 text-center">
@@ -779,17 +770,21 @@ export function LandingPage() {
   const { isDark, toggleTheme } = useTheme()
 
   return (
-    <div className="bg-white dark:bg-zinc-950 transition-colors duration-300">
-      <Navbar isDark={isDark} onToggle={toggleTheme} />
-      <Hero isDark={isDark} />
-      <Stats />
-      <Features />
-      <HowItWorks />
-      <WhyUs />
-      <Testimonials />
-      <Pricing />
-      <FinalCTA />
-      <Footer />
+    <div className="bg-background transition-colors duration-300">
+      {/* Global subtle grid overlay */}
+      <div className="fixed inset-0 bg-grid pointer-events-none z-0" />
+      <div className="relative z-10">
+        <Navbar isDark={isDark} onToggle={toggleTheme} />
+        <Hero isDark={isDark} />
+        <Stats />
+        <Features />
+        <HowItWorks />
+        <WhyUs />
+        <Testimonials />
+        <Pricing />
+        <FinalCTA />
+        <Footer />
+      </div>
     </div>
   )
 }
