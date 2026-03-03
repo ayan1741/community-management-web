@@ -4,7 +4,7 @@ import { api } from '@/lib/api'
 import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FileText } from 'lucide-react'
+import { FileText, AlertTriangle } from 'lucide-react'
 import type { Application, PagedResult } from '@/types'
 
 export function ApplicationsPage() {
@@ -90,7 +90,18 @@ export function ApplicationsPage() {
                   {pending.map(a => (
                     <tr key={a.applicationId} className="border-b border-border hover:bg-muted/70 transition-colors">
                       <td className="px-4 py-3.5">
-                        <p className="font-semibold text-foreground">{a.applicantName}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-foreground">{a.applicantName}</p>
+                          {a.duplicateWarning && (
+                            <span
+                              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-warning/10 text-warning border border-warning/20"
+                              title="Bu daire için birden fazla bekleyen başvuru var"
+                            >
+                              <AlertTriangle className="h-3 w-3" />
+                              Çakışma
+                            </span>
+                          )}
+                        </div>
                         {a.applicantPhone && (
                           <p className="text-xs text-muted-foreground mt-0.5">{a.applicantPhone}</p>
                         )}
