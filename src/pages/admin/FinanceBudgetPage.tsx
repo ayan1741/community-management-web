@@ -10,7 +10,8 @@ import { cn } from '@/lib/utils'
 import {
   ChevronLeft, ChevronRight, Copy, CheckCircle, AlertTriangle, XCircle,
 } from 'lucide-react'
-import type { BudgetComparisonItem, BudgetVsActualResult } from '@/types'
+import { ReportBasisToggle, getStoredBasis, storeBasis } from '@/components/shared/report-basis-toggle'
+import type { BudgetComparisonItem, BudgetVsActualResult, ReportBasis } from '@/types'
 
 const MONTHS_TR = [
   'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
@@ -26,6 +27,12 @@ export function FinanceBudgetPage() {
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [data, setData] = useState<BudgetVsActualResult | null>(null)
   const [loading, setLoading] = useState(true)
+  const [reportBasis, setReportBasis] = useState<ReportBasis>(() => orgId ? getStoredBasis(orgId) : 'period')
+
+  function handleBasisChange(basis: ReportBasis) {
+    setReportBasis(basis)
+    if (orgId) storeBasis(orgId, basis)
+  }
 
   // Inline edit
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -49,13 +56,13 @@ export function FinanceBudgetPage() {
 
   useEffect(() => {
     if (orgId) loadData()
-  }, [orgId, year, month])
+  }, [orgId, year, month, reportBasis])
 
   async function loadData() {
     if (!orgId) return
     setLoading(true)
     try {
-      const r = await api.get<BudgetVsActualResult>(`/organizations/${orgId}/finance/reports/budget-comparison?year=${year}&month=${month}`)
+      const r = await api.get<BudgetVsActualResult>(`/organizations/${orgId}/finance/reports/budget-comparison?year=${year}&month=${month}&reportBasis=${reportBasis}`)
       setData(r.data)
     } catch { /* silent */ }
     finally { setLoading(false) }
@@ -117,10 +124,13 @@ export function FinanceBudgetPage() {
             <h1 className="text-xl font-semibold text-foreground">Bütçe Planlama</h1>
             <p className="text-sm text-muted-foreground mt-0.5">Aylık harcama hedeflerini belirleyin ve takip edin</p>
           </div>
-          <Button variant="outline" onClick={() => { setShowCopy(true); setCopyResult(null) }}>
-            <Copy className="w-4 h-4 mr-1" />
-            Önceki Aydan Kopyala
-          </Button>
+          <div className="flex items-center gap-3">
+            <ReportBasisToggle value={reportBasis} onChange={handleBasisChange} />
+            <Button variant="outline" onClick={() => { setShowCopy(true); setCopyResult(null) }}>
+              <Copy className="w-4 h-4 mr-1" />
+              Önceki Aydan Kopyala
+            </Button>
+          </div>
         </div>
 
         {/* Month Navigator */}

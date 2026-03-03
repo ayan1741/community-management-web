@@ -10,7 +10,8 @@ import {
   ArrowUp, ArrowDown, ChevronLeft, ChevronRight,
   Building2, Users2, Calculator,
 } from 'lucide-react'
-import type { ResidentFinanceSummaryResult } from '@/types'
+import { ReportBasisToggle, getStoredBasis, storeBasis } from '@/components/shared/report-basis-toggle'
+import type { ResidentFinanceSummaryResult, ReportBasis } from '@/types'
 
 const MONTHS_TR = [
   'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
@@ -26,6 +27,12 @@ export function MyFinancePage() {
   const [month, setMonth] = useState(now.getMonth() + 1)
   const [data, setData] = useState<ResidentFinanceSummaryResult | null>(null)
   const [loading, setLoading] = useState(true)
+  const [reportBasis, setReportBasis] = useState<ReportBasis>(() => orgId ? getStoredBasis(orgId) : 'period')
+
+  function handleBasisChange(basis: ReportBasis) {
+    setReportBasis(basis)
+    if (orgId) storeBasis(orgId, basis)
+  }
 
   function goMonth(delta: number) {
     let m = month + delta, y = year
@@ -41,14 +48,14 @@ export function MyFinancePage() {
       setLoading(true)
       try {
         const r = await api.get<ResidentFinanceSummaryResult>(
-          `/organizations/${orgId}/finance/reports/resident-summary?year=${year}&month=${month}`
+          `/organizations/${orgId}/finance/reports/resident-summary?year=${year}&month=${month}&reportBasis=${reportBasis}`
         )
         setData(r.data)
       } catch { /* silent */ }
       finally { setLoading(false) }
     }
     load()
-  }, [orgId, year, month])
+  }, [orgId, year, month, reportBasis])
 
   // Donut chart data
   const chartData = useMemo(() => {
@@ -69,9 +76,12 @@ export function MyFinancePage() {
     <AdminLayout>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-xl font-semibold text-foreground">Gelir-Gider Özeti</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Sitenizin finansal durumu</p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">Gelir-Gider Özeti</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Sitenizin finansal durumu</p>
+          </div>
+          <ReportBasisToggle value={reportBasis} onChange={handleBasisChange} />
         </div>
 
         {/* Month Navigator */}

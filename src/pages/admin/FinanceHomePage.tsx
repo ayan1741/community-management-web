@@ -13,7 +13,8 @@ import {
   TrendingUp, TrendingDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight,
   Plus, AlertTriangle, Paperclip, CheckCircle, XCircle,
 } from 'lucide-react'
-import type { MonthlyReportResult } from '@/types'
+import { ReportBasisToggle, getStoredBasis, storeBasis } from '@/components/shared/report-basis-toggle'
+import type { MonthlyReportResult, ReportBasis } from '@/types'
 
 const MONTHS_TR = [
   'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
@@ -37,6 +38,12 @@ export function FinanceHomePage() {
   const [report, setReport] = useState<MonthlyReportResult | null>(null)
   const [openingBalance, setOpeningBalance] = useState<OpeningBalanceData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [reportBasis, setReportBasis] = useState<ReportBasis>(() => orgId ? getStoredBasis(orgId) : 'period')
+
+  function handleBasisChange(basis: ReportBasis) {
+    setReportBasis(basis)
+    if (orgId) storeBasis(orgId, basis)
+  }
 
   // Opening balance modal
   const [showObModal, setShowObModal] = useState(false)
@@ -60,7 +67,7 @@ export function FinanceHomePage() {
       setLoading(true)
       try {
         const [repRes, obRes] = await Promise.all([
-          api.get<MonthlyReportResult>(`/organizations/${orgId}/finance/reports/monthly?year=${year}&month=${month}`),
+          api.get<MonthlyReportResult>(`/organizations/${orgId}/finance/reports/monthly?year=${year}&month=${month}&reportBasis=${reportBasis}`),
           api.get<OpeningBalanceData>(`/organizations/${orgId}/finance/opening-balance`),
         ])
         setReport(repRes.data)
@@ -69,7 +76,7 @@ export function FinanceHomePage() {
       finally { setLoading(false) }
     }
     load()
-  }, [orgId, year, month])
+  }, [orgId, year, month, reportBasis])
 
   // Donut chart data
   const chartData = useMemo(() => {
@@ -104,7 +111,7 @@ export function FinanceHomePage() {
       setOpeningBalance(obRes.data)
       setShowObModal(false)
       // Reload report to reflect change
-      const repRes = await api.get<MonthlyReportResult>(`/organizations/${orgId}/finance/reports/monthly?year=${year}&month=${month}`)
+      const repRes = await api.get<MonthlyReportResult>(`/organizations/${orgId}/finance/reports/monthly?year=${year}&month=${month}&reportBasis=${reportBasis}`)
       setReport(repRes.data)
     } catch { /* handle */ }
     finally { setObSaving(false) }
@@ -147,39 +154,43 @@ export function FinanceHomePage() {
           </div>
         </div>
 
-        {/* Month Navigator */}
-        <div className="flex items-center justify-center gap-4 mb-6">
-          <button onClick={() => goMonth(-1)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-2">
-            {[-1, 0, 1].map(d => {
-              let m = month + d, y = year
-              if (m < 1) { m = 12; y-- }
-              if (m > 12) { m = 1; y++ }
-              const isCurrent = d === 0
-              return (
-                <button
-                  key={d}
-                  onClick={() => { if (!isCurrent) goMonth(d) }}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    isCurrent
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  }`}
-                >
-                  {MONTHS_TR[m - 1]} {y}
-                </button>
-              )
-            })}
+        {/* Month Navigator + Report Basis Toggle */}
+        <div className="flex items-center justify-between mb-6">
+          <div />
+          <div className="flex items-center gap-4">
+            <button onClick={() => goMonth(-1)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-2">
+              {[-1, 0, 1].map(d => {
+                let m = month + d, y = year
+                if (m < 1) { m = 12; y-- }
+                if (m > 12) { m = 1; y++ }
+                const isCurrent = d === 0
+                return (
+                  <button
+                    key={d}
+                    onClick={() => { if (!isCurrent) goMonth(d) }}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      isCurrent
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                  >
+                    {MONTHS_TR[m - 1]} {y}
+                  </button>
+                )
+              })}
+            </div>
+            <button
+              onClick={() => goMonth(1)}
+              disabled={isCurrentMonth}
+              className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
-          <button
-            onClick={() => goMonth(1)}
-            disabled={isCurrentMonth}
-            className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30 disabled:pointer-events-none"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+          <ReportBasisToggle value={reportBasis} onChange={handleBasisChange} />
         </div>
 
         {/* Opening Balance Banner */}

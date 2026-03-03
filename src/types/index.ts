@@ -264,6 +264,8 @@ export interface UnitDueResidentItem {
 
 // ─── Gelir-Gider (Finance) Tipleri ──────────────────────────────────────
 
+export type ReportBasis = 'period' | 'cash'
+
 export interface FinanceCategoryTreeItem {
   id: string
   name: string
@@ -283,6 +285,8 @@ export interface FinanceRecordListItem {
   type: 'income' | 'expense'
   amount: number
   recordDate: string
+  periodYear: number
+  periodMonth: number
   description: string
   paymentMethod: string | null
   documentUrl: string | null
@@ -305,6 +309,8 @@ export interface FinanceRecord {
   type: 'income' | 'expense'
   amount: number
   recordDate: string
+  periodYear: number
+  periodMonth: number
   description: string
   paymentMethod: string | null
   documentUrl: string | null
