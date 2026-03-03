@@ -261,3 +261,154 @@ export interface UnitDueResidentItem {
   calculatedLateFee: number | null
   createdAt: string
 }
+
+// ─── Gelir-Gider (Finance) Tipleri ──────────────────────────────────────
+
+export interface FinanceCategoryTreeItem {
+  id: string
+  name: string
+  type: 'income' | 'expense'
+  icon: string | null
+  isSystem: boolean
+  isActive: boolean
+  sortOrder: number
+  children: FinanceCategoryTreeItem[]
+}
+
+export interface FinanceRecordListItem {
+  id: string
+  categoryId: string
+  categoryName: string
+  categoryIcon: string | null
+  type: 'income' | 'expense'
+  amount: number
+  recordDate: string
+  description: string
+  paymentMethod: string | null
+  documentUrl: string | null
+  isOpeningBalance: boolean
+  createdByName: string
+  createdAt: string
+}
+
+export interface FinanceRecordListResult {
+  items: FinanceRecordListItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
+export interface FinanceRecord {
+  id: string
+  organizationId: string
+  categoryId: string
+  type: 'income' | 'expense'
+  amount: number
+  recordDate: string
+  description: string
+  paymentMethod: string | null
+  documentUrl: string | null
+  isOpeningBalance: boolean
+  createdBy: string
+  createdAt: string
+}
+
+export interface BudgetWithCategoryItem {
+  id: string
+  categoryId: string
+  categoryName: string
+  categoryIcon: string | null
+  year: number
+  month: number
+  amount: number
+}
+
+export interface CategoryBreakdownItem {
+  categoryId: string
+  categoryName: string
+  categoryIcon: string | null
+  parentCategoryName: string | null
+  amount: number
+  percentage: number
+}
+
+export interface MonthAmountItem {
+  year: number
+  month: number
+  amount: number
+}
+
+export interface MonthlyReportResult {
+  year: number
+  month: number
+  duesCollected: number
+  otherIncome: number
+  totalIncome: number
+  totalExpense: number
+  netBalance: number
+  previousMonthExpense: number | null
+  changePercent: number | null
+  expenseBreakdown: CategoryBreakdownItem[]
+  incomeBreakdown: CategoryBreakdownItem[]
+  recentRecords: FinanceRecordListItem[]
+}
+
+export interface AnnualMonthRow {
+  year: number
+  month: number
+  duesCollected: number
+  otherIncome: number
+  totalIncome: number
+  totalExpense: number
+  netBalance: number
+}
+
+export interface AnnualCategoryTotal {
+  categoryId: string
+  categoryName: string
+  categoryIcon: string | null
+  type: string
+  annualTotal: number
+}
+
+export interface AnnualReportResult {
+  year: number
+  monthlyTotals: AnnualMonthRow[]
+  yearTotalIncome: number
+  yearTotalExpense: number
+  yearNetBalance: number
+  yearDuesCollected: number
+  categoryTotals: AnnualCategoryTotal[]
+}
+
+export interface BudgetComparisonItem {
+  categoryId: string
+  categoryName: string
+  categoryIcon: string | null
+  budgetAmount: number
+  actualAmount: number
+  difference: number
+  differencePercent: number
+  status: 'under_budget' | 'warning' | 'over_budget' | null
+}
+
+export interface BudgetVsActualResult {
+  items: BudgetComparisonItem[]
+  totalBudget: number
+  totalActual: number
+  totalDifference: number
+}
+
+export interface ResidentFinanceSummaryResult {
+  year: number
+  month: number
+  duesCollected: number
+  otherIncome: number
+  totalIncome: number
+  totalExpense: number
+  netBalance: number
+  expenseBreakdown: CategoryBreakdownItem[]
+  activeUnitCount: number
+  perUnitShare: number
+  expenseTrend: MonthAmountItem[]
+}
