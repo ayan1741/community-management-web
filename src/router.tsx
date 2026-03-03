@@ -5,6 +5,7 @@ import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { AdminRegisterPage } from '@/pages/auth/AdminRegisterPage'
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage'
 import { HomePage } from '@/pages/HomePage'
 import { SetupWizardPage } from '@/pages/setup/SetupWizardPage'
 import { DashboardPage } from '@/pages/DashboardPage'
@@ -18,7 +19,6 @@ import { DueTypesPage } from '@/pages/admin/DueTypesPage'
 import { DuesPeriodsPage } from '@/pages/admin/DuesPeriodsPage'
 import { DuesPeriodDetailPage } from '@/pages/admin/DuesPeriodDetailPage'
 import { MyDuesPage } from '@/pages/MyDuesPage'
-import { DesignDemoPage } from '@/pages/DesignDemoPage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading, activeMembership } = useAuth()
@@ -62,6 +62,7 @@ export function AppRouter() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin-register" element={<AdminRegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/apply-success" element={
           <div className="min-h-screen flex items-center justify-center">
             <div className="text-center">
@@ -96,9 +97,6 @@ export function AppRouter() {
 
         {/* Aidat Tipleri — sadece admin */}
         <Route path="/admin/dues/types" element={<RequireAuth><RequireAdmin><RequireAdminOnly><DueTypesPage /></RequireAdminOnly></RequireAdmin></RequireAuth>} />
-
-        {/* Design Demo — geçici, tasarım onayından sonra kaldırılacak */}
-        <Route path="/design-demo" element={<DesignDemoPage />} />
 
         {/* Default */}
         <Route path="*" element={<Navigate to="/" replace />} />
