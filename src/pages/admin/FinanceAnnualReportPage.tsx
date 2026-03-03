@@ -7,7 +7,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { CategoryIcon } from '@/lib/category-icons'
 import { cn } from '@/lib/utils'
 import { TrendingUp, TrendingDown, CheckCircle, XCircle } from 'lucide-react'
-import type { AnnualReportResult } from '@/types'
+import { ReportBasisToggle, getStoredBasis, storeBasis } from '@/components/shared/report-basis-toggle'
+import type { AnnualReportResult, ReportBasis } from '@/types'
 
 const MONTHS_TR = [
   'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
@@ -25,16 +26,22 @@ export function FinanceAnnualReportPage() {
   const [report, setReport] = useState<AnnualReportResult | null>(null)
   const [loading, setLoading] = useState(true)
   const [catTab, setCatTab] = useState<CatTab>('expense')
+  const [reportBasis, setReportBasis] = useState<ReportBasis>(() => orgId ? getStoredBasis(orgId) : 'period')
+
+  function handleBasisChange(basis: ReportBasis) {
+    setReportBasis(basis)
+    if (orgId) storeBasis(orgId, basis)
+  }
 
   useEffect(() => {
     if (orgId) loadReport()
-  }, [orgId, year])
+  }, [orgId, year, reportBasis])
 
   async function loadReport() {
     if (!orgId) return
     setLoading(true)
     try {
-      const r = await api.get<AnnualReportResult>(`/organizations/${orgId}/finance/reports/annual?year=${year}`)
+      const r = await api.get<AnnualReportResult>(`/organizations/${orgId}/finance/reports/annual?year=${year}&reportBasis=${reportBasis}`)
       setReport(r.data)
     } catch { /* silent */ }
     finally { setLoading(false) }
@@ -55,15 +62,18 @@ export function FinanceAnnualReportPage() {
             <h1 className="text-xl font-semibold text-foreground">Yıllık Gelir-Gider Raporu</h1>
             <p className="text-sm text-muted-foreground mt-0.5">12 aylık finansal özet</p>
           </div>
-          <select
-            value={year}
-            onChange={e => setYear(Number(e.target.value))}
-            className="h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground font-medium"
-          >
-            {[now.getFullYear() - 2, now.getFullYear() - 1, now.getFullYear()].map(y => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </select>
+          <div className="flex items-center gap-3">
+            <ReportBasisToggle value={reportBasis} onChange={handleBasisChange} />
+            <select
+              value={year}
+              onChange={e => setYear(Number(e.target.value))}
+              className="h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground font-medium"
+            >
+              {[now.getFullYear() - 2, now.getFullYear() - 1, now.getFullYear()].map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {loading ? (

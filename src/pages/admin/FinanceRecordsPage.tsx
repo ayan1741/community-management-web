@@ -15,6 +15,11 @@ import {
 } from 'lucide-react'
 import type { FinanceRecordListItem, FinanceRecordListResult, FinanceCategoryTreeItem } from '@/types'
 
+const MONTHS_TR = [
+  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+]
+
 const PAYMENT_METHODS = [
   { value: 'cash', label: 'Nakit' },
   { value: 'bank_transfer', label: 'Havale/EFT' },
@@ -29,6 +34,7 @@ export function FinanceRecordsPage() {
   const orgId = activeMembership?.organizationId
   const isAdmin = activeMembership?.role === 'admin'
   const location = useLocation()
+  const now = new Date()
 
   // List state
   const [records, setRecords] = useState<FinanceRecordListItem[]>([])
@@ -41,6 +47,8 @@ export function FinanceRecordsPage() {
   const [filterCategoryId, setFilterCategoryId] = useState<string>('')
   const [filterStartDate, setFilterStartDate] = useState('')
   const [filterEndDate, setFilterEndDate] = useState('')
+  const [filterPeriodYear, setFilterPeriodYear] = useState('')
+  const [filterPeriodMonth, setFilterPeriodMonth] = useState('')
 
   // Categories for filter & form
   const [categories, setCategories] = useState<FinanceCategoryTreeItem[]>([])
@@ -54,6 +62,8 @@ export function FinanceRecordsPage() {
   const [formDate, setFormDate] = useState(new Date().toISOString().slice(0, 10))
   const [formDesc, setFormDesc] = useState('')
   const [formPaymentMethod, setFormPaymentMethod] = useState('')
+  const [formPeriodYear, setFormPeriodYear] = useState('')
+  const [formPeriodMonth, setFormPeriodMonth] = useState('')
   const [formError, setFormError] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -81,7 +91,7 @@ export function FinanceRecordsPage() {
 
   useEffect(() => {
     if (orgId) loadRecords()
-  }, [orgId, page, filterType, filterCategoryId, filterStartDate, filterEndDate])
+  }, [orgId, page, filterType, filterCategoryId, filterStartDate, filterEndDate, filterPeriodYear, filterPeriodMonth])
 
   async function loadCategories() {
     if (!orgId) return
@@ -100,6 +110,8 @@ export function FinanceRecordsPage() {
       if (filterCategoryId) params.set('categoryId', filterCategoryId)
       if (filterStartDate) params.set('startDate', filterStartDate)
       if (filterEndDate) params.set('endDate', filterEndDate)
+      if (filterPeriodYear) params.set('periodYear', filterPeriodYear)
+      if (filterPeriodMonth) params.set('periodMonth', filterPeriodMonth)
 
       const r = await api.get<FinanceRecordListResult>(`/organizations/${orgId}/finance/records?${params}`)
       setRecords(r.data.items)
@@ -113,6 +125,8 @@ export function FinanceRecordsPage() {
     setFilterCategoryId('')
     setFilterStartDate('')
     setFilterEndDate('')
+    setFilterPeriodYear('')
+    setFilterPeriodMonth('')
     setPage(1)
   }
 
@@ -121,9 +135,12 @@ export function FinanceRecordsPage() {
     setFormType(type)
     setFormCategoryId('')
     setFormAmount('')
-    setFormDate(new Date().toISOString().slice(0, 10))
+    const today = new Date()
+    setFormDate(today.toISOString().slice(0, 10))
     setFormDesc('')
     setFormPaymentMethod('')
+    setFormPeriodYear(String(today.getFullYear()))
+    setFormPeriodMonth(String(today.getMonth() + 1))
     setFormError('')
     setShowForm(true)
   }
@@ -136,6 +153,8 @@ export function FinanceRecordsPage() {
     setFormDate(rec.recordDate)
     setFormDesc(rec.description)
     setFormPaymentMethod(rec.paymentMethod ?? '')
+    setFormPeriodYear(String(rec.periodYear))
+    setFormPeriodMonth(String(rec.periodMonth))
     setFormError('')
     setShowForm(true)
   }
@@ -151,6 +170,9 @@ export function FinanceRecordsPage() {
     setSaving(true)
     setFormError('')
     try {
+      const periodYear = formPeriodYear ? parseInt(formPeriodYear) : undefined
+      const periodMonth = formPeriodMonth ? parseInt(formPeriodMonth) : undefined
+
       if (editing) {
         await api.put(`/organizations/${orgId}/finance/records/${editing.id}`, {
           categoryId: formCategoryId,
@@ -158,6 +180,8 @@ export function FinanceRecordsPage() {
           recordDate: formDate,
           description: formDesc.trim(),
           paymentMethod: formPaymentMethod || null,
+          periodYear,
+          periodMonth,
         })
       } else {
         await api.post(`/organizations/${orgId}/finance/records`, {
@@ -167,6 +191,8 @@ export function FinanceRecordsPage() {
           recordDate: formDate,
           description: formDesc.trim(),
           paymentMethod: formPaymentMethod || null,
+          periodYear,
+          periodMonth,
         })
       }
       setShowForm(false)
@@ -284,7 +310,28 @@ export function FinanceRecordsPage() {
             placeholder="Bitiş"
           />
 
-          {(filterType !== 'all' || filterCategoryId || filterStartDate || filterEndDate) && (
+          <select
+            value={filterPeriodYear}
+            onChange={e => { setFilterPeriodYear(e.target.value); setPage(1) }}
+            className="h-8 rounded-lg border border-input bg-background px-2 text-xs text-foreground"
+          >
+            <option value="">Dönem Yılı</option>
+            {[now.getFullYear() - 2, now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1].map(y => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+          <select
+            value={filterPeriodMonth}
+            onChange={e => { setFilterPeriodMonth(e.target.value); setPage(1) }}
+            className="h-8 rounded-lg border border-input bg-background px-2 text-xs text-foreground"
+          >
+            <option value="">Dönem Ayı</option>
+            {MONTHS_TR.map((m, i) => (
+              <option key={i + 1} value={i + 1}>{m}</option>
+            ))}
+          </select>
+
+          {(filterType !== 'all' || filterCategoryId || filterStartDate || filterEndDate || filterPeriodYear || filterPeriodMonth) && (
             <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
               <X className="w-3 h-3" /> Temizle
             </button>
@@ -310,6 +357,7 @@ export function FinanceRecordsPage() {
                   <thead className="bg-muted border-b border-border">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Tarih</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Dönem</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Tür</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Kategori</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Açıklama</th>
@@ -325,6 +373,9 @@ export function FinanceRecordsPage() {
                         rec.isOpeningBalance && 'bg-muted/30 italic'
                       )}>
                         <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{formatDate(rec.recordDate)}</td>
+                        <td className="px-4 py-3 text-muted-foreground whitespace-nowrap text-xs">
+                          {MONTHS_TR[rec.periodMonth - 1]} {rec.periodYear}
+                        </td>
                         <td className="px-4 py-3">
                           <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
                             rec.type === 'income' ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'
@@ -461,9 +512,42 @@ export function FinanceRecordsPage() {
                 label="Tarih *"
                 type="date"
                 value={formDate}
-                onChange={e => setFormDate(e.target.value)}
+                onChange={e => {
+                  setFormDate(e.target.value)
+                  // Default dönem = tarih'in yıl/ayı
+                  if (e.target.value) {
+                    const d = new Date(e.target.value)
+                    setFormPeriodYear(String(d.getFullYear()))
+                    setFormPeriodMonth(String(d.getMonth() + 1))
+                  }
+                }}
                 max={new Date().toISOString().slice(0, 10)}
               />
+
+              <div>
+                <label className="text-sm font-medium text-foreground block mb-1.5">Ait Olduğu Dönem</label>
+                <div className="flex gap-2">
+                  <select
+                    value={formPeriodYear}
+                    onChange={e => setFormPeriodYear(e.target.value)}
+                    className="flex-1 h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground"
+                  >
+                    {[now.getFullYear() - 2, now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1].map(y => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={formPeriodMonth}
+                    onChange={e => setFormPeriodMonth(e.target.value)}
+                    className="flex-1 h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground"
+                  >
+                    {MONTHS_TR.map((m, i) => (
+                      <option key={i + 1} value={i + 1}>{m}</option>
+                    ))}
+                  </select>
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-1">Bu kaydın ait olduğu mali dönem. Varsayılan: kayıt tarihinin ay/yılı.</p>
+              </div>
 
               <div>
                 <label className="text-sm font-medium text-foreground block mb-1.5">Açıklama *</label>
