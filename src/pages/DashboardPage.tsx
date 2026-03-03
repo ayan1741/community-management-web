@@ -69,11 +69,11 @@ export function DashboardPage() {
         <SetupBanner />
 
         {/* Greeting */}
-        <div className="mb-6">
-          <h1 className="text-xl font-semibold text-foreground">
+        <div className="mb-8">
+          <h1 className="text-xl font-semibold text-foreground tracking-tight">
             Merhaba, {profile?.fullName?.split(' ')[0]}
           </h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
+          <p className="text-sm text-muted-foreground mt-1">
             {activeMembership?.organizationName}
             {activeMembership?.units?.[0]?.unitNumber ? ` · Daire ${activeMembership.units[0].unitNumber}` : ''}
           </p>
@@ -84,16 +84,16 @@ export function DashboardPage() {
           <>
             {/* KPI Row */}
             {loading ? (
-              <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-6">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="rounded-xl border border-border bg-card p-5 animate-pulse">
+                  <div key={i} className="rounded-xl border border-black/[0.04] dark:border-white/[0.06] bg-white/60 dark:bg-white/[0.03] p-5 animate-pulse">
                     <div className="h-4 bg-muted rounded mb-3 w-3/4" />
                     <div className="h-6 bg-muted rounded w-1/2" />
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-6">
                 <KpiCard
                   label="Uyeler"
                   value={memberCount ?? '—'}
@@ -118,11 +118,11 @@ export function DashboardPage() {
             )}
 
             {/* Second row: Status Summary + Quick Links */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
               <StatusSummary lines={statusLines} />
 
               {/* Quick links */}
-              <div className="rounded-xl border border-border bg-card p-5">
+              <div className="rounded-xl border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-white/[0.04] p-5">
                 <h3 className="text-sm font-semibold text-foreground mb-3">Hizli Erisim</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {[
@@ -134,9 +134,9 @@ export function DashboardPage() {
                     <button
                       key={link.to}
                       onClick={() => navigate(link.to)}
-                      className="flex items-center gap-2.5 p-3 rounded-lg border border-border hover:bg-accent text-sm font-medium text-foreground transition-colors"
+                      className="group/link flex items-center gap-2.5 p-3 rounded-lg border border-black/[0.04] dark:border-white/[0.06] bg-muted/30 dark:bg-white/[0.02] text-sm font-medium text-foreground transition-all duration-200 hover:bg-primary/[0.06] hover:border-primary/20 hover:text-primary"
                     >
-                      <link.icon className="w-4 h-4 text-muted-foreground" />
+                      <link.icon className="w-4 h-4 text-muted-foreground transition-colors duration-200 group-hover/link:text-primary" />
                       {link.label}
                     </button>
                   ))}
@@ -148,7 +148,7 @@ export function DashboardPage() {
 
         {/* Resident view — simple role card */}
         {!isAdmin && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <KpiCard
               label="Rolunuz"
               value={activeMembership?.role === 'resident' ? 'Sakin' : activeMembership?.role ?? '—'}
@@ -156,9 +156,9 @@ export function DashboardPage() {
             />
             <button
               onClick={() => navigate('/dues')}
-              className="rounded-xl border border-border bg-card p-5 flex items-center gap-4 hover:bg-accent transition-colors text-left"
+              className="group rounded-xl border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-white/[0.04] p-5 flex items-center gap-4 text-left transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_4px_16px_rgba(255,255,255,0.04)]"
             >
-              <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-warning/15">
                 <Wallet className="w-5 h-5 text-warning" />
               </div>
               <div>

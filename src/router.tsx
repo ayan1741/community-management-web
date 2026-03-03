@@ -19,6 +19,12 @@ import { DueTypesPage } from '@/pages/admin/DueTypesPage'
 import { DuesPeriodsPage } from '@/pages/admin/DuesPeriodsPage'
 import { DuesPeriodDetailPage } from '@/pages/admin/DuesPeriodDetailPage'
 import { MyDuesPage } from '@/pages/MyDuesPage'
+import { FinanceHomePage } from '@/pages/admin/FinanceHomePage'
+import { FinanceCategoriesPage } from '@/pages/admin/FinanceCategoriesPage'
+import { FinanceRecordsPage } from '@/pages/admin/FinanceRecordsPage'
+import { FinanceBudgetPage } from '@/pages/admin/FinanceBudgetPage'
+import { FinanceAnnualReportPage } from '@/pages/admin/FinanceAnnualReportPage'
+import { MyFinancePage } from '@/pages/MyFinancePage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading, activeMembership } = useAuth()
@@ -97,6 +103,16 @@ export function AppRouter() {
 
         {/* Aidat Tipleri — sadece admin */}
         <Route path="/admin/dues/types" element={<RequireAuth><RequireAdmin><RequireAdminOnly><DueTypesPage /></RequireAdminOnly></RequireAdmin></RequireAuth>} />
+
+        {/* Gelir-Gider — admin & board_member */}
+        <Route path="/admin/finance" element={<RequireAuth><RequireAdmin><FinanceHomePage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/finance/categories" element={<RequireAuth><RequireAdmin><RequireAdminOnly><FinanceCategoriesPage /></RequireAdminOnly></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/finance/records" element={<RequireAuth><RequireAdmin><FinanceRecordsPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/finance/budgets" element={<RequireAuth><RequireAdmin><RequireAdminOnly><FinanceBudgetPage /></RequireAdminOnly></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/finance/reports" element={<RequireAuth><RequireAdmin><FinanceAnnualReportPage /></RequireAdmin></RequireAuth>} />
+
+        {/* Sakin gelir-gider şeffaflık görünümü */}
+        <Route path="/finance" element={<RequireAuth><MyFinancePage /></RequireAuth>} />
 
         {/* Default */}
         <Route path="*" element={<Navigate to="/" replace />} />
