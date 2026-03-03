@@ -50,7 +50,13 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           role="main"
           className="flex-1 overflow-y-auto p-4 md:p-5 lg:p-6"
         >
-          {children}
+          {/* Page Container */}
+          <div className="relative overflow-hidden rounded-2xl border border-black/[0.08] dark:border-white/[0.06] bg-card/85 dark:bg-card/90 backdrop-blur-sm shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_4px_12px_rgba(0,0,0,0.2)] max-w-6xl mx-auto min-h-[calc(100%-2rem)] mb-4">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/[0.02] to-transparent dark:from-primary/[0.05]" />
+            <div className="relative p-4 md:p-6 lg:p-8">
+              {children}
+            </div>
+          </div>
         </main>
       </div>
     </div>

@@ -11,10 +11,12 @@ interface KpiCardProps {
 export function KpiCard({ label, value, icon, trend, className }: KpiCardProps) {
   return (
     <div className={cn(
-      'rounded-xl border border-border bg-card p-5 flex items-center gap-4',
+      'group relative rounded-xl border border-black/[0.06] dark:border-white/[0.08] bg-white dark:bg-white/[0.04] p-5 flex items-center gap-4',
+      'transition-all duration-300 hover:-translate-y-0.5',
+      'hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] dark:hover:shadow-[0_4px_16px_rgba(255,255,255,0.04)]',
       className
     )}>
-      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 transition-colors duration-300 group-hover:bg-primary/15">
         {icon}
       </div>
       <div className="min-w-0">
