@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -138,7 +138,7 @@ export function DueTypesPage() {
     return (
       <div className="flex flex-wrap gap-1 mt-0.5">
         {Object.entries(parsed).map(([k, v]) => (
-          <span key={k} className="inline-flex px-1.5 py-0.5 rounded text-xs bg-slate-100 text-slate-600">
+          <span key={k} className="inline-flex px-1.5 py-0.5 rounded text-xs bg-muted text-muted-foreground">
             {categoryLabels[k] ?? k}: {v.toLocaleString('tr-TR')} ₺
           </span>
         ))}
@@ -147,17 +147,17 @@ export function DueTypesPage() {
   }
 
   return (
-    <AppLayout>
+    <AdminLayout>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Aidat Tipleri</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Aylık aidat, asansör bakım, yakıt gibi kalemleri tanımla</p>
+            <h1 className="text-xl font-semibold text-foreground">Aidat Tipleri</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Aylık aidat, asansör bakım, yakıt gibi kalemleri tanımla</p>
           </div>
           <Button onClick={openAdd}>Tip Ekle</Button>
         </div>
 
-        <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">
+        <div className="mb-4 rounded-lg border border-primary/30 bg-primary/10 p-3 text-sm text-primary">
           <Info className="inline h-4 w-4 mr-1.5 -mt-0.5" />
           Aidat tipleri, sakinlere kesilecek fatura kalemlerini temsil eder. Örneğin "Aylık Aidat"
           tüm ortak giderleri (temizlik, güvenlik, asansör bakım vb.) içerir. Özel durumlar için
@@ -165,7 +165,7 @@ export function DueTypesPage() {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>
+          <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
         )}
 
         <Card>
@@ -175,41 +175,41 @@ export function DueTypesPage() {
           <CardContent className="p-0">
             {loading ? (
               <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-slate-500">Yükleniyor...</p>
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
               </div>
             ) : dueTypes.length === 0 ? (
               <div className="px-6 py-12 text-center">
-                <CircleDollarSign className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm font-medium text-slate-700">Henüz aidat tipi yok</p>
-                <p className="text-xs text-slate-400 mt-1">İlk tipi ekleyerek başlayın.</p>
+                <CircleDollarSign className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm font-medium text-foreground">Henüz aidat tipi yok</p>
+                <p className="text-xs text-muted-foreground mt-1">İlk tipi ekleyerek başlayın.</p>
               </div>
             ) : (
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-muted border-b border-border">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Ad</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Varsayılan Tutar</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Durum</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">İşlemler</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Ad</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Varsayılan Tutar</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Durum</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">İşlemler</th>
                   </tr>
                 </thead>
                 <tbody>
                   {dueTypes.map(dt => (
-                    <tr key={dt.id} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
+                    <tr key={dt.id} className="border-b border-border hover:bg-muted/70 transition-colors">
                       <td className="px-4 py-3.5">
-                        <p className="font-medium text-slate-900">{dt.name}</p>
-                        {dt.description && <p className="text-xs text-slate-500 mt-0.5">{dt.description}</p>}
+                        <p className="font-medium text-foreground">{dt.name}</p>
+                        {dt.description && <p className="text-xs text-muted-foreground mt-0.5">{dt.description}</p>}
                         {renderCategoryAmounts(dt)}
                       </td>
-                      <td className="px-4 py-3.5 text-slate-700 font-medium">
+                      <td className="px-4 py-3.5 text-foreground font-medium">
                         {dt.defaultAmount.toLocaleString('tr-TR')} ₺
                       </td>
                       <td className="px-4 py-3.5">
                         {dt.isActive ? (
-                          <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700">Aktif</span>
+                          <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success">Aktif</span>
                         ) : (
-                          <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-500">Pasif</span>
+                          <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">Pasif</span>
                         )}
                       </td>
                       <td className="px-4 py-3.5">
@@ -219,7 +219,7 @@ export function DueTypesPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-amber-600 hover:text-amber-800 hover:bg-amber-50"
+                              className="text-warning hover:text-warning hover:bg-warning/10"
                               onClick={() => { setError(''); setDeactivating(dt) }}
                             >
                               Pasife Al
@@ -239,8 +239,8 @@ export function DueTypesPage() {
       {/* Ekle / Düzenle Modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-base font-semibold text-slate-900 mb-5">
+          <div className="bg-card rounded-xl shadow-xl max-w-md w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-base font-semibold text-foreground mb-5">
               {editing ? 'Aidat Tipini Düzenle' : 'Yeni Aidat Tipi'}
             </h2>
 
@@ -255,8 +255,8 @@ export function DueTypesPage() {
                 value={formDefaultAmount} onChange={e => setFormDefaultAmount(e.target.value)} />
 
               <div>
-                <p className="text-sm font-medium text-slate-700 mb-2">Kategori Bazlı Tutarlar (opsiyonel)</p>
-                <p className="text-xs text-slate-500 mb-3">Boş bırakılan kategoriler için varsayılan tutar kullanılır.</p>
+                <p className="text-sm font-medium text-foreground mb-2">Kategori Bazlı Tutarlar (opsiyonel)</p>
+                <p className="text-xs text-muted-foreground mb-3">Boş bırakılan kategoriler için varsayılan tutar kullanılır.</p>
                 <div className="grid grid-cols-2 gap-3">
                   {(['small', 'large', 'commercial', 'other'] as const).map(cat => (
                     <Input key={cat}
@@ -270,7 +270,7 @@ export function DueTypesPage() {
                 </div>
               </div>
 
-              {formError && <p className="text-sm text-red-600">{formError}</p>}
+              {formError && <p className="text-sm text-destructive">{formError}</p>}
             </div>
 
             <div className="flex gap-3 justify-end mt-6">
@@ -290,6 +290,6 @@ export function DueTypesPage() {
         onConfirm={deactivateDueType}
         onCancel={() => setDeactivating(null)}
       />
-    </AppLayout>
+    </AdminLayout>
   )
 }

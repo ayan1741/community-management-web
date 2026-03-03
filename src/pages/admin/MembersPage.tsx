@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
@@ -159,12 +159,12 @@ export function MembersPage() {
   }
 
   return (
-    <AppLayout>
+    <AdminLayout>
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Üyeler</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Tüm üyeleri görüntüle ve yönet</p>
+            <h1 className="text-xl font-semibold text-foreground">Üyeler</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Tüm üyeleri görüntüle ve yönet</p>
           </div>
         </div>
 
@@ -180,25 +180,25 @@ export function MembersPage() {
             {loading && (
               <div className="px-6 py-12 text-center">
                 <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-slate-500">Yükleniyor...</p>
+                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
               </div>
             )}
             {!loading && members.length === 0 && (
               <div className="px-6 py-12 text-center">
-                <Users className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm font-medium text-slate-700">Henüz üye yok</p>
-                <p className="text-xs text-slate-400 mt-1">Davet kodu oluşturarak üye ekleyebilirsiniz.</p>
+                <Users className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm font-medium text-foreground">Henüz üye yok</p>
+                <p className="text-xs text-muted-foreground mt-1">Davet kodu oluşturarak üye ekleyebilirsiniz.</p>
               </div>
             )}
             {members.length > 0 && (
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-muted border-b border-border">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Ad Soyad</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Daire</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Rol</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Durum</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">İşlemler</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Ad Soyad</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Daire</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Rol</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Durum</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">İşlemler</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -206,22 +206,22 @@ export function MembersPage() {
                     const isCurrentUser = m.userId === user?.id
                     const isLastAdmin = m.role === 'admin' && adminCount === 1
                     return (
-                      <tr key={m.userId} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
+                      <tr key={m.userId} className="border-b border-border hover:bg-muted/70 transition-colors">
                         <td className="px-4 py-3.5">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-medium text-slate-600 shrink-0">
+                            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground shrink-0">
                               {m.fullName?.split(' ').map((w: string) => w[0]).slice(0, 2).join('')}
                             </div>
                             <div>
-                              <span className="font-medium text-slate-900">{m.fullName}</span>
-                              {isCurrentUser && <span className="ml-2 text-xs text-slate-400">(sen)</span>}
+                              <span className="font-medium text-foreground">{m.fullName}</span>
+                              {isCurrentUser && <span className="ml-2 text-xs text-muted-foreground">(sen)</span>}
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3.5 text-slate-600">
+                        <td className="px-4 py-3.5 text-muted-foreground">
                           {m.units.length > 0
                             ? m.units.map(u => formatUnitLabel(u.blockName, u.unitNumber, orgType)).join(', ')
-                            : <span className="text-slate-400">—</span>
+                            : <span className="text-muted-foreground">—</span>
                           }
                         </td>
                         <td className="px-4 py-3.5">
@@ -255,33 +255,33 @@ export function MembersPage() {
                             {openMenuId === m.userId && (
                               <>
                                 <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
-                                <div className="absolute right-0 top-full mt-1 w-44 bg-white border border-slate-200 rounded-lg shadow-lg z-20">
+                                <div className="absolute right-0 top-full mt-1 w-44 bg-card border border-border rounded-lg shadow-lg z-20">
                                   <button
                                     onClick={() => openAssign(m)}
-                                    className="w-full px-3 py-2 text-sm text-left text-slate-700 hover:bg-slate-50 transition-colors rounded-t-lg"
+                                    className="w-full px-3 py-2 text-sm text-left text-foreground hover:bg-muted transition-colors rounded-t-lg"
                                   >
                                     <Home className="inline w-3.5 h-3.5 mr-1.5" />Daireye Ata
                                   </button>
                                   <button
                                     disabled={isCurrentUser || isLastAdmin}
                                     onClick={() => openRoleChange(m)}
-                                    className="w-full px-3 py-2 text-sm text-left text-slate-700 hover:bg-slate-50 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors"
+                                    className="w-full px-3 py-2 text-sm text-left text-foreground hover:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
                                   >
                                     Rol Değiştir
-                                    {isLastAdmin && <span className="block text-xs text-slate-400">Son yönetici</span>}
+                                    {isLastAdmin && <span className="block text-xs text-muted-foreground">Son yönetici</span>}
                                   </button>
                                   {m.status !== 'suspended' ? (
                                     <button
                                       disabled={isCurrentUser}
                                       onClick={() => { setConfirmAction({ member: m, type: 'suspend' }); setOpenMenuId(null) }}
-                                      className="w-full px-3 py-2 text-sm text-left text-slate-700 hover:bg-slate-50 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors"
+                                      className="w-full px-3 py-2 text-sm text-left text-foreground hover:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors"
                                     >
                                       Askıya Al
                                     </button>
                                   ) : (
                                     <button
                                       onClick={() => { setConfirmAction({ member: m, type: 'activate' }); setOpenMenuId(null) }}
-                                      className="w-full px-3 py-2 text-sm text-left text-slate-700 hover:bg-slate-50 transition-colors"
+                                      className="w-full px-3 py-2 text-sm text-left text-foreground hover:bg-muted transition-colors"
                                     >
                                       Aktifleştir
                                     </button>
@@ -289,7 +289,7 @@ export function MembersPage() {
                                   <button
                                     disabled={isCurrentUser}
                                     onClick={() => { setConfirmAction({ member: m, type: 'remove' }); setOpenMenuId(null) }}
-                                    className="w-full px-3 py-2 text-sm text-left text-red-600 hover:bg-red-50 disabled:text-slate-300 disabled:cursor-not-allowed transition-colors rounded-b-lg"
+                                    className="w-full px-3 py-2 text-sm text-left text-red-600 hover:bg-red-50 disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors rounded-b-lg"
                                   >
                                     Çıkar
                                   </button>
@@ -325,15 +325,15 @@ export function MembersPage() {
 
       {roleChangeTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
-            <h2 className="text-base font-semibold text-slate-900 mb-1">Rol Değiştir</h2>
-            <p className="text-sm text-slate-500 mb-4">{roleChangeTarget.fullName}</p>
+          <div className="bg-card rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
+            <h2 className="text-base font-semibold text-foreground mb-1">Rol Değiştir</h2>
+            <p className="text-sm text-muted-foreground mb-4">{roleChangeTarget.fullName}</p>
             <div className="space-y-2">
               {(['admin', 'board_member', 'resident', 'staff'] as UserRole[]).map(role => (
                 <label
                   key={role}
                   className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                    newRole === role ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:bg-slate-50'
+                    newRole === role ? 'border-blue-500 bg-blue-50' : 'border-border hover:bg-muted'
                   }`}
                 >
                   <input
@@ -343,7 +343,7 @@ export function MembersPage() {
                     onChange={() => setNewRole(role)}
                     className="text-blue-600"
                   />
-                  <span className="text-sm text-slate-900">{roleLabels[role]}</span>
+                  <span className="text-sm text-foreground">{roleLabels[role]}</span>
                 </label>
               ))}
             </div>
@@ -364,16 +364,16 @@ export function MembersPage() {
 
       {assignTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
-            <h2 className="text-base font-semibold text-slate-900 mb-1">Daireye Ata</h2>
-            <p className="text-sm text-slate-500 mb-4">{assignTarget.fullName}</p>
+          <div className="bg-card rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
+            <h2 className="text-base font-semibold text-foreground mb-1">Daireye Ata</h2>
+            <p className="text-sm text-muted-foreground mb-4">{assignTarget.fullName}</p>
             <div className="space-y-3">
               <div>
-                <label className="text-sm font-medium text-slate-700 mb-1 block">Daire</label>
+                <label className="text-sm font-medium text-foreground mb-1 block">Daire</label>
                 <select
                   value={assignUnitId}
                   onChange={e => setAssignUnitId(e.target.value)}
-                  className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 focus:border-blue-400 focus:outline-none"
+                  className="h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:border-blue-400 focus:outline-none"
                 >
                   <option value="">Seçiniz</option>
                   {assignUnits.map(u => (
@@ -384,7 +384,7 @@ export function MembersPage() {
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 mb-1 block">Sakin Tipi</label>
+                <label className="text-sm font-medium text-foreground mb-1 block">Sakin Tipi</label>
                 <div className="space-y-2">
                   {[
                     { value: 'owner', label: 'Malik (Ev Sahibi)' },
@@ -394,7 +394,7 @@ export function MembersPage() {
                     <label
                       key={opt.value}
                       className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                        assignResidentType === opt.value ? 'border-blue-500 bg-blue-50' : 'border-slate-200 hover:bg-slate-50'
+                        assignResidentType === opt.value ? 'border-blue-500 bg-blue-50' : 'border-border hover:bg-muted'
                       }`}
                     >
                       <input
@@ -404,7 +404,7 @@ export function MembersPage() {
                         onChange={() => setAssignResidentType(opt.value)}
                         className="text-blue-600"
                       />
-                      <span className="text-sm text-slate-900">{opt.label}</span>
+                      <span className="text-sm text-foreground">{opt.label}</span>
                     </label>
                   ))}
                 </div>
@@ -418,6 +418,6 @@ export function MembersPage() {
           </div>
         </div>
       )}
-    </AppLayout>
+    </AdminLayout>
   )
 }

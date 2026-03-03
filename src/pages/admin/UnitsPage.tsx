@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -21,7 +21,7 @@ const unitTypeLabels: Record<string, string> = {
 const unitTypeOptions = ['residential', 'shop', 'storage', 'parking', 'other']
 
 const selectClass =
-  'h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/10'
+  'h-10 w-full rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/10'
 
 export function UnitsPage() {
   const { activeMembership } = useAuth()
@@ -161,12 +161,12 @@ export function UnitsPage() {
   const totalPages = Math.ceil(totalCount / pageSize)
 
   return (
-    <AppLayout>
+    <AdminLayout>
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Daireler</h1>
-            <p className="text-sm text-slate-500 mt-0.5">{totalCount} daire</p>
+            <h1 className="text-xl font-semibold text-foreground">Daireler</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">{totalCount} daire</p>
           </div>
           <div className="flex gap-2">
             <Button variant="secondary" onClick={() => setShowBulkWizard(true)}>Toplu Ekle</Button>
@@ -175,7 +175,7 @@ export function UnitsPage() {
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>
+          <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
         )}
 
         {/* Filter row */}
@@ -183,7 +183,7 @@ export function UnitsPage() {
           <div className="px-4 py-3">
             <form className="flex flex-wrap gap-3 items-end" onSubmit={handleSearch}>
               <div className="min-w-[150px]">
-                <label className="text-xs font-medium text-slate-500 mb-1 block">Blok</label>
+                <label className="text-xs font-medium text-muted-foreground mb-1 block">Blok</label>
                 <select
                   value={filterBlockId}
                   onChange={e => { setFilterBlockId(e.target.value); setPage(1) }}
@@ -194,7 +194,7 @@ export function UnitsPage() {
                 </select>
               </div>
               <div className="min-w-[140px]">
-                <label className="text-xs font-medium text-slate-500 mb-1 block">Tip</label>
+                <label className="text-xs font-medium text-muted-foreground mb-1 block">Tip</label>
                 <select
                   value={filterUnitType}
                   onChange={e => { setFilterUnitType(e.target.value); setPage(1) }}
@@ -205,7 +205,7 @@ export function UnitsPage() {
                 </select>
               </div>
               <div className="min-w-[130px]">
-                <label className="text-xs font-medium text-slate-500 mb-1 block">Doluluk</label>
+                <label className="text-xs font-medium text-muted-foreground mb-1 block">Doluluk</label>
                 <select
                   value={filterIsOccupied}
                   onChange={e => { setFilterIsOccupied(e.target.value as '' | 'true' | 'false'); setPage(1) }}
@@ -218,7 +218,7 @@ export function UnitsPage() {
               </div>
               <div className="flex-1 min-w-[200px] flex gap-2 items-end">
                 <div className="flex-1">
-                  <label className="text-xs font-medium text-slate-500 mb-1 block">Ara</label>
+                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Ara</label>
                   <Input
                     placeholder="Daire no..."
                     value={searchInput}
@@ -235,47 +235,47 @@ export function UnitsPage() {
           <CardContent className="p-0">
             {loading ? (
               <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-slate-500">Yükleniyor...</p>
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
               </div>
             ) : units.length === 0 ? (
               <div className="px-6 py-12 text-center">
-                <DoorOpen className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm font-medium text-slate-700">Daire bulunamadı</p>
-                <p className="text-xs text-slate-400 mt-1">Filtre kriterlerini değiştirin veya yeni daire ekleyin.</p>
+                <DoorOpen className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm font-medium text-foreground">Daire bulunamadı</p>
+                <p className="text-xs text-muted-foreground mt-1">Filtre kriterlerini değiştirin veya yeni daire ekleyin.</p>
               </div>
             ) : (
               <>
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-50 border-b border-slate-200">
+                  <thead className="bg-muted border-b border-border">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Blok</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">No</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Tip</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Kat</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Durum</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">İşlemler</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Blok</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">No</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Tip</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Kat</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Durum</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">İşlemler</th>
                     </tr>
                   </thead>
                   <tbody>
                     {units.map(u => (
-                      <tr key={u.id} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
-                        <td className="px-4 py-3.5 text-slate-600">{u.blockName}</td>
-                        <td className="px-4 py-3.5 font-medium text-slate-900">
+                      <tr key={u.id} className="border-b border-border hover:bg-muted/70 transition-colors">
+                        <td className="px-4 py-3.5 text-muted-foreground">{u.blockName}</td>
+                        <td className="px-4 py-3.5 font-medium text-foreground">
                           {u.unitNumber}
                           {u.notes && (
-                            <span title={u.notes.slice(0, 100)} className="ml-1 cursor-help text-slate-400">
+                            <span title={u.notes.slice(0, 100)} className="ml-1 cursor-help text-muted-foreground">
                               <StickyNote className="inline h-3.5 w-3.5" />
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3.5 text-slate-600">{unitTypeLabels[u.unitType] ?? u.unitType}</td>
-                        <td className="px-4 py-3.5 text-slate-600">{u.floor ?? '-'}</td>
+                        <td className="px-4 py-3.5 text-muted-foreground">{unitTypeLabels[u.unitType] ?? u.unitType}</td>
+                        <td className="px-4 py-3.5 text-muted-foreground">{u.floor ?? '-'}</td>
                         <td className="px-4 py-3.5">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                            u.isOccupied ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-500'
+                            u.isOccupied ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'
                           }`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${u.isOccupied ? 'bg-green-500' : 'bg-slate-400'}`} />
+                            <span className={`w-1.5 h-1.5 rounded-full ${u.isOccupied ? 'bg-success' : 'bg-muted-foreground'}`} />
                             {u.isOccupied ? 'Dolu' : 'Boş'}
                           </span>
                         </td>
@@ -286,7 +286,7 @@ export function UnitsPage() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                 onClick={() => { setError(''); setDeletingUnit(u) }}
                               >
                                 Sil
@@ -299,8 +299,8 @@ export function UnitsPage() {
                   </tbody>
                 </table>
                 {totalPages > 1 && (
-                  <div className="px-4 py-3 flex items-center justify-between border-t border-slate-100">
-                    <span className="text-xs text-slate-500">
+                  <div className="px-4 py-3 flex items-center justify-between border-t border-border">
+                    <span className="text-xs text-muted-foreground">
                       {totalCount} sonuçtan {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, totalCount)}
                     </span>
                     <div className="flex gap-1">
@@ -321,13 +321,13 @@ export function UnitsPage() {
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
-            <h2 className="text-base font-semibold text-slate-900 mb-4">
+          <div className="bg-card rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
+            <h2 className="text-base font-semibold text-foreground mb-4">
               {editingUnit ? 'Daireyi Düzenle' : 'Yeni Daire Ekle'}
             </h2>
             <div className="space-y-3">
               <div>
-                <label className="text-sm font-medium text-slate-700 mb-1 block">Blok</label>
+                <label className="text-sm font-medium text-foreground mb-1 block">Blok</label>
                 <select
                   value={form.blockId}
                   onChange={e => setForm(f => ({ ...f, blockId: e.target.value }))}
@@ -343,7 +343,7 @@ export function UnitsPage() {
                 onChange={e => setForm(f => ({ ...f, unitNumber: e.target.value }))}
               />
               <div>
-                <label className="text-sm font-medium text-slate-700 mb-1 block">Tip</label>
+                <label className="text-sm font-medium text-foreground mb-1 block">Tip</label>
                 <select
                   value={form.unitType}
                   onChange={e => setForm(f => ({ ...f, unitType: e.target.value }))}
@@ -374,7 +374,7 @@ export function UnitsPage() {
                 value={form.notes}
                 onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               />
-              {formError && <p className="text-sm text-red-600">{formError}</p>}
+              {formError && <p className="text-sm text-destructive">{formError}</p>}
             </div>
             <div className="flex gap-3 justify-end mt-5">
               <Button variant="secondary" onClick={() => setShowForm(false)} disabled={saving}>İptal</Button>
@@ -402,6 +402,6 @@ export function UnitsPage() {
           onCancel={() => setShowBulkWizard(false)}
         />
       )}
-    </AppLayout>
+    </AdminLayout>
   )
 }

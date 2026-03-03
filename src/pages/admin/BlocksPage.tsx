@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -106,18 +106,18 @@ export function BlocksPage() {
   }
 
   return (
-    <AppLayout>
+    <AdminLayout>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Bloklar</h1>
-            <p className="text-sm text-slate-500 mt-0.5">Binadaki blokları yönet</p>
+            <h1 className="text-xl font-semibold text-foreground">Bloklar</h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Binadaki blokları yönet</p>
           </div>
           <Button onClick={openAdd}>Blok Ekle</Button>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>
+          <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
         )}
 
         <Card>
@@ -127,42 +127,42 @@ export function BlocksPage() {
           <CardContent className="p-0">
             {loading ? (
               <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-slate-500">Yükleniyor...</p>
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
               </div>
             ) : blocks.length === 0 ? (
               <div className="px-6 py-12 text-center">
-                <Layers className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm font-medium text-slate-700">Henüz blok yok</p>
-                <p className="text-xs text-slate-400 mt-1">Yukarıdan yeni blok ekleyebilirsiniz.</p>
+                <Layers className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-sm font-medium text-foreground">Henüz blok yok</p>
+                <p className="text-xs text-muted-foreground mt-1">Yukarıdan yeni blok ekleyebilirsiniz.</p>
               </div>
             ) : (
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
+                <thead className="bg-muted border-b border-border">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Ad</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Tip</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">Daire Sayısı</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wide">İşlemler</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Ad</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Tip</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Daire Sayısı</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">İşlemler</th>
                   </tr>
                 </thead>
                 <tbody>
                   {blocks.map(b => (
-                    <tr key={b.id} className="border-b border-slate-100 hover:bg-slate-50/70 transition-colors">
+                    <tr key={b.id} className="border-b border-border hover:bg-muted/70 transition-colors">
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-slate-900">{b.name}</span>
+                          <span className="font-medium text-foreground">{b.name}</span>
                           {b.isDefault && (
-                            <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">Varsayılan</span>
+                            <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">Varsayılan</span>
                           )}
                         </div>
                       </td>
-                      <td className="px-4 py-3.5 text-slate-600">{blockTypeLabels[b.blockType] ?? b.blockType}</td>
+                      <td className="px-4 py-3.5 text-muted-foreground">{blockTypeLabels[b.blockType] ?? b.blockType}</td>
                       <td className="px-4 py-3.5">
                         {b.unitCount === 0 ? (
-                          <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-500">Boş</span>
+                          <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">Boş</span>
                         ) : (
-                          <span className="text-slate-700">{b.unitCount} daire</span>
+                          <span className="text-foreground">{b.unitCount} daire</span>
                         )}
                       </td>
                       <td className="px-4 py-3.5">
@@ -172,7 +172,7 @@ export function BlocksPage() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
                               onClick={() => { setError(''); setDeletingBlock(b) }}
                             >
                               Sil
@@ -191,8 +191,8 @@ export function BlocksPage() {
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
-            <h2 className="text-base font-semibold text-slate-900 mb-4">
+          <div className="bg-card rounded-xl shadow-xl max-w-sm w-full mx-4 p-6">
+            <h2 className="text-base font-semibold text-foreground mb-4">
               {editingBlock ? 'Bloğu Düzenle' : 'Yeni Blok Ekle'}
             </h2>
             <Input
@@ -221,6 +221,6 @@ export function BlocksPage() {
         onConfirm={deleteBlock}
         onCancel={() => setDeletingBlock(null)}
       />
-    </AppLayout>
+    </AdminLayout>
   )
 }
