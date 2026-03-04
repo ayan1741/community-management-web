@@ -23,7 +23,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [memberships, setMemberships] = useState<Membership[]>([])
-  const [activeMembership, setActiveMembership] = useState<Membership | null>(null)
+  const [activeMembership, setActiveMembershipState] = useState<Membership | null>(() => {
+    try {
+      const stored = localStorage.getItem('activeMembership')
+      return stored ? JSON.parse(stored) : null
+    } catch { return null }
+  })
+
+  function setActiveMembership(m: Membership | null) {
+    setActiveMembershipState(m)
+    if (m) localStorage.setItem('activeMembership', JSON.stringify(m))
+    else localStorage.removeItem('activeMembership')
+  }
 
   async function refreshProfile() {
     setLoading(true)
@@ -61,6 +72,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data } = await api.get<{ profile: UserProfile; memberships: Membership[] }>('/me')
       setProfile(data.profile)
       setMemberships(data.memberships)
+
+      // Validate stored activeMembership against fresh memberships
+      setActiveMembershipState(prev => {
+        if (!prev) return null
+        const match = data.memberships.find(m => m.organizationId === prev.organizationId)
+        if (match) {
+          // Update with fresh data (role may have changed)
+          localStorage.setItem('activeMembership', JSON.stringify(match))
+          return match
+        }
+        // Stored membership no longer valid
+        localStorage.removeItem('activeMembership')
+        return null
+      })
     } catch {
       // profil yüklenemedi — oturum geçersiz olabilir
     } finally {

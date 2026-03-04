@@ -25,6 +25,11 @@ import { FinanceRecordsPage } from '@/pages/admin/FinanceRecordsPage'
 import { FinanceBudgetPage } from '@/pages/admin/FinanceBudgetPage'
 import { FinanceAnnualReportPage } from '@/pages/admin/FinanceAnnualReportPage'
 import { MyFinancePage } from '@/pages/MyFinancePage'
+import { AnnouncementsPage } from '@/pages/AnnouncementsPage'
+import { AnnouncementDetailPage } from '@/pages/AnnouncementDetailPage'
+import { AdminAnnouncementsPage } from '@/pages/admin/AnnouncementsPage'
+import { AdminAnnouncementDetailPage } from '@/pages/admin/AnnouncementDetailPage'
+import { NotificationsPage } from '@/pages/NotificationsPage'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading, activeMembership } = useAuth()
@@ -88,6 +93,9 @@ export function AppRouter() {
         {/* Korumalı — tüm kullanıcılar */}
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
         <Route path="/dues" element={<RequireAuth><MyDuesPage /></RequireAuth>} />
+        <Route path="/announcements" element={<RequireAuth><AnnouncementsPage /></RequireAuth>} />
+        <Route path="/announcements/:id" element={<RequireAuth><AnnouncementDetailPage /></RequireAuth>} />
+        <Route path="/notifications" element={<RequireAuth><NotificationsPage /></RequireAuth>} />
 
         {/* Admin & Board Member */}
         <Route path="/admin/members" element={<RequireAuth><RequireAdmin><MembersPage /></RequireAdmin></RequireAuth>} />
@@ -103,6 +111,10 @@ export function AppRouter() {
 
         {/* Aidat Tipleri — sadece admin */}
         <Route path="/admin/dues/types" element={<RequireAuth><RequireAdmin><RequireAdminOnly><DueTypesPage /></RequireAdminOnly></RequireAdmin></RequireAuth>} />
+
+        {/* Duyurular — admin & board_member */}
+        <Route path="/admin/announcements" element={<RequireAuth><RequireAdmin><AdminAnnouncementsPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/announcements/:id" element={<RequireAuth><RequireAdmin><AdminAnnouncementDetailPage /></RequireAdmin></RequireAuth>} />
 
         {/* Gelir-Gider — admin & board_member */}
         <Route path="/admin/finance" element={<RequireAuth><RequireAdmin><FinanceHomePage /></RequireAdmin></RequireAuth>} />

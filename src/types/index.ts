@@ -418,3 +418,103 @@ export interface ResidentFinanceSummaryResult {
   perUnitShare: number
   expenseTrend: MonthAmountItem[]
 }
+
+// ─── Duyuru (Announcement) Tipleri ──────────────────────────────────────
+
+export type AnnouncementCategory = 'general' | 'urgent' | 'maintenance' | 'meeting' | 'financial' | 'other'
+export type AnnouncementPriority = 'normal' | 'important' | 'urgent'
+export type AnnouncementStatus = 'draft' | 'published' | 'expired'
+export type AnnouncementTargetType = 'all' | 'block' | 'role'
+
+export interface AttachmentInfo {
+  url: string
+  name: string
+  size: number
+}
+
+export interface AnnouncementListItem {
+  id: string
+  title: string
+  category: AnnouncementCategory
+  priority: AnnouncementPriority
+  status: AnnouncementStatus
+  isPinned: boolean
+  createdByName: string
+  publishedAt: string | null
+  createdAt: string
+  isRead: boolean
+  totalCount: number
+}
+
+export interface AnnouncementDetail {
+  id: string
+  organizationId: string
+  title: string
+  body: string
+  category: AnnouncementCategory
+  priority: AnnouncementPriority
+  targetType: AnnouncementTargetType
+  targetIds: string | null
+  status: AnnouncementStatus
+  isPinned: boolean
+  publishedAt: string | null
+  expiresAt: string | null
+  attachmentUrls: string | null
+  targetMemberCount: number | null
+  createdByName: string
+  createdBy: string
+  updatedBy: string | null
+  createdAt: string
+  updatedAt: string
+  isRead: boolean
+}
+
+export interface AnnouncementReadItem {
+  userId: string
+  fullName: string
+  readAt: string
+}
+
+export interface AnnouncementUnreadItem {
+  userId: string
+  fullName: string
+}
+
+export interface AnnouncementReadsResult {
+  targetMemberCount: number
+  readCount: number
+  readPercentage: number
+  readers: AnnouncementReadItem[] | null
+  readersTotal: number
+  nonReaders: AnnouncementUnreadItem[] | null
+  nonReadersTotal: number
+}
+
+export interface AnnouncementsListResult {
+  items: AnnouncementListItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
+// ─── Bildirim (Notification) Tipleri ──────────────────────────────────────
+
+export interface NotificationItem {
+  id: string
+  type: string
+  title: string
+  body: string | null
+  referenceType: string | null
+  referenceId: string | null
+  isRead: boolean
+  readAt: string | null
+  createdAt: string
+  totalCount: number
+}
+
+export interface NotificationsListResult {
+  items: NotificationItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+}

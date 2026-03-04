@@ -6,6 +6,7 @@ import {
   LayoutDashboard, Wallet, CircleDollarSign, Tag, CalendarDays,
   Users, Mail, UserCheck, Layers, DoorOpen, ChevronDown,
   LogOut, BarChart3, FolderTree, FileText, Target, TrendingUp,
+  Megaphone,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -17,6 +18,7 @@ const sidebarConfig: SidebarItem[] = [
   { type: 'link', to: '/dashboard', label: 'Ozet', icon: LayoutDashboard },
   { type: 'link', to: '/dues', label: 'Borclarim', icon: Wallet },
   { type: 'link', to: '/finance', label: 'Gelir-Gider', icon: BarChart3 },
+  { type: 'link', to: '/announcements', label: 'Duyurular', icon: Megaphone },
 
   { type: 'group', label: 'YONETIM' },
   { type: 'link', to: '/admin/dues', label: 'Aidat', icon: CircleDollarSign, adminOnly: true },
@@ -27,6 +29,7 @@ const sidebarConfig: SidebarItem[] = [
   { type: 'link', to: '/admin/finance/records', label: 'Kayitlar', icon: FileText, adminOnly: true, indent: true },
   { type: 'link', to: '/admin/finance/budgets', label: 'Butce', icon: Target, adminOnly: true, indent: true },
   { type: 'link', to: '/admin/finance/reports', label: 'Yillik Rapor', icon: TrendingUp, adminOnly: true, indent: true },
+  { type: 'link', to: '/admin/announcements', label: 'Duyurular', icon: Megaphone, adminOnly: true },
   { type: 'link', to: '/admin/members', label: 'Uyeler', icon: Users, adminOnly: true },
   { type: 'link', to: '/admin/invitations', label: 'Davetiyeler', icon: Mail, adminOnly: true, indent: true },
   { type: 'link', to: '/admin/applications', label: 'Onay Bekleyenler', icon: UserCheck, adminOnly: true, indent: true },
@@ -48,7 +51,7 @@ export const AdminSidebar = memo(function AdminSidebar({ onNavigate }: AdminSide
   const orgType = activeMembership?.orgType ?? 'site'
 
   function isActive(to: string) {
-    if (to === '/dashboard' || to === '/dues' || to === '/finance') return location.pathname === to
+    if (to === '/dashboard' || to === '/dues' || to === '/finance' || to === '/announcements') return location.pathname === to
     return location.pathname === to || location.pathname.startsWith(to + '/')
   }
 
