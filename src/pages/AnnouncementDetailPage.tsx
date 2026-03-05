@@ -6,7 +6,7 @@ import { AdminLayout } from '@/components/layout/AdminLayout'
 import { priorityLabels, priorityClasses, categoryLabels, categoryClasses } from '@/components/announcements/AnnouncementCard'
 import { formatDateTime, formatFileSize, safeParse } from '@/lib/format'
 import type { AnnouncementDetail, AttachmentInfo } from '@/types'
-import { ArrowLeft, Pin, User, Calendar, Clock, Target, Paperclip, Download } from 'lucide-react'
+import { ArrowLeft, Pin, User, Calendar, Clock, Paperclip, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function AnnouncementDetailPage() {

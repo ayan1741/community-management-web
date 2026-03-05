@@ -1,5 +1,4 @@
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardHeader, CardTitle, CardAction, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,7 +13,7 @@ import {
   Search, Plus, Filter, MoreHorizontal, ChevronLeft,
   ChevronRight, ArrowUpRight, ArrowDownRight,
   Clock, CheckCircle2, AlertTriangle, XCircle,
-  FileText, Bell, Mail, Settings, DoorOpen,
+  Mail, DoorOpen,
   Inbox, Eye, Edit2, Trash2, Download,
 } from 'lucide-react'
 import {

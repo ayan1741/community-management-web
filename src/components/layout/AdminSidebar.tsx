@@ -34,11 +34,6 @@ interface NavParent {
   children: NavLink[]
 }
 
-type NavItem =
-  | { type: 'link'; item: NavLink }
-  | { type: 'parent'; item: NavParent }
-  | { type: 'divider'; label: string }
-
 const topLinks: NavLink[] = [
   { to: '/dashboard', label: 'Ozet', icon: LayoutDashboard },
   { to: '/dues', label: 'Borclarim', icon: Wallet },
@@ -152,7 +147,7 @@ export const AdminSidebar = memo(function AdminSidebar({ onNavigate }: AdminSide
 
   /* --- Collapsed mode: flyout for parent hover --- */
   const [flyoutKey, setFlyoutKey] = useState<string | null>(null)
-  const flyoutTimeout = useRef<ReturnType<typeof setTimeout>>()
+  const flyoutTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   function openFlyout(key: string) {
     clearTimeout(flyoutTimeout.current)
