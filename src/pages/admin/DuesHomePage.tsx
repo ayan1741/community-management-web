@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { StatCardSkeleton, TableSkeleton } from '@/components/shared/LoadingSkeleton'
 import { CircleDollarSign, CalendarDays, TrendingDown, Clock } from 'lucide-react'
 import type { DuesSummary, DuesPeriodListItem } from '@/types'
 
@@ -53,33 +56,27 @@ export function DuesHomePage() {
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Aidat Yönetimi</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Tahakkuk, ödeme ve borç takibi</p>
-          </div>
-          <div className="flex items-center gap-2">
-            {isAdmin && (
-              <Button variant="secondary" onClick={() => navigate('/admin/dues/types')}>
-                Aidat Tipleri
+        <PageHeader
+          icon={CircleDollarSign}
+          title="Aidat Yönetimi"
+          description="Tahakkuk, ödeme ve borç takibi"
+          actions={
+            <div className="flex items-center gap-2">
+              {isAdmin && (
+                <Button variant="secondary" onClick={() => navigate('/admin/dues/types')}>
+                  Aidat Tipleri
+                </Button>
+              )}
+              <Button onClick={() => navigate('/admin/dues/periods')}>
+                Dönemler
               </Button>
-            )}
-            <Button onClick={() => navigate('/admin/dues/periods')}>
-              Dönemler
-            </Button>
-          </div>
-        </div>
+            </div>
+          }
+        />
 
         {/* Özet Kartlar */}
         {loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-card rounded-xl border border-border p-5 animate-pulse">
-                <div className="h-4 bg-muted rounded mb-3 w-3/4" />
-                <div className="h-6 bg-muted rounded w-1/2" />
-              </div>
-            ))}
-          </div>
+          <div className="mb-6"><StatCardSkeleton /></div>
         ) : summary && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-card rounded-xl border border-border shadow-sm p-5 flex items-center gap-4">
@@ -129,30 +126,21 @@ export function DuesHomePage() {
         )}
 
         {/* Son Dönemler */}
-        <Card>
-          <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-            <h2 className="text-sm font-semibold text-foreground">Son Dönemler</h2>
-            <button
-              onClick={() => navigate('/admin/dues/periods')}
-              className="text-xs text-primary hover:text-primary font-medium"
-            >
+        <TableCard
+          title="Son Dönemler"
+          actions={
+            <button onClick={() => navigate('/admin/dues/periods')} className="text-xs text-primary hover:text-primary font-medium">
               Tümünü Gör →
             </button>
-          </div>
-          <CardContent className="p-0">
+          }
+        >
             {loading ? (
-              <div className="py-8 text-center">
-                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-              </div>
+              <TableSkeleton />
             ) : recentPeriods.length === 0 ? (
-              <div className="py-10 text-center">
-                <CalendarDays className="w-7 h-7 text-muted-foreground mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">Henüz dönem yok.</p>
-                <Button className="mt-3" onClick={() => navigate('/admin/dues/periods')}>Dönem Oluştur</Button>
-              </div>
+              <EmptyState icon={CalendarDays} title="Henüz dönem yok." actionLabel="Dönem Oluştur" onAction={() => navigate('/admin/dues/periods')} />
             ) : (
               <table className="w-full text-sm">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Dönem</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Son Ödeme</th>
@@ -166,7 +154,7 @@ export function DuesHomePage() {
                     const s = statusLabels[p.status] ?? { label: p.status, class: 'bg-muted' }
                     const rate = p.totalDues > 0 ? Math.round((p.paidCount / p.totalDues) * 100) : 0
                     return (
-                      <tr key={p.id} className="border-b border-border hover:bg-muted/70 transition-colors">
+                      <tr key={p.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                         <td className="px-4 py-3 font-medium text-foreground">{p.name}</td>
                         <td className="px-4 py-3 text-muted-foreground">{formatDate(p.dueDate)}</td>
                         <td className="px-4 py-3">
@@ -196,8 +184,7 @@ export function DuesHomePage() {
                 </tbody>
               </table>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
 
         {/* Hızlı Bağlantılar */}
         <div className="mt-4 p-4 bg-muted rounded-xl border border-border">

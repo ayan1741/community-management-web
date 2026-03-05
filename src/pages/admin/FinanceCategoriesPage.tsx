@@ -5,12 +5,14 @@ import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
 import { CategoryIcon } from '@/lib/category-icons'
 import { cn } from '@/lib/utils'
 import {
   Plus, Zap, Droplet, Flame, Sparkles, Shield, ArrowUpDown,
   Trees, Waves, ShieldCheck, Users, Wrench, Briefcase, Landmark,
-  CircleDot, PiggyBank, Building, Percent, AlertTriangle, Sprout,
+  CircleDot, PiggyBank, Building, Percent, AlertTriangle, Sprout, FolderTree,
 } from 'lucide-react'
 import type { FinanceCategoryTreeItem } from '@/types'
 
@@ -158,17 +160,17 @@ export function FinanceCategoriesPage() {
   return (
     <AdminLayout>
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Kategoriler</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Gelir ve gider kalemlerini düzenleyin</p>
-          </div>
-          <Button onClick={openAdd}>
-            <Plus className="w-4 h-4 mr-1" />
-            Kategori Ekle
-          </Button>
-        </div>
+        <PageHeader
+          icon={FolderTree}
+          title="Kategoriler"
+          description="Gelir ve gider kalemlerini düzenleyin"
+          actions={
+            <Button onClick={openAdd}>
+              <Plus className="w-4 h-4 mr-1" />
+              Kategori Ekle
+            </Button>
+          }
+        />
 
         {error && (
           <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
@@ -207,9 +209,8 @@ export function FinanceCategoriesPage() {
         {/* Category List */}
         {loading ? (
           <Card>
-            <CardContent className="py-12 text-center">
-              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">Yükleniyor...</p>
+            <CardContent className="p-0">
+              <TableSkeleton />
             </CardContent>
           </Card>
         ) : filtered.length > 0 && (
@@ -219,7 +220,7 @@ export function FinanceCategoriesPage() {
                 {filtered.map(cat => (
                   <div key={cat.id}>
                     {/* Parent row */}
-                    <div className="flex items-center justify-between px-5 py-3.5 hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                       <div className="flex items-center gap-3">
                         <CategoryIcon name={cat.icon} className="w-4 h-4 text-muted-foreground" />
                         <span className="text-sm font-medium text-foreground">{cat.name}</span>
@@ -249,7 +250,7 @@ export function FinanceCategoriesPage() {
                     </div>
                     {/* Children */}
                     {cat.children.map(child => (
-                      <div key={child.id} className="flex items-center justify-between px-5 py-3 pl-12 hover:bg-muted/50 transition-colors border-t border-border/50">
+                      <div key={child.id} className="flex items-center justify-between px-5 py-3 pl-12 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors border-t border-border/50">
                         <div className="flex items-center gap-3">
                           <CategoryIcon name={child.icon} className="w-3.5 h-3.5 text-muted-foreground" />
                           <span className="text-sm text-foreground">{child.name}</span>

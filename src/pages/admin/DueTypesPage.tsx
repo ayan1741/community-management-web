@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
-import { CircleDollarSign, Info } from 'lucide-react'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
+import { CircleDollarSign, Info, Tag } from 'lucide-react'
 import type { DueType } from '@/types'
 
 const categoryLabels: Record<string, string> = {
@@ -149,13 +152,7 @@ export function DueTypesPage() {
   return (
     <AdminLayout>
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Aidat Tipleri</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Aylık aidat, asansör bakım, yakıt gibi kalemleri tanımla</p>
-          </div>
-          <Button onClick={openAdd}>Tip Ekle</Button>
-        </div>
+        <PageHeader icon={Tag} title="Aidat Tipleri" description="Aylık aidat, asansör bakım, yakıt gibi kalemleri tanımla" actions={<Button onClick={openAdd}>Tip Ekle</Button>} />
 
         <div className="mb-4 rounded-lg border border-primary/30 bg-primary/10 p-3 text-sm text-primary">
           <Info className="inline h-4 w-4 mr-1.5 -mt-0.5" />
@@ -168,25 +165,14 @@ export function DueTypesPage() {
           <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Tanımlı Tipler</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
+        <TableCard title="Tanımlı Tipler">
             {loading ? (
-              <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-              </div>
+              <TableSkeleton />
             ) : dueTypes.length === 0 ? (
-              <div className="px-6 py-12 text-center">
-                <CircleDollarSign className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm font-medium text-foreground">Henüz aidat tipi yok</p>
-                <p className="text-xs text-muted-foreground mt-1">İlk tipi ekleyerek başlayın.</p>
-              </div>
+              <EmptyState icon={CircleDollarSign} title="Henüz aidat tipi yok" description="İlk tipi ekleyerek başlayın." />
             ) : (
               <table className="w-full text-sm">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Ad</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Varsayılan Tutar</th>
@@ -196,7 +182,7 @@ export function DueTypesPage() {
                 </thead>
                 <tbody>
                   {dueTypes.map(dt => (
-                    <tr key={dt.id} className="border-b border-border hover:bg-muted/70 transition-colors">
+                    <tr key={dt.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                       <td className="px-4 py-3.5">
                         <p className="font-medium text-foreground">{dt.name}</p>
                         {dt.description && <p className="text-xs text-muted-foreground mt-0.5">{dt.description}</p>}
@@ -232,8 +218,7 @@ export function DueTypesPage() {
                 </tbody>
               </table>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
       </div>
 
       {/* Ekle / Düzenle Modal */}

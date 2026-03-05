@@ -3,6 +3,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useAuth } from '@/contexts/AuthContext'
 import { Building2, Menu, Sun, Moon, ChevronRight } from 'lucide-react'
 import { ProfileDropdown } from './ProfileDropdown'
+import { NotificationBell } from '@/components/notifications/NotificationBell'
 
 const breadcrumbMap: Record<string, string[]> = {
   '/dashboard': ['Özet'],
@@ -15,6 +16,9 @@ const breadcrumbMap: Record<string, string[]> = {
   '/admin/applications': ['Yönetim', 'Onay Bekleyenler'],
   '/admin/blocks': ['Yönetim', 'Bloklar'],
   '/admin/units': ['Yönetim', 'Daireler'],
+  '/announcements': ['Duyurular'],
+  '/admin/announcements': ['Yönetim', 'Duyurular'],
+  '/notifications': ['Bildirimler'],
 }
 
 const breadcrumbPaths: Record<string, string> = {
@@ -29,6 +33,7 @@ const breadcrumbPaths: Record<string, string> = {
   'Daireler': '/admin/units',
   'Borçlarım': '/dues',
   'Özet': '/dashboard',
+  'Bildirimler': '/notifications',
 }
 
 interface TopbarProps {
@@ -82,14 +87,18 @@ export function Topbar({ onMenuToggle }: TopbarProps) {
               const isLast = i === crumbs.length - 1
               const path = breadcrumbPaths[crumb]
 
+              const resolvedPath = path ?? (crumb === 'Duyurular'
+                ? (pathname.startsWith('/admin/') ? '/admin/announcements' : '/announcements')
+                : undefined)
+
               return (
                 <li key={crumb} className="flex items-center gap-1">
                   {i > 0 && <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/50" />}
-                  {isLast || !path ? (
+                  {isLast || !resolvedPath ? (
                     <span className="font-medium text-foreground">{crumb}</span>
                   ) : (
                     <Link
-                      to={path}
+                      to={resolvedPath}
                       className="text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {crumb}
@@ -112,6 +121,9 @@ export function Topbar({ onMenuToggle }: TopbarProps) {
           {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
 
+        {/* Notifications */}
+        <NotificationBell />
+
         {/* Profile */}
         <ProfileDropdown />
       </div>
@@ -123,6 +135,12 @@ export function Topbar({ onMenuToggle }: TopbarProps) {
 function findDynamicBreadcrumb(pathname: string): string[] {
   if (pathname.startsWith('/admin/dues/periods/')) {
     return ['Yönetim', 'Aidat', 'Dönemler', 'Detay']
+  }
+  if (pathname.startsWith('/admin/announcements/')) {
+    return ['Yönetim', 'Duyurular', 'Detay']
+  }
+  if (pathname.startsWith('/announcements/')) {
+    return ['Duyurular', 'Detay']
   }
   return ['Özet']
 }

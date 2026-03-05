@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FileText, AlertTriangle } from 'lucide-react'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
+import { FileText, AlertTriangle, UserCheck } from 'lucide-react'
 import type { Application, PagedResult } from '@/types'
 
 export function ApplicationsPage() {
@@ -43,42 +46,28 @@ export function ApplicationsPage() {
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Onay Bekleyenler</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Bekleyen başvuruları incele ve yönet</p>
-          </div>
-          {pending.length > 0 && (
+        <PageHeader
+          icon={UserCheck}
+          title="Onay Bekleyenler"
+          description="Bekleyen başvuruları incele ve yönet"
+          actions={pending.length > 0 ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-warning/10 text-warning border border-warning/30">
               <span className="w-1.5 h-1.5 rounded-full bg-warning" />
               {pending.length} bekliyor
             </span>
-          )}
-        </div>
+          ) : undefined}
+        />
 
         {error && <p className="text-sm text-destructive">{error}</p>}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Bekleyen Başvurular</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            {loading && (
-              <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-              </div>
-            )}
+        <TableCard title="Bekleyen Başvurular">
+            {loading && <TableSkeleton />}
             {!loading && pending.length === 0 && (
-              <div className="px-6 py-12 text-center">
-                <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm font-medium text-foreground">Bekleyen başvuru yok</p>
-                <p className="text-xs text-muted-foreground mt-1">Tüm başvurular incelendi.</p>
-              </div>
+              <EmptyState icon={FileText} title="Bekleyen başvuru yok" description="Tüm başvurular incelendi." />
             )}
             {pending.length > 0 && (
               <table className="w-full text-sm">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Başvuran</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Daire</th>
@@ -88,7 +77,7 @@ export function ApplicationsPage() {
                 </thead>
                 <tbody>
                   {pending.map(a => (
-                    <tr key={a.applicationId} className="border-b border-border hover:bg-muted/70 transition-colors">
+                    <tr key={a.applicationId} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-2">
                           <p className="font-semibold text-foreground">{a.applicantName}</p>
@@ -127,8 +116,7 @@ export function ApplicationsPage() {
                 </tbody>
               </table>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
       </div>
     </AdminLayout>
   )

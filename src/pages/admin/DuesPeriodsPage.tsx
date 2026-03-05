@@ -3,10 +3,13 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { api } from '@/lib/api'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
 import { CalendarDays } from 'lucide-react'
 import type { DuesPeriodListItem } from '@/types'
 
@@ -114,37 +117,20 @@ export function DuesPeriodsPage() {
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Aidat Dönemleri</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Aylık tahakkuk dönemlerini yönet</p>
-          </div>
-          <Button onClick={openAdd}>Yeni Dönem</Button>
-        </div>
+        <PageHeader icon={CalendarDays} title="Aidat Dönemleri" description="Aylık tahakkuk dönemlerini yönet" actions={<Button onClick={openAdd}>Yeni Dönem</Button>} />
 
         {error && (
           <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Dönem Listesi</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
+        <TableCard title="Dönem Listesi">
             {loading ? (
-              <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-              </div>
+              <TableSkeleton />
             ) : periods.length === 0 ? (
-              <div className="px-6 py-12 text-center">
-                <CalendarDays className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm font-medium text-foreground">Henüz dönem yok</p>
-                <p className="text-xs text-muted-foreground mt-1">İlk dönemi oluşturun.</p>
-              </div>
+              <EmptyState icon={CalendarDays} title="Henüz dönem yok" description="İlk dönemi oluşturun." />
             ) : (
               <table className="w-full text-sm">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Dönem</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Son Ödeme</th>
@@ -158,7 +144,7 @@ export function DuesPeriodsPage() {
                     const s = statusLabels[p.status] ?? { label: p.status, class: 'bg-muted text-muted-foreground' }
                     const rate = paymentRate(p)
                     return (
-                      <tr key={p.id} className="border-b border-border hover:bg-muted/70 transition-colors">
+                      <tr key={p.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                         <td className="px-4 py-3.5">
                           <p className="font-medium text-foreground">{p.name}</p>
                           <p className="text-xs text-muted-foreground mt-0.5">{formatDate(p.startDate)}</p>
@@ -209,8 +195,7 @@ export function DuesPeriodsPage() {
                 </tbody>
               </table>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
       </div>
 
       {showForm && (

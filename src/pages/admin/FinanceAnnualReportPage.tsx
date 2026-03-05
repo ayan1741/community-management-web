@@ -3,10 +3,11 @@ import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { formatCurrency } from '@/lib/format'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent } from '@/components/ui/card'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
 import { CategoryIcon } from '@/lib/category-icons'
 import { cn } from '@/lib/utils'
-import { TrendingUp, TrendingDown, CheckCircle, XCircle } from 'lucide-react'
+import { TrendingUp, TrendingDown, CheckCircle, XCircle, BarChart3 } from 'lucide-react'
 import { ReportBasisToggle, getStoredBasis, storeBasis } from '@/components/shared/report-basis-toggle'
 import type { AnnualReportResult, ReportBasis } from '@/types'
 
@@ -56,25 +57,25 @@ export function FinanceAnnualReportPage() {
   return (
     <AdminLayout>
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Yıllık Gelir-Gider Raporu</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">12 aylık finansal özet</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <ReportBasisToggle value={reportBasis} onChange={handleBasisChange} />
-            <select
-              value={year}
-              onChange={e => setYear(Number(e.target.value))}
-              className="h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground font-medium"
-            >
-              {[now.getFullYear() - 2, now.getFullYear() - 1, now.getFullYear()].map(y => (
-                <option key={y} value={y}>{y}</option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <PageHeader
+          icon={BarChart3}
+          title="Yıllık Gelir-Gider Raporu"
+          description="12 aylık finansal özet"
+          actions={
+            <div className="flex items-center gap-3">
+              <ReportBasisToggle value={reportBasis} onChange={handleBasisChange} />
+              <select
+                value={year}
+                onChange={e => setYear(Number(e.target.value))}
+                className="h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground font-medium"
+              >
+                {[now.getFullYear() - 2, now.getFullYear() - 1, now.getFullYear()].map(y => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+            </div>
+          }
+        />
 
         {loading ? (
           <div className="py-12 text-center">
@@ -135,14 +136,10 @@ export function FinanceAnnualReportPage() {
             </div>
 
             {/* Monthly Table */}
-            <Card className="mb-6">
-              <div className="px-5 py-4 border-b border-border">
-                <h2 className="text-sm font-semibold text-foreground">12 Aylık Detay</h2>
-              </div>
-              <CardContent className="p-0">
+            <TableCard title="12 Aylık Detay" className="mb-6">
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-muted border-b border-border">
+                    <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                       <tr>
                         <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Ay</th>
                         <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wide">Aidat Tah.</th>
@@ -157,7 +154,7 @@ export function FinanceAnnualReportPage() {
                         const row = report.monthlyTotals.find(r => r.month === i + 1)
                         const hasData = row && (row.totalIncome > 0 || row.totalExpense > 0)
                         return (
-                          <tr key={i} className="border-b border-border hover:bg-muted/50 transition-colors">
+                          <tr key={i} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                             <td className="px-4 py-3 font-medium text-foreground">{monthName}</td>
                             <td className="px-4 py-3 text-right text-muted-foreground">
                               {hasData ? formatCurrency(row.duesCollected) : '—'}
@@ -197,40 +194,37 @@ export function FinanceAnnualReportPage() {
                     </tbody>
                   </table>
                 </div>
-              </CardContent>
-            </Card>
+            </TableCard>
 
             {/* Category Totals */}
-            <Card>
-              <div className="px-5 py-4 border-b border-border">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-sm font-semibold text-foreground">Kategori Bazlı Yıllık Toplamlar</h2>
-                  <div className="flex items-center gap-1">
-                    {([['expense', 'Gider'], ['income', 'Gelir']] as const).map(([key, label]) => (
-                      <button
-                        key={key}
-                        onClick={() => setCatTab(key)}
-                        className={cn(
-                          'px-3 py-1 rounded-lg text-xs font-medium transition-colors',
-                          catTab === key
-                            ? 'bg-primary text-primary-foreground'
-                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                        )}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
+            <TableCard
+              title="Kategori Bazlı Yıllık Toplamlar"
+              actions={
+                <div className="flex items-center gap-1">
+                  {([['expense', 'Gider'], ['income', 'Gelir']] as const).map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => setCatTab(key)}
+                      className={cn(
+                        'px-3 py-1 rounded-lg text-xs font-medium transition-colors',
+                        catTab === key
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      )}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
-              </div>
-              <CardContent className="p-0">
+              }
+            >
                 {filteredCategoryTotals.length === 0 ? (
                   <div className="py-10 text-center">
                     <p className="text-sm text-muted-foreground">Bu yıl henüz {catTab === 'expense' ? 'gider' : 'gelir'} kaydı yok.</p>
                   </div>
                 ) : (
                   <table className="w-full text-sm">
-                    <thead className="bg-muted border-b border-border">
+                    <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                       <tr>
                         <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Kategori</th>
                         <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wide">Yıllık Toplam</th>
@@ -241,7 +235,7 @@ export function FinanceAnnualReportPage() {
                       {filteredCategoryTotals.map(cat => {
                         const pct = catGrandTotal > 0 ? (cat.annualTotal / catGrandTotal) * 100 : 0
                         return (
-                          <tr key={cat.categoryId} className="border-b border-border hover:bg-muted/50 transition-colors">
+                          <tr key={cat.categoryId} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2">
                                 <CategoryIcon name={cat.categoryIcon} className="w-3.5 h-3.5 text-muted-foreground" />
@@ -256,8 +250,7 @@ export function FinanceAnnualReportPage() {
                     </tbody>
                   </table>
                 )}
-              </CardContent>
-            </Card>
+            </TableCard>
           </>
         )}
       </div>

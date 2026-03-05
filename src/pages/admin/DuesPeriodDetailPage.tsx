@@ -3,11 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
-import { ArrowLeft, CheckCircle, Clock, AlertCircle, XCircle } from 'lucide-react'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
+import { ArrowLeft, CheckCircle, Clock, AlertCircle, XCircle, CalendarDays } from 'lucide-react'
 import type {
   DuesPeriodDetailResult, UnitDueListItem, DueType, AccrualPreview,
 } from '@/types'
@@ -263,10 +265,7 @@ export function DuesPeriodDetailPage() {
         )}
 
         {loading && !detail ? (
-          <div className="py-12 text-center">
-            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-          </div>
+          <TableSkeleton />
         ) : period ? (
           <>
             {/* Dönem Başlığı */}
@@ -302,34 +301,31 @@ export function DuesPeriodDetailPage() {
             )}
 
             {/* Tahakkuk Tablosu */}
-            <Card>
-              <CardHeader className="flex-row items-center justify-between">
-                <CardTitle>Tahakkuk Listesi {totalCount > 0 && <span className="ml-1 text-muted-foreground font-normal text-sm">({totalCount} kayıt)</span>}</CardTitle>
-                <div className="flex items-center gap-2">
-                  <select
-                    value={statusFilter}
-                    onChange={e => { setStatusFilter(e.target.value); setPage(1) }}
-                    className="text-xs border border-border rounded-lg px-2 py-1.5 text-foreground bg-card focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Tümü</option>
-                    <option value="pending">Ödenmedi</option>
-                    <option value="partial">Kısmi</option>
-                    <option value="paid">Ödendi</option>
-                  </select>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
+            <TableCard
+              title={`Tahakkuk Listesi${totalCount > 0 ? ` (${totalCount} kayıt)` : ''}`}
+              actions={
+                <select
+                  value={statusFilter}
+                  onChange={e => { setStatusFilter(e.target.value); setPage(1) }}
+                  className="text-xs border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1.5 text-foreground bg-white dark:bg-white/[0.03] focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="">Tümü</option>
+                  <option value="pending">Ödenmedi</option>
+                  <option value="partial">Kısmi</option>
+                  <option value="paid">Ödendi</option>
+                </select>
+              }
+            >
                 {items.length === 0 ? (
-                  <div className="px-6 py-12 text-center">
-                    <p className="text-sm text-muted-foreground">
-                      {period.status === 'draft' ? 'Henüz tahakkuk oluşturulmadı.' : 'Kayıt bulunamadı.'}
-                    </p>
-                  </div>
+                  <EmptyState
+                    icon={CalendarDays}
+                    title={period.status === 'draft' ? 'Henüz tahakkuk oluşturulmadı.' : 'Kayıt bulunamadı.'}
+                  />
                 ) : (
                   <>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
-                        <thead className="bg-muted border-b border-border">
+                        <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                           <tr>
                             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Daire</th>
                             <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Sakin</th>
@@ -347,7 +343,7 @@ export function DuesPeriodDetailPage() {
                             const canPay = isAdminOrBoard && (item.status === 'pending' || item.status === 'partial')
                             const canCancel = isAdmin && item.status !== 'paid' && item.status !== 'cancelled'
                             return (
-                              <tr key={item.id} className={`border-b border-border hover:bg-muted/70 transition-colors ${item.isOverdue ? 'bg-destructive/10/20' : ''}`}>
+                              <tr key={item.id} className={`border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors ${item.isOverdue ? 'bg-destructive/10/20' : ''}`}>
                                 <td className="px-4 py-3">
                                   <span className="font-medium text-foreground">
                                     {item.blockName !== 'Varsayılan' ? `${item.blockName} / ` : ''}{item.unitNumber}
@@ -419,8 +415,7 @@ export function DuesPeriodDetailPage() {
                     )}
                   </>
                 )}
-              </CardContent>
-            </Card>
+            </TableCard>
           </>
         ) : null}
       </div>

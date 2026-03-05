@@ -3,9 +3,11 @@ import { AdminSidebar } from './AdminSidebar'
 import { Topbar } from './Topbar'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useSidebar } from '@/contexts/SidebarContext'
 
 export function AdminLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { isCollapsed } = useSidebar()
 
   return (
     <div className="h-screen flex flex-col bg-background">
@@ -15,7 +17,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
       {/* Topbar */}
       <Topbar onMenuToggle={() => setSidebarOpen(v => !v)} />
 
-      <div className="relative z-10 flex flex-1 overflow-hidden">
+      <div className="relative flex flex-1 overflow-hidden">
         {/* Mobile backdrop */}
         {sidebarOpen && (
           <div
@@ -27,8 +29,12 @@ export function AdminLayout({ children }: { children: ReactNode }) {
         {/* Sidebar — desktop: always visible, mobile: drawer */}
         <aside
           className={cn(
-            'fixed inset-y-0 left-0 z-41 w-64 bg-sidebar transform transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 lg:z-20',
+            'fixed inset-y-0 left-0 z-40 bg-sidebar transform transition-all duration-200 ease-in-out lg:static lg:translate-x-0 lg:z-20',
             'top-0 lg:top-0 overflow-y-auto shrink-0',
+            // Desktop: collapsed w-16, expanded w-64
+            isCollapsed ? 'lg:w-16' : 'lg:w-64',
+            // Mobile: always w-64 drawer
+            'w-64',
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
         >
@@ -51,7 +57,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           className="flex-1 overflow-y-auto p-4 md:p-5 lg:p-6"
         >
           {/* Page Container */}
-          <div className="relative overflow-hidden rounded-2xl border border-black/[0.08] dark:border-white/[0.06] bg-card/85 dark:bg-card/90 backdrop-blur-sm shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_4px_12px_rgba(0,0,0,0.2)] max-w-6xl mx-auto min-h-[calc(100%-2rem)] mb-4">
+          <div className="relative overflow-hidden rounded-2xl border border-black/[0.08] dark:border-white/[0.06] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_4px_12px_rgba(0,0,0,0.2)] max-w-6xl mx-auto min-h-[calc(100%-2rem)] mb-4">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/[0.02] to-transparent dark:from-primary/[0.05]" />
             <div className="relative p-4 md:p-6 lg:p-8">
               {children}

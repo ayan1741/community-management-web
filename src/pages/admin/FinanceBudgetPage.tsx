@@ -3,12 +3,15 @@ import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { formatCurrency } from '@/lib/format'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
 import { CategoryIcon } from '@/lib/category-icons'
 import { cn } from '@/lib/utils'
 import {
-  ChevronLeft, ChevronRight, Copy, CheckCircle, AlertTriangle, XCircle,
+  ChevronLeft, ChevronRight, Copy, CheckCircle, AlertTriangle, XCircle, Target,
 } from 'lucide-react'
 import { ReportBasisToggle, getStoredBasis, storeBasis } from '@/components/shared/report-basis-toggle'
 import type { BudgetComparisonItem, BudgetVsActualResult, ReportBasis } from '@/types'
@@ -118,20 +121,20 @@ export function FinanceBudgetPage() {
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Bütçe Planlama</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Aylık harcama hedeflerini belirleyin ve takip edin</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <ReportBasisToggle value={reportBasis} onChange={handleBasisChange} />
-            <Button variant="outline" onClick={() => { setShowCopy(true); setCopyResult(null) }}>
-              <Copy className="w-4 h-4 mr-1" />
-              Önceki Aydan Kopyala
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          icon={Target}
+          title="Bütçe Planlama"
+          description="Aylık harcama hedeflerini belirleyin ve takip edin"
+          actions={
+            <div className="flex items-center gap-3">
+              <ReportBasisToggle value={reportBasis} onChange={handleBasisChange} />
+              <Button variant="outline" onClick={() => { setShowCopy(true); setCopyResult(null) }}>
+                <Copy className="w-4 h-4 mr-1" />
+                Önceki Aydan Kopyala
+              </Button>
+            </div>
+          }
+        />
 
         {/* Month Navigator */}
         <div className="flex items-center justify-center gap-4 mb-6">
@@ -167,21 +170,15 @@ export function FinanceBudgetPage() {
         </div>
 
         {/* Budget Table */}
-        <Card className="mb-4">
-          <CardContent className="p-0">
+        <TableCard title="Bütçe Karşılaştırma" className="mb-4">
             {loading ? (
-              <div className="py-12 text-center">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-              </div>
+              <TableSkeleton />
             ) : !data || data.items.length === 0 ? (
-              <div className="py-12 text-center">
-                <p className="text-sm text-muted-foreground">Henüz kategori tanımlanmamış. Önce kategorileri oluşturun.</p>
-              </div>
+              <EmptyState icon={Target} title="Henüz kategori tanımlanmamış" description="Önce kategorileri oluşturun." />
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-muted border-b border-border">
+                  <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Kategori</th>
                       <th className="px-4 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wide w-36">Bütçe (₺)</th>
@@ -196,7 +193,7 @@ export function FinanceBudgetPage() {
                       const pct = item.budgetAmount > 0 ? Math.min((item.actualAmount / item.budgetAmount) * 100, 100) : 0
 
                       return (
-                        <tr key={item.categoryId} className="border-b border-border hover:bg-muted/50 transition-colors">
+                        <tr key={item.categoryId} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
                               <CategoryIcon name={item.categoryIcon} className="w-3.5 h-3.5 text-muted-foreground" />
@@ -274,8 +271,7 @@ export function FinanceBudgetPage() {
                 </table>
               </div>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
 
         {/* Info */}
         <div className="p-4 bg-muted rounded-xl border border-border">
