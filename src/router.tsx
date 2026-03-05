@@ -30,6 +30,8 @@ import { AnnouncementDetailPage } from '@/pages/AnnouncementDetailPage'
 import { AdminAnnouncementsPage } from '@/pages/admin/AnnouncementsPage'
 import { AdminAnnouncementDetailPage } from '@/pages/admin/AnnouncementDetailPage'
 import { NotificationsPage } from '@/pages/NotificationsPage'
+import { DesignDemoPage } from '@/pages/DesignDemoPage'
+import { DesignDemoPageB } from '@/pages/DesignDemoPageB'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading, activeMembership } = useAuth()
@@ -125,6 +127,10 @@ export function AppRouter() {
 
         {/* Sakin gelir-gider şeffaflık görünümü */}
         <Route path="/finance" element={<RequireAuth><MyFinancePage /></RequireAuth>} />
+
+        {/* Design Demo (geliştirme referansı) */}
+        <Route path="/design-demo" element={<RequireAuth><DesignDemoPage /></RequireAuth>} />
+        <Route path="/design-demo-b" element={<RequireAuth><DesignDemoPageB /></RequireAuth>} />
 
         {/* Default */}
         <Route path="*" element={<Navigate to="/" replace />} />

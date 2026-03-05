@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { BulkUnitWizard } from '@/components/units/BulkUnitWizard'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
 import { DoorOpen, StickyNote } from 'lucide-react'
 import type { Block, Unit, PagedResult } from '@/types'
 
@@ -163,16 +167,17 @@ export function UnitsPage() {
   return (
     <AdminLayout>
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Daireler</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{totalCount} daire</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => setShowBulkWizard(true)}>Toplu Ekle</Button>
-            <Button onClick={openAdd}>Daire Ekle</Button>
-          </div>
-        </div>
+        <PageHeader
+          icon={DoorOpen}
+          title="Daireler"
+          description={`${totalCount} daire`}
+          actions={
+            <div className="flex gap-2">
+              <Button variant="secondary" onClick={() => setShowBulkWizard(true)}>Toplu Ekle</Button>
+              <Button onClick={openAdd}>Daire Ekle</Button>
+            </div>
+          }
+        />
 
         {error && (
           <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
@@ -231,23 +236,15 @@ export function UnitsPage() {
           </div>
         </Card>
 
-        <Card>
-          <CardContent className="p-0">
+        <TableCard title="Daire Listesi">
             {loading ? (
-              <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-              </div>
+              <TableSkeleton />
             ) : units.length === 0 ? (
-              <div className="px-6 py-12 text-center">
-                <DoorOpen className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm font-medium text-foreground">Daire bulunamadı</p>
-                <p className="text-xs text-muted-foreground mt-1">Filtre kriterlerini değiştirin veya yeni daire ekleyin.</p>
-              </div>
+              <EmptyState icon={DoorOpen} title="Daire bulunamadı" description="Filtre kriterlerini değiştirin veya yeni daire ekleyin." />
             ) : (
               <>
                 <table className="w-full text-sm">
-                  <thead className="bg-muted border-b border-border">
+                  <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Blok</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">No</th>
@@ -259,7 +256,7 @@ export function UnitsPage() {
                   </thead>
                   <tbody>
                     {units.map(u => (
-                      <tr key={u.id} className="border-b border-border hover:bg-muted/70 transition-colors">
+                      <tr key={u.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                         <td className="px-4 py-3.5 text-muted-foreground">{u.blockName}</td>
                         <td className="px-4 py-3.5 font-medium text-foreground">
                           {u.unitNumber}
@@ -315,8 +312,7 @@ export function UnitsPage() {
                 )}
               </>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
       </div>
 
       {showForm && (

@@ -9,9 +9,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CategoryIcon, CHART_COLORS } from '@/lib/category-icons'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { StatCardSkeleton } from '@/components/shared/LoadingSkeleton'
 import {
   TrendingUp, TrendingDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight,
-  Plus, AlertTriangle, Paperclip, CheckCircle, XCircle,
+  Plus, AlertTriangle, Paperclip, CheckCircle, XCircle, Wallet,
 } from 'lucide-react'
 import { ReportBasisToggle, getStoredBasis, storeBasis } from '@/components/shared/report-basis-toggle'
 import type { MonthlyReportResult, ReportBasis } from '@/types'
@@ -136,23 +139,23 @@ export function FinanceHomePage() {
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Gelir-Gider Yönetimi</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Aylık gelir, gider ve bütçe takibi</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => navigate('/admin/finance/records', { state: { type: 'income' } })}>
-              <Plus className="w-4 h-4 mr-1" />
-              Gelir Ekle
-            </Button>
-            <Button onClick={() => navigate('/admin/finance/records', { state: { type: 'expense' } })}>
-              <Plus className="w-4 h-4 mr-1" />
-              Gider Ekle
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          icon={Wallet}
+          title="Gelir-Gider Yönetimi"
+          description="Aylık gelir, gider ve bütçe takibi"
+          actions={
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => navigate('/admin/finance/records', { state: { type: 'income' } })}>
+                <Plus className="w-4 h-4 mr-1" />
+                Gelir Ekle
+              </Button>
+              <Button onClick={() => navigate('/admin/finance/records', { state: { type: 'expense' } })}>
+                <Plus className="w-4 h-4 mr-1" />
+                Gider Ekle
+              </Button>
+            </div>
+          }
+        />
 
         {/* Month Navigator + Report Basis Toggle */}
         <div className="flex items-center justify-between mb-6">
@@ -207,14 +210,7 @@ export function FinanceHomePage() {
 
         {/* Summary Cards */}
         {loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-card rounded-xl border border-border p-5 animate-pulse">
-                <div className="h-4 bg-muted rounded mb-3 w-3/4" />
-                <div className="h-6 bg-muted rounded w-1/2" />
-              </div>
-            ))}
-          </div>
+          <div className="mb-6"><StatCardSkeleton /></div>
         ) : report && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {/* Toplam Gelir */}
@@ -405,21 +401,19 @@ export function FinanceHomePage() {
 
         {/* Recent Transactions */}
         {!loading && report && (
-          <Card className="mb-6">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-              <h2 className="text-sm font-semibold text-foreground">Son İşlemler</h2>
-              <button
-                onClick={() => navigate('/admin/finance/records')}
-                className="text-xs text-primary hover:text-primary font-medium"
-              >
+          <TableCard
+            title="Son İşlemler"
+            className="mb-6"
+            actions={
+              <button onClick={() => navigate('/admin/finance/records')} className="text-xs text-primary hover:text-primary font-medium">
                 Tümünü Gör →
               </button>
-            </div>
-            <CardContent className="p-0">
+            }
+          >
               {report.recentRecords.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-muted border-b border-border">
+                    <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                       <tr>
                         <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Tarih</th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Tür</th>
@@ -431,7 +425,7 @@ export function FinanceHomePage() {
                     </thead>
                     <tbody>
                       {report.recentRecords.map((rec) => (
-                        <tr key={rec.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+                        <tr key={rec.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                           <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{formatDate(rec.recordDate)}</td>
                           <td className="px-4 py-3">
                             <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -472,8 +466,7 @@ export function FinanceHomePage() {
                   <Button className="mt-3" onClick={() => navigate('/admin/finance/records')}>İlk Kaydı Ekle</Button>
                 </div>
               )}
-            </CardContent>
-          </Card>
+          </TableCard>
         )}
 
         {/* Tips */}

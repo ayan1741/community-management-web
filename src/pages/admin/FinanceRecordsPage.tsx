@@ -4,14 +4,17 @@ import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { formatCurrency, formatDate } from '@/lib/format'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
 import { CategoryIcon } from '@/lib/category-icons'
 import { cn } from '@/lib/utils'
 import {
-  Plus, Paperclip, Pencil, Trash2, X, Upload,
+  Plus, Paperclip, Pencil, Trash2, X, Upload, Receipt,
 } from 'lucide-react'
 import type { FinanceRecordListItem, FinanceRecordListResult, FinanceCategoryTreeItem } from '@/types'
 
@@ -246,23 +249,23 @@ export function FinanceRecordsPage() {
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">İşlemler</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Gelir ve gider kayıtlarını yönetin</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => openAdd('income')}>
-              <Plus className="w-4 h-4 mr-1" />
-              Gelir Ekle
-            </Button>
-            <Button onClick={() => openAdd('expense')}>
-              <Plus className="w-4 h-4 mr-1" />
-              Gider Ekle
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          icon={Receipt}
+          title="İşlemler"
+          description="Gelir ve gider kayıtlarını yönetin"
+          actions={
+            <div className="flex items-center gap-2">
+              <Button variant="outline" onClick={() => openAdd('income')}>
+                <Plus className="w-4 h-4 mr-1" />
+                Gelir Ekle
+              </Button>
+              <Button onClick={() => openAdd('expense')}>
+                <Plus className="w-4 h-4 mr-1" />
+                Gider Ekle
+              </Button>
+            </div>
+          }
+        />
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -339,22 +342,15 @@ export function FinanceRecordsPage() {
         </div>
 
         {/* Table */}
-        <Card className="mb-4">
-          <CardContent className="p-0">
+        <TableCard title="İşlem Listesi" className="mb-4">
             {loading ? (
-              <div className="py-12 text-center">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-              </div>
+              <TableSkeleton />
             ) : records.length === 0 ? (
-              <div className="py-12 text-center">
-                <p className="text-sm font-medium text-foreground mb-1">Kayıt bulunamadı</p>
-                <p className="text-xs text-muted-foreground">Filtreleri değiştirin veya yeni kayıt ekleyin.</p>
-              </div>
+              <EmptyState icon={Receipt} title="Kayıt bulunamadı" description="Filtreleri değiştirin veya yeni kayıt ekleyin." />
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-muted border-b border-border">
+                  <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                     <tr>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Tarih</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Dönem</th>
@@ -369,7 +365,7 @@ export function FinanceRecordsPage() {
                   <tbody>
                     {records.map(rec => (
                       <tr key={rec.id} className={cn(
-                        'border-b border-border hover:bg-muted/50 transition-colors',
+                        'border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors',
                         rec.isOpeningBalance && 'bg-muted/30 italic'
                       )}>
                         <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{formatDate(rec.recordDate)}</td>
@@ -435,8 +431,7 @@ export function FinanceRecordsPage() {
                 </table>
               </div>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
 
         {/* Pagination */}
         {totalPages > 1 && (

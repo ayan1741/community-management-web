@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
 import { Layers } from 'lucide-react'
 import type { Block } from '@/types'
 
@@ -108,37 +111,20 @@ export function BlocksPage() {
   return (
     <AdminLayout>
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Bloklar</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Binadaki blokları yönet</p>
-          </div>
-          <Button onClick={openAdd}>Blok Ekle</Button>
-        </div>
+        <PageHeader icon={Layers} title="Bloklar" description="Binadaki blokları yönet" actions={<Button onClick={openAdd}>Blok Ekle</Button>} />
 
         {error && (
           <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive">{error}</div>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Blok Listesi</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
+        <TableCard title="Blok Listesi">
             {loading ? (
-              <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-              </div>
+              <TableSkeleton />
             ) : blocks.length === 0 ? (
-              <div className="px-6 py-12 text-center">
-                <Layers className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm font-medium text-foreground">Henüz blok yok</p>
-                <p className="text-xs text-muted-foreground mt-1">Yukarıdan yeni blok ekleyebilirsiniz.</p>
-              </div>
+              <EmptyState icon={Layers} title="Henüz blok yok" description="Yukarıdan yeni blok ekleyebilirsiniz." />
             ) : (
               <table className="w-full text-sm">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Ad</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Tip</th>
@@ -148,7 +134,7 @@ export function BlocksPage() {
                 </thead>
                 <tbody>
                   {blocks.map(b => (
-                    <tr key={b.id} className="border-b border-border hover:bg-muted/70 transition-colors">
+                    <tr key={b.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-foreground">{b.name}</span>
@@ -185,8 +171,7 @@ export function BlocksPage() {
                 </tbody>
               </table>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
       </div>
 
       {showForm && (

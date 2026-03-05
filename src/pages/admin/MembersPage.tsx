@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import { AdminLayout } from '@/components/layout/AdminLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ConfirmModal } from '@/components/ui/ConfirmModal'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
 import { Users, MoreVertical, Home } from 'lucide-react'
 import type { Member, PagedResult, UserRole, UnitDropdownItem } from '@/types'
 import { formatUnitLabel } from '@/utils/formatUnitLabel'
@@ -161,38 +164,20 @@ export function MembersPage() {
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Üyeler</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Tüm üyeleri görüntüle ve yönet</p>
-          </div>
-        </div>
+        <PageHeader icon={Users} title="Üyeler" description="Tüm üyeleri görüntüle ve yönet" />
 
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">{error}</div>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Tüm Üyeler</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            {loading && (
-              <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-              </div>
-            )}
+        <TableCard title="Tüm Üyeler">
+            {loading && <TableSkeleton />}
             {!loading && members.length === 0 && (
-              <div className="px-6 py-12 text-center">
-                <Users className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm font-medium text-foreground">Henüz üye yok</p>
-                <p className="text-xs text-muted-foreground mt-1">Davet kodu oluşturarak üye ekleyebilirsiniz.</p>
-              </div>
+              <EmptyState icon={Users} title="Henüz üye yok" description="Davet kodu oluşturarak üye ekleyebilirsiniz." />
             )}
             {members.length > 0 && (
               <table className="w-full text-sm">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Ad Soyad</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Daire</th>
@@ -206,7 +191,7 @@ export function MembersPage() {
                     const isCurrentUser = m.userId === user?.id
                     const isLastAdmin = m.role === 'admin' && adminCount === 1
                     return (
-                      <tr key={m.userId} className="border-b border-border hover:bg-muted/70 transition-colors">
+                      <tr key={m.userId} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                         <td className="px-4 py-3.5">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground shrink-0">
@@ -304,8 +289,7 @@ export function MembersPage() {
                 </tbody>
               </table>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
       </div>
 
       <ConfirmModal

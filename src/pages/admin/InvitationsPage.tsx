@@ -5,6 +5,10 @@ import { AdminLayout } from '@/components/layout/AdminLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { UnitSelector } from '@/components/units/UnitSelector'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { TableCard } from '@/components/shared/TableCard'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { TableSkeleton } from '@/components/shared/LoadingSkeleton'
 import { Mail, Download } from 'lucide-react'
 import type { InvitationCode, UnitDropdownItem, PagedResult } from '@/types'
 import { formatUnitLabel } from '@/utils/formatUnitLabel'
@@ -137,12 +141,7 @@ export function InvitationsPage() {
   return (
     <AdminLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">Davet Kodları</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Davet kodu oluştur ve yönet</p>
-          </div>
-        </div>
+        <PageHeader icon={Mail} title="Davet Kodları" description="Davet kodu oluştur ve yönet" />
 
         <Card>
           <CardHeader>
@@ -169,27 +168,14 @@ export function InvitationsPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Mevcut Davetler</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            {loading && (
-              <div className="px-6 py-12 text-center">
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-              </div>
-            )}
+        <TableCard title="Mevcut Davetler">
+            {loading && <TableSkeleton />}
             {!loading && invitations.length === 0 && (
-              <div className="px-6 py-12 text-center">
-                <Mail className="w-8 h-8 text-muted-foreground mx-auto mb-3" />
-                <p className="text-sm font-medium text-foreground">Henüz davet kodu yok</p>
-                <p className="text-xs text-muted-foreground mt-1">Yukarıdan yeni bir davet kodu oluşturabilirsiniz.</p>
-              </div>
+              <EmptyState icon={Mail} title="Henüz davet kodu yok" description="Yukarıdan yeni bir davet kodu oluşturabilirsiniz." />
             )}
             {invitations.length > 0 && (
               <table className="w-full text-sm">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-gray-50/50 dark:bg-gray-800/30 border-b border-gray-100 dark:border-gray-800">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Kod</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wide">Daire</th>
@@ -200,7 +186,7 @@ export function InvitationsPage() {
                 </thead>
                 <tbody>
                   {invitations.map(inv => (
-                    <tr key={inv.invitationId} className="border-b border-border hover:bg-muted/70 transition-colors">
+                    <tr key={inv.invitationId} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                       <td className="px-4 py-3.5">
                         <span className="font-mono text-sm font-semibold text-foreground bg-muted px-2 py-1 rounded tracking-widest border border-border">
                           {inv.invitationCode}
@@ -240,8 +226,7 @@ export function InvitationsPage() {
                 </tbody>
               </table>
             )}
-          </CardContent>
-        </Card>
+        </TableCard>
       </div>
 
       {showBulk && (
