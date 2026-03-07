@@ -8,6 +8,7 @@ import {
   Users, Mail, UserCheck, Layers, DoorOpen, ChevronDown, ChevronRight,
   LogOut, BarChart3, FolderTree, FileText, Target, TrendingUp,
   Megaphone, Wrench, ChevronsLeft, ChevronsRight,
+  ListTodo, Vote, Gavel, Calendar,
 } from 'lucide-react'
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -40,6 +41,8 @@ const topLinks: NavLink[] = [
   { to: '/finance', label: 'Gelir-Gider', icon: BarChart3 },
   { to: '/announcements', label: 'Duyurular', icon: Megaphone },
   { to: '/maintenance', label: 'Arizalar', icon: Wrench },
+  { to: '/agenda', label: 'Gundem', icon: ListTodo },
+  { to: '/polls', label: 'Oylamalar', icon: Vote },
 ]
 
 const adminParents: NavParent[] = [
@@ -66,6 +69,14 @@ const adminParents: NavParent[] = [
   {
     key: 'maintenance', label: 'Arizalar', icon: Wrench, to: '/admin/maintenance', adminOnly: true,
     children: [],
+  },
+  {
+    key: 'agenda', label: 'Gundem & Karar', icon: ListTodo, to: '/admin/agenda', adminOnly: true,
+    children: [
+      { to: '/admin/polls', label: 'Oylamalar', icon: Vote, adminOnly: true },
+      { to: '/admin/decisions', label: 'Kararlar', icon: Gavel, adminOnly: true },
+      { to: '/admin/meetings', label: 'Toplantilar', icon: Calendar, adminOnly: true },
+    ],
   },
   {
     key: 'members', label: 'Uyeler', icon: Users, to: '/admin/members', adminOnly: true,
@@ -102,7 +113,7 @@ export const AdminSidebar = memo(function AdminSidebar({ onNavigate }: AdminSide
 
   /* --- Route helpers --- */
   function isActive(to: string) {
-    if (to === '/dashboard' || to === '/dues' || to === '/finance' || to === '/announcements' || to === '/maintenance') return location.pathname === to
+    if (to === '/dashboard' || to === '/dues' || to === '/finance' || to === '/announcements' || to === '/maintenance' || to === '/agenda' || to === '/polls') return location.pathname === to
     return location.pathname === to || location.pathname.startsWith(to + '/')
   }
 
