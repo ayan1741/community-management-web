@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Wallet, CircleDollarSign, Tag, CalendarDays,
   Users, Mail, UserCheck, Layers, DoorOpen, ChevronDown, ChevronRight,
   LogOut, BarChart3, FolderTree, FileText, Target, TrendingUp,
-  Megaphone, ChevronsLeft, ChevronsRight,
+  Megaphone, Wrench, ChevronsLeft, ChevronsRight,
 } from 'lucide-react'
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -39,6 +39,7 @@ const topLinks: NavLink[] = [
   { to: '/dues', label: 'Borclarim', icon: Wallet },
   { to: '/finance', label: 'Gelir-Gider', icon: BarChart3 },
   { to: '/announcements', label: 'Duyurular', icon: Megaphone },
+  { to: '/maintenance', label: 'Arizalar', icon: Wrench },
 ]
 
 const adminParents: NavParent[] = [
@@ -60,6 +61,10 @@ const adminParents: NavParent[] = [
   },
   {
     key: 'announcements', label: 'Duyurular', icon: Megaphone, to: '/admin/announcements', adminOnly: true,
+    children: [],
+  },
+  {
+    key: 'maintenance', label: 'Arizalar', icon: Wrench, to: '/admin/maintenance', adminOnly: true,
     children: [],
   },
   {
@@ -97,7 +102,7 @@ export const AdminSidebar = memo(function AdminSidebar({ onNavigate }: AdminSide
 
   /* --- Route helpers --- */
   function isActive(to: string) {
-    if (to === '/dashboard' || to === '/dues' || to === '/finance' || to === '/announcements') return location.pathname === to
+    if (to === '/dashboard' || to === '/dues' || to === '/finance' || to === '/announcements' || to === '/maintenance') return location.pathname === to
     return location.pathname === to || location.pathname.startsWith(to + '/')
   }
 

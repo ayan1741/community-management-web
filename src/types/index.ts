@@ -497,6 +497,112 @@ export interface AnnouncementsListResult {
   pageSize: number
 }
 
+// ─── Ariza Bildirimi (Maintenance Request) Tipleri ──────────────────────────
+
+export type MaintenanceCategory = 'elektrik' | 'su_tesisati' | 'asansor' | 'ortak_alan' | 'boya_badana' | 'isitma_sogutma' | 'guvenlik' | 'diger'
+export type MaintenancePriority = 'dusuk' | 'normal' | 'yuksek' | 'acil'
+export type MaintenanceStatus = 'reported' | 'in_review' | 'assigned' | 'in_progress' | 'resolved' | 'closed' | 'cancelled'
+export type MaintenanceLocationType = 'unit' | 'common_area'
+
+export interface MaintenanceRequestListItem {
+  id: string
+  title: string
+  category: MaintenanceCategory
+  priority: MaintenancePriority
+  status: MaintenanceStatus
+  locationType: MaintenanceLocationType
+  locationNote: string | null
+  reportedByName: string
+  photoCount: number
+  isRecurring: boolean
+  slaBreached: boolean
+  createdAt: string
+  totalCount: number
+}
+
+export interface MaintenanceRequestListResult {
+  items: MaintenanceRequestListItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
+export interface MaintenanceRequestDetail {
+  id: string
+  organizationId: string
+  title: string
+  description: string
+  category: MaintenanceCategory
+  priority: MaintenancePriority
+  status: MaintenanceStatus
+  locationType: MaintenanceLocationType
+  unitId: string | null
+  unitLabel: string | null
+  locationNote: string | null
+  assigneeName: string | null
+  assigneePhone: string | null
+  assigneeNote: string | null
+  assignedAt: string | null
+  totalCost: number
+  isRecurring: boolean
+  satisfactionRating: number | null
+  satisfactionComment: string | null
+  ratedAt: string | null
+  slaDeadlineAt: string | null
+  slaBreached: boolean
+  photoUrls: string | null
+  reportedByName: string
+  reportedBy: string
+  resolvedAt: string | null
+  closedAt: string | null
+  cancelledAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface MaintenanceRequestLogItem {
+  id: string
+  fromStatus: string | null
+  toStatus: string
+  note: string | null
+  createdByName: string
+  createdAt: string
+}
+
+export interface MaintenanceRequestCommentItem {
+  id: string
+  content: string
+  photoUrl: string | null
+  createdByName: string
+  createdBy: string
+  createdAt: string
+}
+
+export interface MaintenanceRequestCostItem {
+  id: string
+  amount: number
+  description: string | null
+  financeRecordId: string | null
+  createdByName: string
+  createdAt: string
+}
+
+export interface MaintenanceRequestDetailResult {
+  detail: MaintenanceRequestDetail
+  timeline: MaintenanceRequestLogItem[]
+  comments: MaintenanceRequestCommentItem[]
+  costs: MaintenanceRequestCostItem[] | null
+}
+
+export interface MaintenanceRequestStats {
+  totalOpen: number
+  totalResolved: number
+  totalClosed: number
+  slaBreachedCount: number
+  recurringCount: number
+  totalCostSum: number
+}
+
 // ─── Bildirim (Notification) Tipleri ──────────────────────────────────────
 
 export interface NotificationItem {
