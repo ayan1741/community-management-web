@@ -30,6 +30,8 @@ import { AnnouncementDetailPage } from '@/pages/AnnouncementDetailPage'
 import { AdminAnnouncementsPage } from '@/pages/admin/AnnouncementsPage'
 import { AdminAnnouncementDetailPage } from '@/pages/admin/AnnouncementDetailPage'
 import { NotificationsPage } from '@/pages/NotificationsPage'
+import { MaintenanceListPage } from '@/pages/admin/MaintenanceListPage'
+import { MaintenanceDetailPage } from '@/pages/admin/MaintenanceDetailPage'
 import { DesignDemoPage } from '@/pages/DesignDemoPage'
 import { DesignDemoPageB } from '@/pages/DesignDemoPageB'
 
@@ -98,6 +100,8 @@ export function AppRouter() {
         <Route path="/announcements" element={<RequireAuth><AnnouncementsPage /></RequireAuth>} />
         <Route path="/announcements/:id" element={<RequireAuth><AnnouncementDetailPage /></RequireAuth>} />
         <Route path="/notifications" element={<RequireAuth><NotificationsPage /></RequireAuth>} />
+        <Route path="/maintenance" element={<RequireAuth><MaintenanceListPage /></RequireAuth>} />
+        <Route path="/maintenance/:id" element={<RequireAuth><MaintenanceDetailPage /></RequireAuth>} />
 
         {/* Admin & Board Member */}
         <Route path="/admin/members" element={<RequireAuth><RequireAdmin><MembersPage /></RequireAdmin></RequireAuth>} />
@@ -113,6 +117,10 @@ export function AppRouter() {
 
         {/* Aidat Tipleri — sadece admin */}
         <Route path="/admin/dues/types" element={<RequireAuth><RequireAdmin><RequireAdminOnly><DueTypesPage /></RequireAdminOnly></RequireAdmin></RequireAuth>} />
+
+        {/* Ariza — admin & board_member */}
+        <Route path="/admin/maintenance" element={<RequireAuth><RequireAdmin><MaintenanceListPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/maintenance/:id" element={<RequireAuth><RequireAdmin><MaintenanceDetailPage /></RequireAdmin></RequireAuth>} />
 
         {/* Duyurular — admin & board_member */}
         <Route path="/admin/announcements" element={<RequireAuth><RequireAdmin><AdminAnnouncementsPage /></RequireAdmin></RequireAuth>} />
