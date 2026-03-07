@@ -32,6 +32,14 @@ import { AdminAnnouncementDetailPage } from '@/pages/admin/AnnouncementDetailPag
 import { NotificationsPage } from '@/pages/NotificationsPage'
 import { MaintenanceListPage } from '@/pages/admin/MaintenanceListPage'
 import { MaintenanceDetailPage } from '@/pages/admin/MaintenanceDetailPage'
+import { AgendaListPage } from '@/pages/AgendaListPage'
+import { AgendaDetailPage } from '@/pages/AgendaDetailPage'
+import { PollListPage } from '@/pages/PollListPage'
+import { PollDetailPage } from '@/pages/PollDetailPage'
+import { PollFormPage } from '@/pages/admin/PollFormPage'
+import { DecisionListPage } from '@/pages/admin/DecisionListPage'
+import { MeetingListPage } from '@/pages/admin/MeetingListPage'
+import { MeetingDetailPage as AdminMeetingDetailPage } from '@/pages/admin/MeetingDetailPage'
 import { DesignDemoPage } from '@/pages/DesignDemoPage'
 import { DesignDemoPageB } from '@/pages/DesignDemoPageB'
 
@@ -102,6 +110,10 @@ export function AppRouter() {
         <Route path="/notifications" element={<RequireAuth><NotificationsPage /></RequireAuth>} />
         <Route path="/maintenance" element={<RequireAuth><MaintenanceListPage /></RequireAuth>} />
         <Route path="/maintenance/:id" element={<RequireAuth><MaintenanceDetailPage /></RequireAuth>} />
+        <Route path="/agenda" element={<RequireAuth><AgendaListPage /></RequireAuth>} />
+        <Route path="/agenda/:id" element={<RequireAuth><AgendaDetailPage /></RequireAuth>} />
+        <Route path="/polls" element={<RequireAuth><PollListPage /></RequireAuth>} />
+        <Route path="/polls/:id" element={<RequireAuth><PollDetailPage /></RequireAuth>} />
 
         {/* Admin & Board Member */}
         <Route path="/admin/members" element={<RequireAuth><RequireAdmin><MembersPage /></RequireAdmin></RequireAuth>} />
@@ -121,6 +133,16 @@ export function AppRouter() {
         {/* Ariza — admin & board_member */}
         <Route path="/admin/maintenance" element={<RequireAuth><RequireAdmin><MaintenanceListPage /></RequireAdmin></RequireAuth>} />
         <Route path="/admin/maintenance/:id" element={<RequireAuth><RequireAdmin><MaintenanceDetailPage /></RequireAdmin></RequireAuth>} />
+
+        {/* Gundem & Karar — admin & board_member */}
+        <Route path="/admin/agenda" element={<RequireAuth><RequireAdmin><AgendaListPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/agenda/:id" element={<RequireAuth><RequireAdmin><AgendaDetailPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/polls" element={<RequireAuth><RequireAdmin><PollListPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/polls/new" element={<RequireAuth><RequireAdmin><PollFormPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/polls/:id" element={<RequireAuth><RequireAdmin><PollDetailPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/decisions" element={<RequireAuth><RequireAdmin><DecisionListPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/meetings" element={<RequireAuth><RequireAdmin><MeetingListPage /></RequireAdmin></RequireAuth>} />
+        <Route path="/admin/meetings/:id" element={<RequireAuth><RequireAdmin><AdminMeetingDetailPage /></RequireAdmin></RequireAuth>} />
 
         {/* Duyurular — admin & board_member */}
         <Route path="/admin/announcements" element={<RequireAuth><RequireAdmin><AdminAnnouncementsPage /></RequireAdmin></RequireAuth>} />

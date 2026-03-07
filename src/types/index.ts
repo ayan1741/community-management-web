@@ -624,3 +624,221 @@ export interface NotificationsListResult {
   page: number
   pageSize: number
 }
+
+// ─── Gundem (Agenda) Tipleri ──────────────────────────────────────────────
+
+export type AgendaStatus = 'acik' | 'degerlendiriliyor' | 'oylamada' | 'kararlasti' | 'kapali'
+export type AgendaCategory = 'genel' | 'bakim_onarim' | 'guvenlik' | 'sosyal' | 'finansal' | 'yonetim'
+
+export interface AgendaItemListItem {
+  id: string
+  title: string
+  category: AgendaCategory
+  status: AgendaStatus
+  isPinned: boolean
+  supportCount: number
+  commentCount: number
+  createdByName: string
+  createdBy: string
+  hasUserSupport: boolean
+  createdAt: string
+  totalCount: number
+}
+
+export interface AgendaItemsListResult {
+  items: AgendaItemListItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
+export interface AgendaItemDetail {
+  id: string
+  organizationId: string
+  meetingId: string | null
+  title: string
+  description: string
+  category: AgendaCategory
+  status: AgendaStatus
+  isPinned: boolean
+  closeReason: string | null
+  supportCount: number
+  commentCount: number
+  createdByName: string
+  createdBy: string
+  hasUserSupport: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AgendaStats {
+  totalOpen: number
+  totalUnderReview: number
+  totalVoting: number
+  totalDecided: number
+  totalClosed: number
+}
+
+export interface AgendaCommentItem {
+  id: string
+  content: string
+  isDeleted: boolean
+  userName: string
+  userId: string
+  createdAt: string
+}
+
+export interface AgendaCommentsResult {
+  items: AgendaCommentItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
+export interface AgendaSupporterItem {
+  userId: string
+  userName: string
+  createdAt: string
+}
+
+// ─── Oylama (Poll) Tipleri ──────────────────────────────────────────────
+
+export type PollStatus = 'aktif' | 'kapandi' | 'iptal'
+export type PollType = 'evet_hayir' | 'coktan_secmeli'
+
+export interface PollListItem {
+  id: string
+  title: string
+  pollType: PollType
+  status: PollStatus
+  startsAt: string
+  endsAt: string
+  totalVoteCount: number
+  totalMemberCount: number
+  hasUserVoted: boolean
+  agendaItemTitle: string | null
+  createdAt: string
+  totalCount: number
+}
+
+export interface PollsListResult {
+  items: PollListItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
+export interface PollDetailDto {
+  id: string
+  organizationId: string
+  agendaItemId: string | null
+  title: string
+  description: string
+  pollType: PollType
+  status: PollStatus
+  startsAt: string
+  endsAt: string
+  showInterimResults: boolean
+  totalMemberCount: number
+  createdByName: string
+  createdAt: string
+}
+
+export interface PollOptionDto {
+  id: string
+  label: string
+  voteCount: number
+  displayOrder: number
+}
+
+export interface PollDetailResult {
+  poll: PollDetailDto
+  options: PollOptionDto[]
+  userVote: { pollOptionId: string } | null
+}
+
+export interface PollResultDto {
+  pollId: string
+  title: string
+  pollType: PollType
+  status: PollStatus
+  totalVoteCount: number
+  totalMemberCount: number
+  options: PollOptionDto[]
+}
+
+// ─── Karar (Decision) Tipleri ──────────────────────────────────────────────
+
+export type DecisionStatus = 'karar_alindi' | 'uygulamada' | 'tamamlandi' | 'iptal'
+
+export interface DecisionListItem {
+  id: string
+  title: string
+  status: DecisionStatus
+  agendaItemTitle: string | null
+  pollTitle: string | null
+  decidedByName: string
+  decidedAt: string
+  totalCount: number
+}
+
+export interface DecisionsListResult {
+  items: DecisionListItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
+export interface DecisionDetail {
+  id: string
+  organizationId: string
+  agendaItemId: string | null
+  agendaItemTitle: string | null
+  pollId: string | null
+  pollTitle: string | null
+  title: string
+  description: string
+  status: DecisionStatus
+  decidedByName: string
+  decidedAt: string
+  createdAt: string
+  updatedAt: string
+}
+
+// ─── Toplanti (Meeting) Tipleri ──────────────────────────────────────────────
+
+export type MeetingStatus = 'planlanmis' | 'tamamlandi' | 'iptal'
+
+export interface MeetingListItem {
+  id: string
+  title: string
+  status: MeetingStatus
+  meetingDate: string
+  agendaItemCount: number
+  createdAt: string
+  totalCount: number
+}
+
+export interface MeetingsListResult {
+  items: MeetingListItem[]
+  totalCount: number
+  page: number
+  pageSize: number
+}
+
+export interface MeetingDetailDto {
+  id: string
+  organizationId: string
+  title: string
+  description: string
+  status: MeetingStatus
+  meetingDate: string
+  createdByName: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface MeetingDetailResult {
+  meeting: MeetingDetailDto
+  agendaItems: AgendaItemListItem[]
+}
